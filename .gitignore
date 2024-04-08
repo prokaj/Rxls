@@ -1,0 +1,10 @@
+*~
+*.out
+*.log
+*.bbl
+*.blg
+*.toc
+*.synctex.gz
+images-*
+auto/
+R-saved/

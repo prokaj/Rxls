@@ -1,0 +1,20 @@
+system.time(if(require(jaradek2013)){
+  col_from_str<-function(x){
+    if(x!="") eval(parse(text=sprintf("c(%s)",x))) else TRUE
+  }
+  eredmeny<-XLell(jaradek=getFromDB(dir=tok.mappa,file=tok.file,
+                                    table=tok.tbl,where=tok.where,
+                                    dsn=tok.dsn,sql=tok.sql),
+                  fuggo=getFromDB(dir=fug.mappa,file=fug.file,
+                                  table=fug.tbl,where=fug.where,
+                                  dsn=tok.dsn,sql=tok.sql),
+                  ett=getFromDB(dir=mod.mappa,file=mod.file,
+                                table=mod.tbl,where=mod.where,
+                                dsn=mod.dsn,sql=mod.sql),
+                  besorolas=XLreaddf.cols(bes.addr,which.cols=col_from_str(bes.cols)),
+                  halandosag=XLreaddf.cols(lx.addr,which.cols=col_from_str(lx.cols)),
+                  hozamok=XLreaddf.cols(hoz.addr,which.cols=col_from_str(hoz.cols)),
+                  novelesek=XLreaddf.cols(jar.addr,which.cols=col_from_str(jar.cols)),
+                  UTALKTSG=utkolt,
+                  report=suppressWarnings(normalizePath(file.path(rep.mappa,rep.file))));
+})

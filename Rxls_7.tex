@@ -1,0 +1,737 @@
+%% -*- mode: poly-noweb+R; ess-indent-level: 2; -*-
+\chapter{Az \code{R} oldal részletesebben}\label{chap:7}
+
+\section{Az \code{Rxls} csomag rutinjai}\label{sec:7.1}
+
+\subsection{\code{XLdata}}
+
+Az \code{XLdata} függvény célja, hogy viszonylag könnyen lehessen a
+beállításokat, paramétereket az \code{R}-nek átadni. A függvény
+argumentumai:
+\begin{Rnw}
+<<echo=FALSE,results="hide">>=
+suppressMessages(require(formatR))
+showfundef<-function (x,...){
+  name<-deparse(substitute(x))
+  body(x)<-NULL;
+  y<-capture.output(.Internal(print.function(x,TRUE,...)));
+  cat(y[-(length(y)-0:1)],sep="\n");
+  invisible(unclass(x))
+}
+@
+<<prompt=FALSE,render=showfundef>>=
+XLdata
+@
+\end{Rnw}
+\begin{description}
+\item[\code{c1,c2,c2.offset}] Az első két paraméter a neveket
+  ill. értékeket tartalmazó oszlopok sorszáma a tartományon belül, a
+  harmadik ezek különbsége. A kód a \code{c2.offset} értéket 
+  használja, így a \code{c2} értéket csak akkor használjuk, ha
+  \code{c2.offset} nincs megadva. 
+\item[\code{range}] A tartomány címe, lehetőleg teljes név, azaz
+  munkafüzet, munkalap és azon belül a tartomány bal felső és jobb
+  alsó cellája. pl. \code{[Munkafüzet1]Munka1!\$A:\$F}. Az \code{extAddress} 
+  munkalapfüggvénnyel könnyen megadható.
+\item[\code{rmHidden}] Ha \code{TRUE}, akkor a rejtett sorokban lévő
+  változókat töröljük az \code{R} oldalon. Alapértelmezésben nem törlünk.
+\item[\code{onlyvisible}] Ha \code{TRUE} (ez az alapértelmezés), akkor
+  csak a látható sorokat használja, ellenkező esetben a rejtetteket
+  is. 
+\item[\code{env}] Az környezet (\code{environment}), amiben a változók
+  definiálva lesznek. Alapértelmezésben az a függvény hívásakor aktív
+  környezet. Ha a \code{background(eval(.FUN))} vagy \code{eval(.FUN)}
+  részeként használjuk az \code{XLdata} függvényt, akkor a globális
+  \code{.GlobalEnv} környezetben lesznek definiálva a
+  változók. Tipikusan ezt a paramétert nem kell megadni. 
+\item[\code{XLrange}] A tartomány címének megadása helyett egy \code{EXCEL}
+  \code{range}-t reprezentáló \code{COM} objektumot is
+  megadhatunk. Tipikusan ezt a paramétert nem kell megadni.
+\item[\code{XL}] A használandó EXCEL példány. Tipikusan ezt a
+  paramétert nem kell megadni. 
+\item[\code{value}] A cella melyik érték tulajdonságát használjuk?
+  \code{"value"} vagy \code{"value2"}. Csak a dátum/idő adatok
+  kezelésében van különbség.  \code{"value"} esetében az EXCEL dátum/idő adatai
+  \code{POSIXt} típusú adatként  jelennek meg az \code{R} oldalon, míg
+  \code{"value2"} esetében az \code{1900.01.01.}
+  dátum óta eltelt napok számaként. A \code{POSIXt} típus konverziót a
+  téli/nyári időszámítás  
+  összezavarja, ezért inkább a másikat használtam mindig. \code{"value2"}
+  használata esetén az 
+  eredmény az \code{XLDate} függvény segítségével \code{Date} típusúvá
+  alakítható. Tipikusan ezt a 
+  paramétert nem kell megadni. 
+\end{description}
+
+\subsection{\code{XLsource}}
+
+Ez a függvény a \code{source} mintájára működik, azaz a kódot olvas be
+szövegként, majd azt elemzi (\code{parse}) és kiértékeli, vagyis
+végrehajtja. Azonban a \code{source}-től eltérően az \code{XLsource} 
+nem file-ból, hanem egy \code{EXCEL} munkafüzet \code{R kódlap}járól olvassa
+be a kód szövegét. Az argumentumok:
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+XLsource
+@
+\end{Rnw}
+% XLsource
+% function (..., wbname, name = {
+% dots <- match.call(expand.dots = FALSE)$...
+% if (length(dots) && !all(sapply(dots, function(x) is.symbol(x) ||
+% is.character(x))))
+% stop("... must contain names or character strings")
+% sapply(dots, as.character)
+% }, env = parent.frame(), wsname = sprintf("R kód(%s)", name),
+% wb = {
+% on.exit(wb <- NULL, add = TRUE)
+% if (missing(wbname))
+% XL[["activeworkbook"]]
+% else XL[["workbooks", wbname]]
+% }, XL = THISXL)
+\begin{description}
+\item[\code{...}] Az \code{R kódlap}-ok nevei, {\em nem szükséges
+  idézőjelek közé tenni a neveket}. Ha a nevek karakter vektor
+  formájában állnak rendelkezésre, akkor használjuk a \code{name}
+  argumentumot. Ezek a nevek nem a munkalap nevek. Azok 
+  \code{R kód(kódlap név)} alakúak, lásd a \code{wsname} argumentumot.
+\item[\code{wbname}] A munkafüzet neve. Ha nem adjuk meg, akkor az
+  aktív munkafüzetet fogja a rutin használni.
+\item[\code{name}] A kódlapok neveit \code{c ("<név1>","<név2>",...)}
+  alakban is megadhatjuk. Tipikusan ezt az argumentumot nem kell megadni.
+\item[\code{env}] Hasonlóan az \code{XLdata} függvényhez itt is
+  megadható, hogy melyik környezetben dolgozunk. Ugyanaz a mechanizmus
+  érvényesül itt is. Tipikusan ezt az argumentumot nem kell megadni.
+\item[\code{wsname}] Az \code{R} kódot tartalmazó munkalapok nevei. Tipikusan
+  ezt az argumentumot nem kell megadni.
+\item[\code{wb}] A munkafüzetet reprezentáló \code{COM}
+  objektum. Tipikusan ezt az argumentumot nem kell megadni.
+\item[\code{XL}] A használni kívánt EXCEL példány. Tipikusan ezt az argumentumot nem kell megadni.
+\end{description}
+
+\subsection{\code{XLwritedf}}
+
+Egy \code{data.frame}-t másol \code{EXCEL} munkafüzetbe. Külön figyelni kell
+a \code{factor} és dátum típusú 
+adatokra. Lehetőség van az oszlop szélesség tartalomhoz igazítására és
+név megadására. 
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+XLwritedf
+@
+\end{Rnw}
+% XLwritedf
+% function (XLrange, df, with.names = TRUE, autoFit = TRUE,
+% setname)
+\begin{description}
+\item[\code{XLrange}] A céltartomány. A \code{df} \code{data.frame}-t
+  az \code{XLrange} tartomány bal felső sarkába illesztjük be. 
+\item[\code{df}] A másolandó \code{data.frame}.
+\item[\code{with.names}] Ha \code{TRUE}, akkor a kitöltött tartomány
+  első sorába a \code{data.frame} nevei kerülnek. 
+\item[\code{autoFit}] Ha \code{TRUE}, akkor az oszlopok szélességét a
+  tartalomhoz igazítjuk. 
+\item[\code{setname}] Ha megadjuk és értéke karakterlánc, akkor ez
+  lesz a kitöltött tartomány (munkafüzet szintű) neve.
+\end{description}
+
+\subsection{\code{XLreaddf.cols}, \code{XLreaddf.rows}}
+
+Mindkét függvény az \code{EXCEL} megadott tartományát alakítja R
+\code{data.frame}-é. A különbség 
+abban van, hogy míg a \code{XLreaddf.cols} esetén a tartomány oszlopai
+felelnek meg az eredmény  
+\code{data.frame} oszlopainak, addig az \code{XLreaddf.rows} esetében
+a tartomány soraiból lesznek a \code{data.frame} 
+oszlopai. 
+Az előfeldolgozás (beolvasás, összevont cellák ellenőrzése) után
+mindkét rutin az \code{XLlist2df} 
+függvényt használja és \code{...} argumentumot tovább adja ennek a
+függvénynek. Így a paraméterek listája hosszabb, mint ami az alábbi
+fejlécből következne.  
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+XLreaddf.cols
+XLreaddf.rows
+@
+\end{Rnw}
+% XLreaddf.cols
+% function (range, which.cols = seq_len(ncol(x)), XLrange = {
+% on.exit(XLrange <- NULL, add = TRUE)
+% if (missing(range))
+% XL$selection()
+% else XL$range(range)
+% }, ..., chk.merge = TRUE, value = "value2", XL = THISXL)
+% XLreaddf.rows
+% function (range, which = seq_len(nrow(x)), XLrange = {
+% on.exit(XLrange <- NULL, add = TRUE)
+% if (missing(range))
+% XL$selection()
+% else XL$range(range)
+% }, ..., chk.merge = TRUE, value = "value2", XL = THISXL)
+\begin{description}
+\item[\code{range}] A céltartomány szövegesen megadott címe. Ha nem
+  adjuk meg, akkor az aktuális kijelölést használjuk.
+\item[\code{which.cols}] Itt lehet megadni, hogy a tartomány mely
+  oszlopai szerepeljenek a végeredményben. Alapértelmezése a tartomány
+  összes oszlopa. 
+\item[\code{XLrange}] A tartomány \code{COM} objektumként. Jellemzően nem kell megadni.
+\item[\code{...}] Ezeket a paramétereket tovább adjuk a
+  \code{XLlist2df} függvénynek. 
+  \begin{Rnw}
+%<<echo=FALSE,results="hide">>=
+%XLlist2df<-Rxls:::XLlist2df;class (XLlist2df)<-"fundef"
+%@
+
+<<prompt=FALSE,render=showfundef>>=
+Rxls:::XLlist2df
+@
+  \end{Rnw}
+% Rxls:::XLlist2df
+% function (x, header = 1, trim = FALSE, skip = 0, head.sep = "",
+% numeric = FALSE, ...)
+Az így keletkező további beállítási lehetőségek:
+\begin{description}
+\item[\code{header}] A tartomány fejlécének nagysága, sorokban.
+\item[\code{trim}] Ha igaz, akkor az üres sorokat és oszlopokat
+  eldobjuk, ha hamis nem történik semmi.
+\item[\code{skip}] Lehet függvény, ekkor a trimmelés után ezt
+  alkalmazzuk az adatokra. Lehet szám is. Pozitív érték esetén \code{skip}
+  számú sort eldobunk. 
+\item[\code{head.sep}] Akkor használjuk, ha a tartomány fejléce több
+  soros. Ilyenkor a \code{data.frame} 
+neveit az oszlop fejlécében szereplő sztringek összefűzésével kapjuk.
+\item[\code{numeric}] Ha igaz, akkor a \code{data.frame} elemeit
+  megpróbáljuk numerikus értékre konvertálni akkor is, ha mondjuk az
+  \code{EXCEL}-ben szövegesen szerepelnek a számok. A tizedesjel az
+  \code{R} tizedes jele, alapértelmezésben ez a pont. 
+\item[\code{...}] Ezeket a paramétereket továbbadjuk a \code{data.frame}
+  függvénynek. Célszerű lehet a  \code{stringAsFactors = FALSE}
+  megadása. Ugyanis 
+  szöveges adatból \code{data.frame} létrehozása során \code{factor}
+  változó lesz. Ha mégis inkább szöveges adatot szeretnénk a
+  \code{data.frame}-ünkben, 
+  akkor ezt a beállítást kell használni.
+\end{description}
+Először trimmelünk ha kell, majd a \code{skip}et alkalmazzuk, ezután
+választjuk le a fejlécet 
+a \code{header} alapján. A megmaradó adatokra alkalmazzuk a
+\code{as.numeric}  függvényt, ha
+szükséges, majd a \code{data.frame} függvényt. Végül beállítjuk a
+\code{data.frame} neveit, ha vannak.
+
+\item[\code{chk.merge}] Ha a tartományban összevont cellák vannak,
+  akkor a képernyőn látható érték az összevont cellák bal felső
+  sarkában lévő cella értéke, a többi cella értéke üres. Ez a \code{R} 
+  oldalon \code{NA} értéket eredményez. Ha \code{chk.merge} értéke
+  \code{TRUE}, akkor az \code{R} oldalra másolt 
+  értékek megegyeznek a cellában látható értékkel. Vagyis egy
+  összevont tartomány minden cellájához a képernyőn látható értéket
+  rendeljük. 
+\item[\code{value}] Melyik tulajdonságát használjuk a
+  tartománynak. Tipikusan nem kell megadni. Lehet 
+  \code{"value"}, \code{"value2"}, \code{"formula"} vagy akár
+  \code{"formulalocal"}. 
+\item[\code{XL}] Melyik \code{EXCEL} példánnyal dolgozzunk. Tipikusan nem
+  kell megadni. Alapértelmezésben a globális \code{THISXL} érték.
+\end{description}
+
+\subsection{\code{XLget}}
+Egy \code{EXCEL} tartományt olvas be \code{R}-be, pontosabban a tartomány és az
+adott munkalap usedrangeének metszetét. 
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+XLget
+@  
+\end{Rnw}
+% XLget
+% function (range, XLrange = {
+% if (missing(range))
+% XL$selection()
+% else XL$range(range)
+% }, value = "value", XL = THISXL)
+\begin{description}
+\item[\code{range}] A tartomány címe, sztring. Lehet az aktív
+  munkafüzetben definiált név is. Ha nem adjuk meg, akkor a kijelölt tartomány.
+\item[\code{XLrange}] Az olvasandó tartományt reprezentáló \code{COM}
+  objektum. Tipikusan nem kell megadni. 
+\item[\code{value}] Melyik tulajdonságát használjuk a
+  tartománynak. Tipikusan nem kell megadni. Lehet 
+  \code{"value"}, \code{"value2"}, \code{"formula"} vagy akár \code{"formulalocal"}.
+\item[\code{XL}] Melyik \code{EXCEL} példánnyal dolgozzunk. Tipikusan nem
+  kell megadni. Alapértelmezésben a globális \code{THISXL} érték.
+\end{description}
+
+\subsection{\code{ACCESS.get}}
+ACCESS adatbázisból olvas be egy táblát.
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+ACCESS.get
+@
+\end{Rnw}
+% ACCESS.get
+% function (dir, file, table, where = "")
+\begin{description}
+\item[\code{dir}] Az adatbázis könyvtára.
+\item[\code{file}] Az adatbázis fileneve.
+\item[\code{table}] A tábla neve.
+\item[\code{where}] A lekérdezés where része. Ha nem adjuk meg a teljes táblát lekérdezzük.
+\end{description}
+
+\subsection{\code{ODBC.get}}
+ODBC adatbázisból olvas be egy táblát.
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+ODBC.get
+@
+\end{Rnw}
+% ODBC.get
+% function (dsn, sql)
+\begin{description}
+\item[\code{dsn}] A kapcsolatot leíró sztring.
+\item[\code{sql}] Az lekérdezés sql parancsa.
+\end{description}
+
+\subsection{\code{getFromDB}}
+
+Választ a két előbbi rutin közül. Ha a \code{dsn} argumentumként nem
+definiált változót adunk át, 
+akkor az \code{ACCESS.get} egyébként a \code{ODBC.get} függvényt használjuk.
+
+\begin{Rnw}
+<<echo=FALSE,results="hide">>=
+##if(exists("getFromDB")) rm(getFromDB)
+@
+<<prompt=FALSE,render=showfundef>>=
+getFromDB
+@
+\end{Rnw}
+% getFromDB
+% function (dir, file, table, where = "", dsn, sql)
+% {
+% if (!inherits(try(dsn, silent = TRUE), "try-error")) {
+% ODBC.get(dsn = dsn, sql = sql)
+% }
+% else {
+% ACCESS.get(dir = dir, file = file, table = table,
+% where = where)
+% }
+% }
+% <environment: namespace:Rxls>
+
+
+
+\subsection{\code{logDevice} kezelés}
+\subsubsection{\code{logDev...}}
+A logDev függvény új \code{logDevice}-t hoz létre a megadott
+típussal. \code{A logDev.set} függvény 
+az aktuális \code{logDevice}-t állítja át, \code{logDev.off}
+kikapcsolja azt, míg a 
+\code{logDev.list} kilistázza a létező \code{logDevice}-okat.
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+logDev
+logDev.set
+@
+\end{Rnw}
+\begin{description}
+\item[\code{...}]Az új \code{logDevice} típusa. \code{"null"}, \code{"R"}, \code{"EXCEL"}, \code{"TCL"} lehet.
+\item[\code{num}]Az új aktív eszköz sorszáma. 
+\end{description}
+% logDev
+% function (...)
+
+% Átállítja az aktuális logDevice-t.
+% logDev.set
+% function (num)
+% num Az új aktív eszköz sorszáma.
+
+\subsubsection{\code{progress}}
+
+Új \code{progressbar}t ad az aktív \code{logDevice}hoz.
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+progress
+@
+\end{Rnw}
+A paramétereket továbbadjuk. A tényleges argumentumok:
+\begin{description}
+\item[\code{pattern}] Az \code{sprintf} függvény által használt
+  formátum sztring. 
+\item[\code{...}] A formátum sztringbe helyettesítendő kezdő értékek.
+\item[\code{lazyness}] Numerikus érték, a progressbar frissítési
+  időköze másodpercben. 
+\end{description}
+
+A progress visszatérési értéke egy objektum (list) a következő függvényekkel:
+\begin{description}
+\item[\code{inc()}] Ha progressbar mintájának egyetlen numerikus
+  argumentuma van, akkor azt egyel növeli és frissíti a
+  \code{logDevice}t a \code{lazyness} paraméterrel összhangban. 
+\item[\code{step(...)}] A progressbar értékét frissíti a
+  \code{sprintf(pattern,...)} függvényhívással és frissíti a
+  \code{logDevice}t a \code{lazyness} paraméterrel összhangban. 
+\item[\code{hide()}] Ideiglenesen leveszi a \code{progressbar}-t a
+  \code{logDevice}-ról. Nem frissít! 
+\item[\code{show()}] Visszateszi a \code{progressbar}-t a
+  \code{logDevice}-ra. Nem frissít! 
+\item[\code{reset(pattern,...,lazyness)}] A \code{progressbar} paramétereit
+  átállítja. Nem frissít! 
+\item[\code{refresh()}] Frissíti a \code{logDevice} szövegét, függetlenül az
+előző frissítés óta eltelt időtől. 
+\item[\code{rm()}] Véglegesen törli a progressbart a \code{logDevice}-ról. Nem frissít.
+\end{description}
+
+
+\subsubsection{\code{logMessage}}
+
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+logMessage
+@
+\end{Rnw}
+%
+%function (..., sleep = 0)
+\begin{description}
+\item[\code{...}] Az \code{sprintf} függvénynek átadott paraméterek,
+  az első elem lehet formátum sztring. 
+\item[\code{sleep}] Várakozás a \code{message} megjelenítése után másodpercben.
+\end{description}
+
+\subsection{Dátum kezelő függvények}
+Az \code{EXCEL}-ből \code{"value2"} tulajdonságon keresztül kapott numerikus
+értéket az \code{R} valamelyik dátum 
+típusára konvertáló függvények.
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+XLDate
+XLPOSIXct
+@
+\end{Rnw}
+\begin{description}
+\item[\code{date}] Numerikus érték. A kezdő időpont óta eltelt napok
+  száma. Nem feltétlenül egész szám. 
+\item[\code{d1904}] Kezdő időpont. Az \code{EXCEL} munkafüzetek
+  \code{Date1904} nevű 
+  tulajdonságának felel meg. 
+\end{description}
+
+\subsection{Egyebek}
+\subsubsection{\code{XLScreenUpdateTurnOff}}
+
+Kikapcsolja az \code{EXCEL} \code{ScreenUpdate} tulajdonságát és a
+\code{Calculation} tulajdonság értékét az  \code{xlCalculationManual}
+értékre állítja. A visszatérési érték egy függvény, ami a
+visszaállítja az eredeti állapotot. Lehetőség 
+van az aktív cella értékének visszaállítására is.
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+XLScreenUpdateTurnOff
+@
+\end{Rnw}
+%function (Appl, activecell = FALSE)
+\begin{description}
+\item[\code{Appl}] Az az \code{EXCEL} application, aminek az képernyő
+  frissítését le akarjuk tiltani. 
+\item[\code{activecell}] Ha igaz, akkor az aktív cella helyét is
+  megjegyezzük és a helyreállítás során a cellát aktiváljuk. Csak
+  akkor állítsuk igazra, ha időközben nem töröljük a cella munkalapját
+  vagy munkafüzetét. 
+\end{description}
+
+\subsubsection{\code{XLusedrange}}
+
+Visszaadja egy tartománynak és a \code{usedrange} tartománynak a
+metszetét. Az eredmény egy \code{range} objektum.
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+XLusedrange
+@
+\end{Rnw}
+%function (r)
+\begin{description}
+\item[\code{r}] Az a \code{range} objektum, (tehát nem szöveges cím)
+  amit a \code{usedrange} tartománnyal metszeni akarunk.
+\end{description}
+
+\subsubsection{\code{pkgzip}}
+\code{win-binary} formátumban ment telepített \code{R} csomagokat.
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+pkgzip
+@
+\end{Rnw}
+% function (pkgs = {
+% preselect <- grep("(com(|proxy)|Rxls)$", rownames(ipkgs),
+% value = TRUE)
+% if (ask)
+% select.list(rownames(ipkgs), preselect, multiple = TRUE,
+% title = "Zippelendő csomagok:", graphics = T)
+% else preselect
+% }, zip.mappa = choose.dir(Sys.getenv("HOME"), "Zip állományok helye:"),
+% ask = interactive(), PACKAGES = FALSE)
+\begin{description}
+\item[\code{pkgs}] Az \code{R} csomagok listája. Ha nem adjuk meg és
+  az \code{ask} 
+  paraméter igaz, akkor interaktív módon választhatunk a telepített
+  csomag listájából. Ha hiányzik és az \code{ask} paraméter 
+  hamis, akkor értéke \code{c("com","comproxy","Rxls")}.
+\item[\code{zip.mappa}] A zippelt csomagok helye. Ha nem adjuk meg, akkor egy könyvtár-választó dialóg segítségével jelölhetjük ki.
+\item[\code{ask}] Megkérdezzük-e a felhasználót?
+\end{description}
+
+\subsubsection{\code{installRxls}}
+
+Az \code{Rxls} csomagban lévő \code{EXCEL} fileokat átmásolja a
+\code{<appdata>/Rxls} könyvtárba és a verzió információkat a \code{versions}
+nevű fileba írja. 
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+installRxls
+@
+\end{Rnw}
+%function ()
+
+\subsubsection{\code{R\_RegEntries}}
+Az \code{R}-rel kapcsolatos regisztry bejegyzésket listázza ki. Ezek
+egy része a \code{Software/R-core}
+kulcs alatt található. Egy másik része a \code{com} csomag által bejegyzett
+\code{CLSID} és \code{Typelib} adat. 
+\begin{Rnw}
+<<prompt=FALSE,render=showfundef>>=
+R_RegEntries
+@
+\end{Rnw}
+
+\begin{Rnw}
+<<echo=FALSE,results="hide">>=
+fns<-ls()
+rm(list=fns[sapply(sapply(fns,get,envir=environment()),inherits,"fundef")])
+rm (fns)
+@
+\end{Rnw}
+\section{\code{VBA} kód konvertálása \code{R} kóddá}\label{sec:7.2}
+
+Szükség lehet arra, hogy \code{R}-ben írjunk meg olyan programrészeket, amik
+\code{EXCEL VBA}-ban már 
+megvannak, vagy ott könnyen előállíthatóak, mondjuk a makrórögzítés
+funkció segítségével. 
+A konverzió nem túl komplikált.
+A konstansokat kigyűjthetjük a Visual Basic szerkesztő Object browser-éből.
+Ahol \code{EXCEL} objektumot használunk (\code{Selection}, \code{ActiveCell},
+\code{ActiveSheet}, stb) ott valójában az \code{Application} objektum
+tulajdonságaira hívatkozunk, tehát a teljes leírás az \code{VBA}-ban 
+\code{Application.Selection} lenne és hasonlóan a többi esetben is.
+Visual Basic-ben a \code{.} (pont) operátor egy objektum tulajdonságát
+vagy metódusát kérdezi le. Erre az \code{R} oldalon a \code{"[["},
+ill. \code{\$} operátorok használhatóak. Az elsővel tulajdonságot, a 
+másodikkal metódust vagy tulajdonságot érhetünk el. 
+Azaz az \code{EXCEL} \code{workbooks collection}-ját kétféleképpen
+is elérhetjük. 
+\begin{Rnw}
+<<>>=
+THISXL[["workbooks"]]
+THISXL$workbooks()
+@
+%$
+\end{Rnw}
+Ha az első munkafüzetet akarjuk elérni, akkor a Workbooks objektum
+item tulajdonságát kellene használnunk. Ez a \code{default}
+tulajdonság, tehát a következők valamennyien használhatóak 
+\begin{Rnw}
+<<eval=FALSE,prompt=FALSE>>=
+THISXL[["workbooks", 1]]
+THISXL[["workbooks"]][["item", 1]]
+THISXL$workbooks(1)
+THISXL$workbooks()$item(1)
+THISXL[["workbooks"]]$item(1)
+THISXL$workbooks()[["item", 1]]
+@
+%$
+\end{Rnw}
+Ha metódust akarunk meghívni, akkor csak a \code{\$} szintaxis
+használható 
+\begin{Rnw}
+<<>>=
+wb <- THISXL$workbooks()$add() 
+@
+\end{Rnw}
+Ha írható tulajdonságot akarunk beállítani, akkor csak a \code{[[}
+szintaxis használható értékadással kombinálva. A következők mind az
+\code{ActiveCell} tartomány értékét állítják 1-re. 
+\begin{Rnw}
+<<>>=
+withObj(THISXL,.[["activecell"]]<-1)
+withObj(THISXL[["activecell"]],.[["value"]]<-1)
+THISXL[["activecell"]] <- 1 
+THISXL[["activecell"]][["value"]] <- 1
+ac <- THISXL$activecell() 
+ac[["value"]] <- 1 
+ac <- NULL
+@
+%$
+\end{Rnw}
+A segédváltozós megoldásban az \code{ac<-1} nem működne, egyszerűen 1 értéket
+adnánk az \code{ac} nevű változónak.
+
+Miután létrehoztunk egy hivatkozást valamely \code{COM} objektumra, használat
+után mindig töröljük azt. Ha egy függvény belsejében tesszük ezt akkor
+a hivatkozás törlése automatikusan 
+megtörténik a függvényből való kilépés után (pontosabban az azt követő
+ első garbage collection alkalmával). 
+Globális szintű változók használata esetén kézzel kell a változó
+értékét \code{NULL}-ra változtatni, vagy 
+az \code{rm} függvénnyel törölni a változót magát.
+\begin{Rnw}
+<<>>=
+wb$close(FALSE)
+wb <- NULL
+gc()
+@  
+%$
+\end{Rnw}
+Előfordulhat, hogy nem elég törölni a hivatkozást az adott objektumra,
+pl. mert egy új \code{ACCESS}, \code{EXCEL} példányt vagy új
+munkafüzetet hoztunk létre, amire a továbbiakban nincs 
+szükség. Ha ez egy függvény belsejében történt, akkor jól használható
+az \code{R} \code{on.exit} lehetősége. Ezzel olyan kódot tudunk megadni, amit
+a függvény kiértékelése után hajt végre az 
+\code{R}. A következő kódrészlet a függvény elején létrehoz egy új
+munkafüzetet majd kilépéskor 
+mentés nélkül bezárja.
+\begin{Rnw}
+<<eval=FALSE,prompt=FALSE>>=
+f <- function() {
+  wb <- THISXL$workbooks()$add()
+  on.exit(wb$close(FALSE), add = TRUE)
+  ## ...
+}
+@
+%$  
+\end{Rnw}
+
+\subsection{Egy meglepő jelenség}
+
+Időnként nem pontosan az történik, amit várunk. Tegyük fel, pl. hogy
+az \code{activeCell} cellát szeretnénk az \code{=MA()} formulával
+ellátni. Kézenfekvő megoldásnak tűnik a következő sor
+\begin{Rnw}
+<<echo=FALSE,results="hide">>=
+ws<-THISXL[["activeworkbook"]][["sheets"]]$add()
+ws$range("A1")$activate() ## $
+rm(ws)
+gc ()
+@
+<<>>=
+THISXL[["activecell"]][["formula"]] <- "=MA()"
+@  
+\end{Rnw}
+Azonban ennek hatására a cella értéke ugyan az aktuális dátum lesz, de
+a formula nélkül. 
+\begin{Rnw}
+<<>>=
+THISXL[["activecell"]][["formula"]]
+XLDate(THISXL[["activecell"]][["value2"]])
+@
+\end{Rnw}
+Ha azonban beiktatunk egy közbülső lépést, akkor a várt eredményt kapjuk.
+\begin{Rnw}
+<<>>=
+withObj(THISXL[["activecell"]], .[["formula"]] <- "=MA()")
+THISXL[["activecell"]][["formula"]]
+XLDate(THISXL[["activecell"]][["value2"]])
+@  
+\end{Rnw}
+A különös viselkedés megértéséhez kiírjuk a végrehajtott lépések részleteit.
+\begin{Rnw}
+<<>>=
+`[[.COMObject` <- function(handle, property, ...) {
+  print(match.call())
+  cat("\thandle =", deparse(handle), "\n")
+  x <- com::`[[.COMObject`(handle, property, ...)
+  cat("\treturn value =", deparse(x), "\n\n")
+  x
+}
+`[[<-.COMObject` <- function(handle, property, ...) {
+  print(match.call())
+  cat("\thandle =", deparse(handle), "\n")
+  x <- com::`[[<-.COMObject`(handle, property, ...)
+  cat("\treturn value =", deparse(x), "\n\n")
+  x
+}
+THISXL[["activecell"]][["formula"]] <- "=MA()"  
+@
+\end{Rnw}
+Azaz az történt, hogy először a \code{THISXL} objektum
+\code{activeCell} tulajdonságát kérdeztük le, 
+majd az így kapott \code{COM} objektum formula tulajdonságát
+beállítottuk. Ezután a változásokat ``átvezettük'' a \code{THISXL} objektumra
+is. Pontosabban az utolsó lépésben \code{THISXL} \code{activecell}-jét
+a második lépésben kapott eredményre állítjuk, ami ugyanez az aktív
+cella. Csakhogy ez 
+azt eredményezi, hogy mindkét oldalon a \code{COM} objektum
+\code{default} tulajdonságát használjuk, 
+vagyis valójában az \code{activecell} \code{value} tulajdonságát
+állítjuk saját magára. Visual Basicben 
+kifejezve az alábbi kódnak megfelelő lépések történnek:
+\begin{VBAframe}
+set tmp = Application.activeCell
+tmp.formula = "=MA()"
+Application.activeCell = tmp
+\end{VBAframe}
+Ahol az utolsó sor azzal ekvivalens, hogy
+\begin{VBAframe}
+Application.activeCell.value = tmp.value
+\end{VBAframe}
+Ez az utolsó lépés az, ami a formulát eltünteti és helyettesíti az
+aktuális értékkel. Amikor a 
+második változatot használtuk, ahol egy segédváltozóban tároltuk az
+\code{ActiveCell} objektumot, erre a lépésre nem került sor. 
+
+Összefoglalva, ha valamilyen tulajdonságot állítunk be a \code{COM} interfész
+segítségével, célszerű a segédváltozókat használni, hogy a fenti
+példában látott mellékhatást elkerüljük. 
+
+Az \code{R language definition} leírás 3.4.4 \code{Subset assignment}
+című részében részletesen 
+olvashatunk az értékadó függvényekről.
+
+
+\section{Dokumentáció, \code{vignette}-ák}\label{sec:7.3}
+Valamennyi általam készített R csomag esetén a kommentezett kód
+böngészhető pdf formátumban. Pl. az \code{Rxls} csomag esetén a következő
+utasítást kell kiadni R-ben. 
+\begin{Rnw}
+<<eval=FALSE>>=
+vignette("Rxls")
+@  
+\end{Rnw}
+A megjelenítéshez szükséges, hogy a file társítások között
+regisztrálva legyen pdf nézegető program, pl. Acrobat Reader. 
+
+\code{RStudio} használata esetén, mind az \code{R} konzolban, mind a
+szövegszerkesztő ablakban elérhető a kód ``kiegészítése'' funkció a
+\code{TAB} billentyű lenyomásával. További előnye az \code{RStudio} 
+használatának, hogy a változó nevek kiegészítése, mellett azok rövid
+leírása is megjelenik \code{tooltip}-szerűen.
+
+Ha egy adott \code{R} függvény nevére nem emlékszünk pontosan, akkor
+jól használható a \code{apropos} függvény, ami a megadott mintára illeszkedő
+függvényneveket sorolja fel. 
+
+%%rm(print.function,pos=grep("functions:knitall",search())[1])
+\begin{Rnw}
+<<echo=FALSE,result='hide'>>=
+if(exists("THISXL",inherits=FALSE)) rm (THISXL)
+@  
+\end{Rnw}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Rxls"
+%%% End: 

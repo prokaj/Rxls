@@ -1,0 +1,90 @@
+%% -*- mode: poly-noweb+R; ess-indent-level: 2; -*-
+
+\chapter{Részletesebben}
+\label{chap:2}
+
+Az elképzelt munkamenet a következő. Van egy \code{R} szkriptünk,
+aminek a paraméterezését egy \code{EXCEL} munkafüzetből szeretnénk
+megoldani.
+% ez elé szeretnénk tenni egy munkafüzetet, ami a paramétereket tartalmazza.
+
+\section{Adatok}
+\label{sec:2.1}
+
+Első lépésként azonosítani kell a bemenő adatokat és el kell
+készíteni a számoló munkafüzet \code{Adatok} munkalapját. Ha nagyobb
+mennyiségű fix paramétert is át kell adni, akkor azokat egy külön 
+munkalapon is elhelyezhetjük. 
+%lehet a szkriptben vagy létre lehet hozni egy olyan munkalapot az
+%\code{EXCEL} munkafüzetben ami 
+%ezeket a paramétereket tartalmazza. 
+Ha ennek, az extra adatokat
+tartalmazó, munkalapnak a 
+neve \code{R kód}-dal kezdődik, vagy a \code{(hidden)}-nel végződik,
+akkor a véglegesítés során az adott 
+munkalap rejtetté válik.
+
+Az adatok átvitelére az \code{XLdata} függvényt célszerű
+használni. Ennek részletes leírását lásd 
+\aref{sec:7.1} szakaszban. Itt megelégszünk annyival, hogy 
+\code{XLdata (n1,n2,range="<range cím>")}
+függvény hatására a \code{<range cím>} által meghatározott tartomány
+\code{n1} oszlopában lévő értékeket változó névként, az \code{n2}
+oszlopban mellette lévő értékeket a változó értékeként értelmezi 
+az \code{R}. Ha a név mező üres vagy nem szöveges típusú, akkor az
+adott sorhoz nem tartozik 
+változó definíció. Ha egy név többször is szerepel, akkor az utolsó sor
+változó definíciója 
+érvényes. Az \code{n1,n2} értékek megadása nem kötelező, ha viszont
+hiányzik, akkor a \code{<range cím>} sztringnek egy legalább két
+oszlopos tartományt kell kijelölnie és ennek első két oszlopát fogja
+használni a program. A \code{<range cím>} teljes oszlopokra is
+mutathat, pl \code{\$A:\$C}. Ebben 
+az esetben csak a munkalap \code{UsedRange} tartományát használjuk.
+
+Alapértelmezésben, csak a látható sorokat használjuk és egyesített
+cellák esetén a cellában 
+látható értéket használjuk.
+
+Abban az esetben, ha a változó név nem megengedett karaktereket is
+tartalmaz, pl. szóköz, ékezetes karakterek, számmal kezdődő név
+stb. akkor az \code{R} oldalon a változó nevét \code{`} 
+(back quote) karakterek közé kell tenni. Pl. az \code{`\# R nevek \#`}
+nevű változó értéke (ez az 
+\code{Adatok} munkalap 5. sora) \code{"Érték"} lesz, ahogy ez
+\apageref{fig:1.2}. % 8. 
+oldalon látható.
+
+\section{Kód}
+\label{sec:2.2} %. Kód
+Az \code{R} szkriptet célszerű két részre bontani: függvény definíciós
+részre és az aktuális számolást 
+végző részre. Ennek csupán teszteléskor van jelentősége. Ha nem az
+történik, amit várunk, 
+akkor kénytelenek vagyunk a hibát megkeresni a kódban. Az \code{R kód}
+munkalapon kijelölhetjük, hogy melyik függvényt működését akarjuk
+ellenőrizni. Ennek az az eredménye, hogy az 
+adatok és a függvények beolvasása után a \code{debug (<fv. név>)} is
+végrehajtásra kerül és így 
+a debugolásra kijelölt függvényt lépésenként lehet kiértékelni.
+
+Célszerű a függvényeket és a számolást végző kódot, mondjuk \code{R studio}-ban, létrehozni
+és tesztelni. Ezután a kész kódot elmenteni \code{R} szkriptként (\code{.R}
+kiterjesztéssel) majd azt importálni a számoló munkafüzetbe \code{R kódlap}ként. Így is elő fordulhatnak váratlan dolgok, de 
+ezek nagy részét kiszűrhetjük, ha a kód megírása során a bemenő
+adatokat, vagy is a futási 
+környezetet már az \code{EXCEL} adja. Ezalatt azt értem, hogy az első
+lépésként létrehozott \code{Adatok} 
+munkalapot kitöltjük a teszt paraméterekkel, összekötjük az \code{R}
+példányunkat az \code{EXCEL}-lel 
+(\code{Rxls menü R <-> EXCEL összekötés}) és ráklikkelünk a
+\code{Számolás indítása} feliratú gombra. Mivel még nincs semmilyen
+végrehajtandó kód a számoló munkafüzetben, ennek hatására a teszt
+adatok, az \code{EXCEL}ben definiált változó nevekkel, átkerülnek az
+\code{R}-be. Ebben az \code{R} környezetben érdemes dolgozni.
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Rxls"
+%%% End: 

@@ -1,0 +1,662 @@
+%\NeedsTeXFormat{LaTeX2e}
+%\ProvidesPackage{minilisp}[2002/10/19]
+
+%% lista kezelő makrók 
+%% \addtobegin#1#2 Az #1 lista elejéhez  hozzafűzi a #2 elemet.
+%% \addtoend#1#2   Az #1 lista végéhez fűzi a #2 elemet.
+%% \newlist#1      létrehozza az #1 nevű üres listát.
+%% \getfirst#1#2   Az #1 lista első elemét leveszi, a művelet után az
+%%                 #1 lista rövidebb -- és az első elemet  #2-nek adja
+%%                 értékül, ha nem marad több elem a listán az
+%%                 \ifendoflist igazza valik
+%% \checklist#1    Ellenőrzi az #1 listát, ha üres, akkor az
+%%                 \ifendoflist hamissá válik  
+%% \mapcar#1#2#3   Az #1 lista minden elemére alkalmazza a #2
+%%                 függvényt, és az eredménylistát a #3 név alatt
+%%                 elmenti.
+%%                 #2 egy két  változós macró, paraméterlistája
+%%                 \testfn#1#2
+%%                 alakú #1 az arg #2 az eredmény.
+%% \mapc#1#2       Ugyanaz mint az előbb de nincs eredménylista, ezért
+%%                 #2 paraméterlistaja is csak #1 alakú
+%% \sortlist#1     Az #1 listat rendezi a #2 testfv. szerint
+%%                 #2 parameterlistaja
+%%                 #1#2#3
+%%                 alakú, ha #1 elobb van mint #2 akkor a #2 testfv. a
+%%                 #3{#1}{#2}-t ellenkezo esetben #3{#2}{#1}-t helyettesit.
+%% 
+%%\catcode`\@=11
+%--------------------------------------------------------
+\def\showlist#1{\message{\string#1=}\expandafter\printlist#1}
+\def\printlist\bqlist#1\eqlist{\message{|#1|}}
+
+\def\addtoend#1#2{%
+  \expandafter\addtoend@#1{#2}{#1}}
+
+\def\addtoend@#1\eqlist#2#3{\def#3{#1{#2}\eqlist}}
+
+\def\addtobegin#1#2{% 
+  \expandafter\addtobegin@#1\endaddtobegin@{#2}{#1}}
+
+\def\addtobegin@\bqlist#1\endaddtobegin@#2#3{\def#3{\bqlist{#2}#1}}
+
+\def\addtolist@#1\endaddtolist@#2{\addtoend#2{#1}}
+
+\def\addtocar#1#2{%
+  \lisp@save\aux@
+  \getfirst#1\aux@
+  \expandafter\addtocar@\aux@#2\endaddtocar@#1
+  \lisp@restore}
+\def\addtocar@#1\endaddtocar@#2{\addtobegin#2{#1}}
+
+\def\appendto#1#2{\expandafter\appendto@#1#2#1}
+\def\appendto@#1\eqlist#2#3{\expandafter\appendto@@#2\endappendto@@{#1}#3}
+\def\appendto@@\bqlist#1\endappendto@@#2#3{\def#3{#2#1}}
+
+
+%--------------------------------------------------------
+
+\def\newlist#1{\def#1{\bqlist\eqlist}}
+
+%%%
+\newlist\lisp@save@list
+\newcount\lisp@count
+\def\lisp@savenum{0}
+
+\def\inc#1{\lisp@count=#1\relax\advance\lisp@count by1\relax
+  \edef#1{\number\lisp@count}}
+
+\def\ginc#1{\lisp@count=#1\relax\advance\lisp@count by1\relax
+  \xdef#1{\number\lisp@count}}
+
+\def\dec#1{\lisp@count=#1\relax\advance\lisp@count by-1\relax
+  \edef#1{\number\lisp@count}}
+
+\def\add#1#2{\lisp@count=#1\relax\advance\lisp@count by #2\relax
+  \edef#1{\number\lisp@count}}
+
+\def\sub#1#2{\lisp@count=#1\relax\advance\lisp@count by -#2\relax
+  \edef#1{\number\lisp@count}}
+
+\def\mult#1#2{\lisp@count=#1\relax\multiply\lisp@count by #2\relax
+  \edef#1{\number\lisp@count}}
+
+\def\div#1#2{\lisp@count=#1\relax\divide\lisp@count by #2\relax
+  \edef#1{\number\lisp@count}}
+
+\def\lisp@save#1{%
+  \inc\lisp@savenum
+  % \global\let\lisp@savenum=\lisp@savenum
+  \expandafter\lisp@save@\lisp@savenum\relax#1%
+}
+
+\def\lisp@save@#1\relax{%
+  \expandafter\lisp@save@@\csname lisp@save@listitem#1\endcsname
+}
+
+\def\lisp@save@@#1#2{%
+  \let#1=#2%
+  \addtobegin\lisp@save@list{#2#1}%
+}
+
+\def\lisp@restore{%
+  \mapfirst\lisp@save@list\lisp@let@
+  \dec\lisp@savenum
+  % \global\let\lisp@savenum=\lisp@savenum
+}
+
+\def\lisp@let@#1{\let#1}
+
+\def\car#1#2{\car@#1\relax#2}
+\def\car@#1#2\relax#3{\def#3{#1}}
+\def\caar#1#2{\caar@#1\relax#2}
+\def\caar@#1#2\relax#3{\caar@@#1\relax#3}
+\def\caar@@#1#2\relax#3{\def#3{#1}}
+
+%-----------------------------------------------------------------------
+% az #1 lista elso elemet levagja es a #2 valtozoba teszi. vege jelzest ad.
+\def\getfirst#1#2{\lisp@ifemptylist#1{\def#2{}}%
+  {\expandafter\getfirst@#1\endgetfirst@#1#2}}
+
+\def\getfirst@\bqlist#1#2\endgetfirst@#3#4{\def#3{\bqlist#2}\def#4{#1}}
+
+\def\mapfirst#1#2{%
+  \lisp@ifemptylist#1\relax{%
+    \expandafter\mapfirst@#1\endmapfirst@#1#2%
+  }%
+}
+
+\def\mapfirst@\bqlist#1#2\endmapfirst@#3#4{%
+  \def#3{\bqlist#2}%
+  #4{#1}%
+}
+%------------------------------------------------------------------------
+% az egyes lista minden elemere alkalmazza a #2 fuggvenyt es az eredmenylistat
+% a #3 nev alatt elmenti. #2 egy ket valtozos macro parameterlistaja #1#2
+% alaku #1 arg #2 az eredmeny. 
+
+\def\maplist#1#2#3{%
+  \lisp@save\aux@next \lisp@save\aux@elist 
+  \lisp@save\aux@mlist \lisp@save\aux@fv
+  \newlist\aux@elist\let\aux@mlist#1\let\aux@fv#2%
+  \maplist@
+  \let\n@e@x@t@\aux@elist
+  \lisp@restore\lisp@restore\lisp@restore\lisp@restore
+  \let#3\n@e@x@t@
+}
+
+\def\maplist@{%
+  \lisp@ifemptylist\aux@mlist\relax{%
+    \aux@fv\aux@mlist\aux@next
+    \expandafter\addtolist@\aux@next\endaddtolist@\aux@elist
+    \getfirst\aux@mlist\aux@next
+    \maplist@
+  }%
+}
+
+
+\def\mapl#1#2{%
+  \lisp@save\aux@elist \lisp@save\aux@mlist \lisp@save\aux@fv
+  \newlist\aux@elist \let\aux@mlist#1 \let\aux@fv#2%
+  \mapl@
+  \lisp@restore\lisp@restore\lisp@restore\lisp@restore
+}
+
+\def\mapl@{%
+  \lisp@ifemptylist\aux@mlist\relax{%
+    \aux@fv\aux@mlist
+    \getfirst\aux@mlist\aux@next
+    \maplist@
+  }%
+}
+
+
+\def\mapcar#1#2#3{%
+  \lisp@save\aux@next
+  \lisp@save\aux@mclist
+  \newlist\aux@mclist
+  \def\mapcar@@\bqlist{\mapcar@{#2}}%
+  \expandafter\mapcar@@#1\relax
+  \let\n@e@x@t@\aux@mclist
+  \lisp@restore
+  \lisp@restore
+  \let#3\n@e@x@t@
+}
+
+\def\mapcar@#1#2{\def\lisp@dummy{#2}%
+  \lisp@ifdummyeqlist\relax{%
+    #1{#2}\aux@next
+    \expandafter\addtolist@\aux@next\endaddtolist@\aux@mclist
+    \mapcar@{#1}%
+  }%
+}
+
+\def\mapc#1#2{%
+  \def\mapc@@\bqlist{\mapc@{#2}}%
+  \expandafter\mapc@@#1\relax
+}
+
+\def\mapc@#1#2{%
+  \def\lisp@dummy{#2}%
+  \lisp@ifdummyeqlist\relax{#1{#2}\mapc@{#1}}%
+}
+
+\def\incaux@n#1{\inc\aux@n}
+
+\def\length#1#2{%
+  \lisp@save\aux@n
+  \def\aux@n{0}%
+  \mapc{#1}\incaux@n
+  \let\n@e@x@t@\aux@n
+  \lisp@restore
+  \let#2\n@e@x@t@
+}
+
+\def\wl@#1{\ifx#1\relax\let\next\relax\else\inc\aux@n\let\next=\wl@\fi\next}
+\def\wordlength#1#2{%
+  \lisp@save\aux@n
+  \def\aux@n{0}%
+  \expandafter\wl@#1\relax
+  %\mapc{#1}\incaux@n
+  \let\n@e@x@t@\aux@n
+  \lisp@restore
+  \let#2\n@e@x@t@
+}
+
+
+\def\lisp@iflength#1#2{%
+  \lisp@save\aux@l
+  \wordlength#1\aux@l
+  \ifnum\aux@l#2\relax
+  \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+}
+
+\def\find@elt\bqlist{\find@elt@}
+\def\find@elt@end#1\eqlist{}
+
+\def\find@elt@#1{%
+  \def\lisp@dummy{#1}%
+  \lisp@ifdummyeqlist{%
+    \let\lisp@lastres\@secondoftwo
+  }{%
+    \lisp@ifdummyelt@{%
+      \let\lisp@lastres\@firstoftwo\find@elt@end
+    }{%
+      \find@elt@
+    }%
+  }%
+}
+
+\def\lisp@ifmember#1#2{%
+  \lisp@save\elt@\lisp@save\lisp@lastres\lisp@save#2
+  \def\elt@{#1}%
+  \expandafter\find@elt#2\relax
+  \let\n@e@x@t@\lisp@lastres
+  \lisp@restore\lisp@restore\lisp@restore
+  \n@e@x@t@
+}
+
+\def\reverse@#1{\addtobegin\reverse@list{#1}}
+\def\reverse#1{%
+  \lisp@save\reverse@list
+  \newlist\reverse@list
+  \mapc#1\reverse@
+  \let\n@e@x@t@\reverse@list
+  \lisp@restore
+  \let#1\n@e@x@t@
+}
+
+\def\bqlist{\bqlist}
+\def\eqlist{\eqlist}
+
+%az #1 listat rendezi a #2 testfv. szerint #2 parameterlistaja
+%#1#2#3 alaku ha #1 elobb van mint #2 akkor #3{#1}{#2}-t ellenkezo esetben
+% #3{#2}{#1} az eredmeny
+
+\def\deflisp@ifdummy#1{%
+  \expandafter\deflisp@ifdummy@\csname lisp@ifdummy#1\endcsname{#1}}
+
+\def\deflisp@ifdummy@#1#2{%
+  \expandafter\deflisp@ifdummy@@\csname #2\endcsname#1}
+
+\def\deflisp@ifdummy@@#1#2{\def#2{%%\def\lisp@dummy{##1}%
+    \ifx\lisp@dummy#1\expandafter\@firstoftwo
+    \else\expandafter\@secondoftwo\fi}}
+
+\deflisp@ifdummy{eqlist}
+\deflisp@ifdummy{elt@}
+\deflisp@ifdummy{empty}
+
+\def\lisp@ifempty#1{\let\lisp@dummy#1\lisp@ifdummyempty}
+\def\lisp@ifemptylist#1{\expandafter\list@ifempty@#1\endlisp@ifempty}
+\def\list@ifempty@\bqlist#1\endlisp@ifempty{\def\lisp@dummy{#1}%
+  \lisp@ifdummyeqlist}
+
+\def\bubblesortlist#1#2{%
+  \lisp@ifemptylist#1{}{%
+    \lisp@save\aux@elt\lisp@save\aux@lst\lisp@save\aux@ered\lisp@save\aux@fn
+    \let\aux@lst#1\let\aux@fn#2\newlist\aux@ered
+    \expandafter\bubble@sortlist@\aux@lst
+    \let\n@e@x@t@\aux@ered
+    \lisp@restore\lisp@restore\lisp@restore\lisp@restore
+    \let#1\n@e@x@t@
+  }%
+}
+ 
+\def\bubble@sortlist@\bqlist{%
+  \let\@ifneedmore\@secondoftwo
+  \bubble@sortlist@@
+}
+
+%%\def\@ifeq#1#2{%
+%\ifx#1#2\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+%}
+
+\def\@ifnum#1{%
+  \ifnum#1\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+}
+
+\def\bubble@sortlist@@#1#2{%
+  \def\lisp@dummy{#2}%
+  \lisp@ifdummyeqlist{%
+    \addtoend\aux@ered{#1}%
+    \@ifneedmore{%
+      \let\aux@lst\aux@ered\newlist\aux@ered %%%\tracingall
+      \expandafter\bubble@sortlist@\aux@lst
+    }{}%
+  }{%vege a listanak
+    \aux@fn{#1}\first@elt\aux@fn{#2}\second@elt
+    \@ifnum{\first@elt>\second@elt}{%
+      \let\@ifneedmore\@firstoftwo
+      \addtoend\aux@ered{#2}%
+      \bubble@sortlist@@{#1}%
+    }{%
+      \@ifnum{\first@elt=\second@elt}{%
+        \bubble@sortlist@eq{#1}{#2}%
+      }{%
+        \addtoend\aux@ered{#1}%
+      }%
+      \bubble@sortlist@@{#2}%
+    }%
+  }%
+}
+
+\def\bubble@sortlist@eq#1#2{%
+  \addtoend\aux@ered{#1}%
+  \message{Nem egyértelmű sorrend!!! \first@elt 
+    ismétlődik: (#1) (#2)}%
+}
+
+  
+
+\def\lispcaropt#1{\lisp@car@opt#10\relax}
+\def\lisp@car@opt#1#2\relax{%\message{|#1|}
+\lisp@car@opt@#1[\relax}
+\def\lisp@car@opt@#1[#2\relax#3{%\message{|#1|}
+  #3=#1\relax
+}
+
+\def\lispcar#1{\lisp@car#10\relax}
+\def\lisp@car#1#2\relax#3{#3=#1\relax}
+\def\lispcadr#1{\lisp@cadr#100\relax}
+\def\lisp@cadr#1#2#3\relax#4{#4=#2\relax}
+\def\lispcaddr#1{\lisp@caddr#1000\relax}
+\def\lisp@caddr#1#2#3#4\relax#5{#5=#3\relax}
+\def\lispcadddr#1{\lisp@cadddr#10000\relax}
+\def\lisp@cadddr#1#2#3#4#5\relax#6{#6=#4\relax}
+
+\def\sortbycaropt#1{\bubblesortlist#1\lispcaropt}
+\def\sortbycar#1{\bubblesortlist#1\lispcar}
+\def\sortbycadr#1{\bubblesortlist#1\lispcadr}
+\def\sortbycaddr#1{\bubblesortlist#1\lispcaddr}
+\def\sortbycadddr#1{\bubblesortlist#1\lispcadddr}
+
+\def\sortlist#1#2{%
+  \lisp@save\aux@slist
+  \lisp@save\reslist 
+  \lisp@save\aux@fn
+  \let\aux@slist#1%
+  \defaux@@fn#2%
+  \newlist\reslist
+  \sortlist@   
+  \let\n@e@x@t@\reslist
+  \lisp@restore\lisp@restore\lisp@restore
+  \let#1\n@e@x@t@
+}
+
+\def\defaux@@fn#1{%
+  \def\aux@@fn##1\endaux@@fn##2{#1{##1}{##2}\aux@@@fn}%
+}
+ 
+\def\aux@@@fn#1#2{%
+  \def\aux@min{#1}\def\aux@max{#2}%
+}
+
+\def\sortlist@{%
+  \lisp@ifemptylist\aux@slist{\relax}{\sortlist@@}%
+}
+
+\def\sortlist@@{%
+  \getfirst\aux@slist\aux@min
+  \mapcar\aux@slist\find@min\aux@slist
+  \expandafter\addtolist@\aux@min\endaddtolist@\reslist
+  \sortlist@
+}
+
+\def\find@min#1#2{%
+  \expandafter\aux@@fn\aux@min\endaux@@fn{#1}%
+  \let#2\aux@max
+  }
+
+%%% az egyes listat rendezi a elemek n. tagja szerinti novekvo
+%%%  sorrendbe. #1=n #2 a lista. 
+
+\newcount\first@elt
+\newcount\second@elt
+
+%\def\sortbycar#1{\sortlist#1\cpcar}
+
+\def\cpcar#1#2#3{%
+  \defcar#10\endcar\first@elt
+  \defcar#20\endcar\second@elt
+  \ifnum \first@elt>\second@elt 
+     \def\next{#3{#2}{#1}}%
+  \else
+    \def\next{#3{#1}{#2}}%
+  \fi
+  \next
+}
+
+\def\defcar#1#2\endcar#3{#3=#1\relax}
+
+
+%\def\sortbycadr#1{\sortlist#1\cpcadr}
+\def\cpcadr#1#2#3{%
+  \defcadr#100\endcadr\first@elt
+  \defcadr#200\endcadr\second@elt
+  \ifnum \first@elt>\second@elt 
+     \def\next{#3{#2}{#1}}%
+  \else
+     \def\next{#3{#1}{#2}}%
+  \fi
+  \next
+}
+
+\def\defcadr#1#2#3\endcadr#4{#4=#2\relax}
+
+%\def\sortbycaddr#1{\sortlist#1\cpcaddr}
+\def\cpcaddr#1#2#3{%
+  \defcaddr#1000\endcaddr\first@elt
+  \defcaddr#2000\endcaddr\second@elt
+  \ifnum \first@elt>\second@elt 
+     \def\next{#3{#2}{#1}}%
+  \else
+     \def\next{#3{#1}{#2}}%
+  \fi
+  \next
+}
+\def\defcaddr#1#2#3#4\endcaddr#5{#5=#3\relax}
+
+%\def\sortbycadddr#1{\sortlist#1\cpcadddr}
+\def\cpcadddr#1#2#3{%
+  \defcaddr#10000\endcadddr\first@elt
+  \defcadddr#20000\endcadddr\second@elt
+  \ifnum \first@elt>\second@elt 
+     \def\next{#3{#2}{#1}}%
+  \else
+     \def\next{#3{#1}{#2}}%
+  \fi
+  \next
+}
+\def\defcadddr#1#2#3#4#5\endcaddr#6{#6=#4\relax}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\enumlist#1{%
+  \lisp@save\sorszam \lisp@save\aux@e
+  \def\sorszam{0}\newlist\aux@e
+  \mapcar#1\enumed\aux@e%
+  \let\n@e@x@t@\aux@e
+  \lisp@restore\lisp@restore\let#1\n@e@x@t@
+  }
+
+\def\enumed#1#2{%
+  \inc\sorszam
+  \expandafter\defres@\sorszam\relax{#1}{#2}%
+}
+
+\def\defres@#1\relax#2#3{%
+  \def#3{{#2{#1}}}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\exlistsplitf#1{%
+  \lisp@save\aux@e\lisp@save\@split
+  \mapcar#1\splitf\aux@e%
+  \let\n@e@x@t@\aux@e
+  \lisp@restore\lisp@restore
+  \let#1\n@e@x@t@
+  }
+
+
+\def\Ifnotcln#1:#2\relax{%
+  \def\lisp@dummy{#2}%
+  \lisp@ifdummyempty
+}
+
+\def\withcln#1:#2\relax#3\relax#4{\def#4{{#1}{#2}#3}}
+%\def\wocln#1\relax#2\relax#3{\def#3{{}{#1}#2}}
+\def\get@split#1#2\relax{%
+  \Ifnotcln#1:\relax{%
+    \expandafter\withcln\defaultex:%
+  }{%
+    \withcln
+  }#1\relax#2\relax
+}
+
+\def\splitf#1#2{%
+  \get@split#1\relax#2%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\makell#1{\mapcar#1\conscell#1}
+\def\conscell#1#2{\def#2{{{#1}}}}
+
+\def\oldlistn#1{\expandafter\oldlistn@#1\endoldlistn@#1}
+\def\oldlistn@#1\endoldlistn@#2{\oldlist{#1}#2}
+
+\newcommand\genoldlist[3][ ]{%
+  \lisp@save\aux@list
+  \newlist\aux@list
+  \def\@old@list##1#1{%
+    \def\lisp@dummy{##1}%
+    \lisp@ifdummyeqlist\relax{%
+      \lisp@ifdummyempty\relax{%
+        \addtoend\aux@list{##1}%
+      }%
+      \@old@list
+    }%
+  }%
+  \@old@list#2#1\eqlist#1%
+  \let\n@e@x@t@\aux@list
+  \lisp@restore
+  \let#3\n@e@x@t@
+}
+
+
+\def\oldlist#1#2{%
+  \lisp@save\aux@list
+  \newlist\aux@list
+  \old@list#1 {\eqlist} %
+  \let\n@e@x@t@\aux@list
+  \lisp@restore
+  \let#2\n@e@x@t@
+}
+
+\def\old@list#1 {%%\message{#1.}%
+  \def\lisp@dummy{#1}%
+  \lisp@ifdummyeqlist\relax{%
+    \lisp@ifdummyempty\relax{%
+      \addtoend\aux@list{#1}%
+    }%
+    \old@list
+  }%
+}
+
+\def\@pti@nal#1[#2]#3\relax{\addtoend\aux@list{{#1}{#2}}}
+
+\def\listold#1{%
+  \lisp@save\ol@
+  \def\ol@{}%
+  \mapc{#1}\list@old
+  \let\n@e@x@t@\ol@
+  \lisp@restore
+  \let#1\n@e@x@t@
+}
+
+\def\list@old#1{%
+  \ifx\ol@\empty
+     \defol@{#1}%
+  \else
+     \expandafter\defol@@\ol@\endol@@{#1}%
+  \fi
+}
+
+\def\defol@#1{\def\ol@{#1}}
+\def\defol@@#1\endol@@#2{\def\ol@{#1 #2}}
+
+\def\expandlist#1{%
+  \lisp@save\expanded@list\lisp@save\item@i\lisp@save\item@ii
+  \newlist\expanded@list
+  \mapc#1\expand@item
+  \let\n@e@x@t@\expanded@list
+  \lisp@restore\lisp@restore\lisp@restore
+  \let#1\n@e@x@t@
+}
+
+
+\def\set@i@ii#1-#2-#3\relax{%
+  \def\item@i{#1}%
+  \def\item@ii{#2}%
+  \def\lisp@dummy{#3}%
+  \lisp@ifdummyempty{\expand@item@opt#1[]\relax}\expand@item@
+}
+
+\def\expand@item@opt#1[#2]#3\relax{\expand@item@@@#1\relax{#2}}
+
+\def\expand@item#1{%\message{.#1}
+  \set@i@ii#1-#1-\relax\relax}
+
+\def\expand@item@{%
+  \ifnum \item@i>\item@ii\relax 
+     \let\next\relax
+  \else
+     \let\next\expand@item@@
+  \fi
+  \next
+}
+
+\def\expand@item@@{%
+  \expandafter\expand@item@@@\item@i\relax{}%
+  \inc\item@i
+  \expand@item@
+}
+
+\def\expand@item@@@#1\relax#2{%
+ \addtoend\expanded@list{{#1}{#2}}%
+}
+
+\def\lexpandoldlist#1#2{%
+  \oldlist{#1}#2\expandlist#2%
+}%\makell#2}
+
+\def\union@#1{\union@@#1\lisp@endarg}
+\def\union@@\bqlist#1\lisp@endarg{\expandafter\union@@@\aux@{#1}}
+\def\union@@@#1\eqlist#2{\def\aux@{#1#2}}
+\def\union#1{%
+  \lisp@save\aux@\newlist\aux@%
+  \mapc#1\union@
+  \let\n@e@x@t@\aux@
+  \lisp@restore
+  \let#1\n@e@x@t@
+} 
+
+\newlist\providedfiles
+\def\provide#1{%
+  \addtobegin\providedfiles{#1}%
+}
+\def\require#1{%
+  \lisp@ifmember{#1}\providedfiles
+  \relax
+  {%
+    \input #1\relax
+  }%
+}
+
+%%\catcode`\@=12
+\provide{minilisp.sty}
+\endinput
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

@@ -1,0 +1,78 @@
+%% -*- mode: poly-noweb+R; ess-indent-level: 2; -*-
+
+\chapter{Mellékletek listája}\label{chap:11}
+%\endinput
+
+
+A leírás, az R csomagok, a minta projekt elemei elérhetőek a következő címen
+\begin{center}
+\url{http://hpz400.cs.elte.hu/AEGON}
+\end{center}
+Az oldal jelszót kér:
+\begin{center}
+  \ttfamily
+  \begin{tabular}{rl}
+    username:&AEGON\\
+    password:&R+EXCEL  
+  \end{tabular}
+\end{center}
+\begin{Rnw}
+<<echo=FALSE,results="hide">>=
+require(utils)
+require(tools)
+pkgs<-c("com","comproxy","Rxls","jaradek2013")
+pkgsdir<-file_path_as_absolute("../pkgs")
+Rfilesdir<-file_path_as_absolute("../Rfiles")
+
+unlink(x=dir(pkgsdir,full.names=TRUE))
+x<-download.packages(pkgs,
+contriburl="file://vboxsrv/prokaj/Rlib/Repository/src/contrib/",type="source")
+file.copy(x[,2],pkgsdir)
+pkgzip(pkgs,zip.mappa=pkgsdir,ask=FALSE)
+@
+<<echo=FALSE>>=
+cat ("A 'pkgs' könyvtár tartalma:",
+paste(dir(pkgsdir),
+collapse="\n   "),sep="\n   ")
+@
+<<echo=FALSE>>=
+cat ("A 'Rfiles' könyvtár tartalma:",
+paste(dir(Rfilesdir),
+collapse="\n   "),sep="\n   ")
+@  
+\end{Rnw}
+% A 'pkgs' könyvtár tartalma:
+% com_1.0-54.tar.gz
+% com_1.0-54.zip
+% comproxy_1.0-12.tar.gz
+% comproxy_1.0-12.zip
+% jaradek2013_2.0-33.tar.gz
+% jaradek2013_2.0-33.zip
+% Rxls_2.0-210.tar.gz
+% Rxls_2.0-210.zip
+% A 'Rfiles' könyvtár tartalma:
+% calc.R
+% calc1.R
+% Calc1.xls
+% ell.R
+% kar.R
+% R_chunks_in_Rxls_user_guide.R
+Az RStudio projekt honlapja és letöltési oldala:
+\begin{center}
+\url{http://www.rstudio.com/}\\
+\url{http://www.rstudio.com/ide/download/desktop}\\
+\url{http://www.rstudio.com/ide/download/preview}
+\end{center}
+Az Rtools letöltési oldala:
+\begin{center}
+  \url{http://CRAN.R-project.org/bin/windows/Rtools/}
+\end{center}
+A Debugview letöltési oldala:
+\begin{center}
+  \url{http://technet.microsoft.com/en-us/sysinternals/bb896647.aspx}
+\end{center}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Rxls"
+%%% End: 

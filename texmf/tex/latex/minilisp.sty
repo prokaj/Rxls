@@ -1,0 +1,29 @@
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{amsmath}
+\input{minilisp}
+\ProvidesPackage{minilisp}[2003/04/05]
+\endinput
+%% lista kezelő macrók 
+%% \addtobegin#1#2 Az #1 lista elejéhez  hozzafűzi a #2 elemet.
+%% \addtoend#1#2   Az #1 lista végéhez fűzi a #2 elemet.
+%% \newlist#1      létrehozza az #1 nevű üres listát.
+%% \getfirst#1#2   Az #1 lista első elemét leveszi, a művelet után az
+%%                 #1 lista rövidebb -- és az első elemet  #2-nek adja
+%%                 értékül, ha nem marad több elem a listán az
+%%                 \ifendoflist igazza valik
+%% \checklist#1    Ellenőrzi az #1 listát, ha üres, akkor az
+%%                 \ifendoflist hamissá válik  
+%% \mapcar#1#2#3   Az #1 lista minden elemére alkalmazza a #2
+%%                 függvényt, és az eredménylistát a #3 név alatt
+%%                 elmenti.
+%%                 #2 egy két  változós macró, paraméterlistája
+%%                 \testfn#1#2
+%%                 alakú #1 az arg #2 az eredmény.
+%% \mapc#1#2    Ugyanaz mint az előbb de nincs eredménylista, ezért
+%%                 #2 paraméterlistaja is csak #1 alakú
+%% \sortlist#1     Az #1 listat rendezi a #2 testfv. szerint
+%%                 #2 parameterlistaja
+%%                 #1#2#3
+%%                 alakú, ha #1 elobb van mint #2 akkor a #2 testfv. a
+%%                 #3{#1}{#2}-t ellenkezo esetben #3{#2}{#1}-t helyettesit.
+%% 

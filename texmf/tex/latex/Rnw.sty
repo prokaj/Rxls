@@ -1,0 +1,164 @@
+\NeedsTeXFormat{LaTeX2e}
+%\ProvidesClass{rnw}[2008/05/30 a modification of filecontents environment]
+\ProvidesPackage{Rnw}[2011/03/05 a modification of filecontents environment]
+
+\let\@iffancybox\iftrue
+
+\def\enableRnwOut{\let\@ifrnwout\iftrue}
+\def\disableRnwOut{\let\@ifrnwout\iffalse}
+\enableRnwOut
+
+\def\enablecurrfile{\let\@ifcurrfile\iftrue}
+\def\disablecurrfile{\let\@ifcurrfile\iffalse}
+\disablecurrfile
+
+
+\DeclareOption{nofancybox}{\let\@iffancybox\iffalse}
+\DeclareOption{disableRnwOut}{\disableRnwOut}
+\DeclareOption*{\PassOptionsToPackage{\CurrentOption}{Sweave}}
+\DeclareOption{usecurrfile}{\enablecurrfile}
+\ProcessOptions
+
+
+
+\@iffancybox\else\expandafter\@gobbletwo\fi\RequirePackage{fancybox}
+
+%%\RequirePackage{filecontents}
+\RequirePackage{filehook}
+\RequirePackage[noae]{Sweave}
+
+\def\AtBeginRnw{%
+  \begingroup
+  \catcode`\@=12
+  \catcode`\~=12
+  \catcode`\^^M\active
+  \@atbeginrnw
+}
+
+\def\@atbeginrnw#1{%
+  \gdef\@AtBeginRnw{#1}\endgroup
+}
+
+\AtBeginRnw{%
+
+}
+
+\newcounter{enumRnwChunk}
+\setcounter{enumRnwChunk}{0}
+\newcommand\setRnwfnTemplate[1]{
+  \def\RnwfnTemplate{#1}%was gdef
+}
+
+
+\@ifcurrfile
+\RequirePackage{currfile}
+\RequirePackage{minilisp}
+\AtBeginOfFiles{%
+  \edef\lisp@RnwChunknum{\the\value{enumRnwChunk}}%
+  \lisp@save\lisp@RnwChunknum\setcounter{enumRnwChunk}{0}\relax
+}
+\AtEndOfFiles{%
+  \lisp@restore
+  \setcounter{enumRnwChunk}\lisp@RnwChunknum
+}
+\setRnwfnTemplate{\currfilebase-\theenumRnwChunk}  
+\else
+\setRnwfnTemplate{\jobname-\theenumRnwChunk}  
+\fi
+
+\def\rnw@dir#1\relax#2\relax{\gdef\RnwfnTemplate{#2/#1}}
+
+\newcommand\RnwDir[1][]{
+  \expandafter\rnw@dir\RnwfnTemplate\relax#1\relax
+}
+
+\@iffancybox
+\def\wrngb@x{\Ovalbox}
+\else
+\def\wrngb@x#1{%
+  \hrule \vskip 3pt\relax\hrule\vskip 3pt\relax
+  #1
+  \vskip 3pt\relax \hrule \vskip 3pt\relax \hrule
+}%
+\fi
+
+\def\RnwWarning#1{%
+  {\par\centering
+    \wrngb@x{%
+      \vbox{\hbox{Missing \TeX\ file '\texttt{#1.tex}'.}%
+        \hbox{Run \texttt{Sweave} on '\texttt{#1.Rnw}'!!!}}}\par}%
+}
+
+
+\def\nextRnwfile{%
+  \addtocounter{enumRnwChunk}{1}%
+  \edef\Rnwfn{\RnwfnTemplate}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ide kellene jobb hiba tures %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\rnw@input#1{%
+  %%\message{Rnw input:\meaning#1^^J}%
+  %%\message{Rnwenum:\the\value{enumRnwChunk}}%
+  \IfFileExists{#1.tex}{\input{#1.tex}\relax}{\RnwWarning#1}%
+  \relax
+  \par
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\rnw@begin{%
+  \message{Rnwenum:\the\value{enumRnwChunk}}%
+  \nextRnwfile
+  \message{Rnwenum:\the\value{enumRnwChunk}}%
+  \message{Rnw begin: \Rnwfn}%
+  \begingroup
+  \@ifrnwout\else
+  \let\immediate\relax
+  \let\write\@gobbletwo
+  \def\openout##1\relax{}%
+  \fi
+  \filecontents[overwrite]{\Rnwfn.Rnw}
+  \@AtBeginRnw
+}
+
+\def\rnw@end{%
+  \relax
+  \endgroup
+}
+
+\newenvironment{Rnw}{
+  \rnw@begin
+}{%
+  \rnw@end
+  \message{trying to read \Rnwfn^^J}
+  \rnw@input{\Rnwfn}%
+}
+
+\def\set@rnw@label#1{%
+  \message{rnwlabel:\string#1}%
+  \gdef\rnw@label{#1}%
+}
+
+\newenvironment{RnwOut}[1][]{
+  \expandafter\set@rnw@label\csname Rnw@label@#1\endcsname%
+  \message{rnwlabel:\meaning\rnw@label^^J}%
+  \rnw@begin
+}{%
+  \rnw@end
+  \message{RnwOut:\meaning\Rnwfn^^J}%
+  \global\expandafter\let\rnw@label%\csname Rnw@label@#1\endcsname
+  \Rnwfn\relax 
+}
+ 
+\newcommand\RnwIn[1][]{%
+  %\let\Rnwfn{\csname Rnw@label@#1\endcsname}%
+  %\edef\Rnwfn{\Rnwfn}
+  \message{Rnwfn:\expandafter\meaning\csname Rnw@label@#1\endcsname}%
+  \expandafter\rnw@input\csname Rnw@label@#1\endcsname%
+}
+
+\endinput

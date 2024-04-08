@@ -1,0 +1,394 @@
+%% -*- mode: poly-noweb+R; ess-indent-level: 2; -*-
+\chapter{Újdonságok az \code{Rxls} csomagban az 1.0-119
+verzióhoz képest}\label{chap:10}
+
+
+Amikor ezt a leírást készítettem, tapasztalnom kellett, hogy a korábbi
+változat nem működik a 64 bites EXCEL 2010 programmal. Ezt pár apró
+változtatás követte, majd újra átgondoltam néhány megoldást, amit
+újabb változtatások követtek. Ezért úgy döntöttem, hogy a verzió
+számot 2.0-0-ra növelem, és mindent átírok, amiről úgy gondolom
+jobban, egyszerűbben is megoldható.
+
+\subsection{\code{Rxls} könyvtár}
+
+A korábban készített munkafüzeteknél az egyik gond a hordozhatóság
+volt. Minden ilyen (számoló) munkafüzet hivatkozást tartalmazott az
+\code{R.xls} filera. Ez tartalmazza a szükséges \code{Visual Basic} kód nagy
+részét. A gondot az okozza, hogy amikor egy másik gépre másoljuk a 
+számoló munkafüzetet, vagy verzió váltás miatt a korábbi, \code{R.xls}
+könyvtár megszűnik, akkor hivatkozás elromlik, és azt kézzel kellett javítani.
+Erre két megoldás látszik. Az egyik, hogy az \code{R.xls} állományt az \code{R}
+könyvtár struktúráján kívül tároljuk, a felhasználó meghatározott
+könyvtárában, pl. \code{\{APPDATA\}/Rxls/R.xls}. A 
+hivatkozó munkafüzet tudja a relatív helyet az \code{\{APPDATA\}} könyvtárhoz
+képest, amit pedig ki tud olvasni egy környezeti változóból. A számoló
+munkafüzet megnyitáskor ellenőrzi, hogy a hivatkozott \code{R.xls}
+állomány meg van-e nyitva, ha nincs megkísérli a standard helyről 
+betölteni. Ennek eredményeként a számoló munkafüzet hordozhatóvá
+válik; ha átvisszük 
+egyik gépről a másikra, vagy verzió váltás történik, továbbra is
+használható marad feltéve, 
+hogy az \code{Rxls} csomag megfelelően van telepítve.
+
+Ez tehát két ponton jelent változást: egyrészt minden számoló
+munkafüzetnek tartalmaznia kell a megfelelő  \code{Workbook\_open}
+eljárást, másrészt az \code{R} oldalon \code{Rxls} csomag betöltésekor 
+az \code{R.xls} állományt át kell másolni a szokásos helyére, ha az
+nincs ott. Ha forrásból telepítjük 
+a csomagot, akkor az átmásolás a telepítés részeként is történhet.
+
+Hasonló gond jelentkezhet az \code{RCOM 1.0 Type Library}-val
+kapcsolatban is. Itt a megoldás az, hogy telepítés után
+rendszergazdaként kell elindítani az \code{R} programot és ki kell adni a 
+következő utasítást:
+\begin{Rnw}
+<<eval=FALSE>>=
+comRegisterRegistry()
+@
+\end{Rnw}
+A másik lehetőség a hordozhatóság elérésére az lehet, hogy a
+véglegesítés során a szükséges modulokat bemásoljuk a számoló munkafüzetbe.
+
+\section{\code{com} csomag}\label{sec:10.1}
+Ennek az útmutatónak az írása közben vettem észre, hogy tulajdonságok
+lekérdezésénél csak pozicionális argumentum átadásra van lehetőség,
+név szerintire nem. Ez a 1.0-49 verziótól 
+kezdve annyiban módosul, hogy tulajdonságot kétféleképpen is le lehet
+kérdezni. A régi szintaxis
+\begin{verbatim}
+<obj>[["<tulajdonság név>", <argumentumok>]],
+\end{verbatim}
+továbbra is használható. Ekkor azonban hiába vannak az argumentumok névvel ellátva, azokat pozíciójuk szerint adjuk át. Korábban ez volt a viselkedés.
+
+Emellett a metódusokra megszokott szintaxis is használható
+\begin{verbatim}
+<obj>$<tulajdonság név>(<arg1>=<value1>,...).
+\end{verbatim}
+Ez utóbbi a \code{<obj>.<tulajdonság név> <arg1>:=<value1>, ...}
+Visual Basic szintaxisnak felel meg. Ugyanúgy, ahogy Visual Basic-ben
+itt sem szükséges neveket megadni, viszont a zárójel akkor is kell, ha
+nincs argumentum. 
+
+\subsection{\code{comCheckRegistry}}
+\code{TRUE} értéket ad vissza, ha a \code{Registry} tartalmazza a \code{RCOM}
+szerverre mutató bejegyzést ellenkező esetben az érték
+\code{FALSE}. Arra szolgál, hogy a telepítés állapotát ellenőrizni
+lehessen. 
+\begin{Rnw}
+<<>>=
+comCheckRegistry()
+@
+\end{Rnw}
+%> comCheckRegistry()
+%[1] TRUE
+Egészen pontosan a következők ellenőrzése történik meg: regisztrálva
+van-e az \code{R COM} 
+szervere, regisztrálva van-e a \code{COM} szerver \code{type
+  library}-ja, végül az \code{R} 
+legfrissebb változata 
+alól van-e regisztrálva. Ha valamelyik pont esetében a regisztry
+bejegyzés nem létezik, vagy 
+nem az, aminek lennie kellene a felhasználó figyelmeztetést kap a
+teendőkkel együtt. 
+
+\subsection{\code{RODBC}}
+
+A \code{CRAN}-ról letölthető \code{RODBC} csomag
+\code{odbcConnect} függvénye másképp viselkedik 
+\code{RGui}-ból használva, mint egyébként. Ha \code{Rgui}-ból indítjuk
+paraméterek nélkül, akkor egy felugró ablakból kiválaszthatjuk a
+használandó adatbázist, megadhatjuk a felhasználó nevet és a jelszót,
+ha ez szükséges, stb. Egyéb formáját használva az \code{R}-nek
+ugyanez az eljárás hibát eredményezne.
+
+A munka során átadtam egy patchelt változatot az \code{RODBC}
+csomagból, ami ezt a különös viselkedést orvosolja. A javasolt
+változtatást a csomag karbantartójának is jeleztem, de eddig nem
+vezette át, így valószínűleg nem is fogja. 
+
+Ahhoz, hogy a csomag legfrissebb változátával is használhassuk a
+módosítást a következőt kell tenni. 
+\begin{itemize}
+\item Le kell tölteni a csomag forrás változatát. (\code{RODBC...tar.gz})
+\item Kibontás után az \code{src/RODBC.c} fileban a következő
+  változásokat kell átvezetni:
+
+A file elején a \code{\_\_declspec(dllimport) window RConsole;} sort
+le kell cserélni és néhány sort kikommentezni.
+ Csere után ez a rész a következőképpen néz ki:
+\begin{VBAframe}
+#ifdef WIN32
+# include <windows.h>
+# undef ERROR
+// comment out the next few lines in the original source and include 
+// the R_interactive line below.  
+/* enough of the internals of graphapp objects to allow us to find the
+   handle of the RGui main window */
+//typedef struct objinfo \{
+//	int	kind, refcount;
+//	HANDLE	handle;
+//\} *window;
+//__declspec(dllimport) window RConsole;
+{\color{DarkRed}__declspec(dllimport) extern int R_Interactive;}
+#else
+# include <unistd.h>
+#endif
+\end{VBAframe}
+
+Az \code{RODBCDriverConnect} függvény elejét módosítani kell a kommentekkel
+megjelölt helyeken:
+\begin{VBAframe}
+SEXP RODBCDriverConnect(SEXP connection, SEXP id, 
+                        SEXP useNRows, SEXP ReadOnly)\{
+    SEXP ans;
+    SQLSMALLINT tmp1;
+    SQLRETURN retval;
+    SQLCHAR buf1[buf1_len];
+    pRODBCHandle thisHandle;
+
+    PROTECT(ans = allocVector(INTSXP, 1));
+    INTEGER(ans)[0] = -1;
+    if(!isString(connection)) \{
+       warning(_("[RODBC] ERROR:invalid connection argument"));
+       UNPROTECT(1);
+       return ans;
+    \}
+    thisHandle = Calloc(1, RODBCHandle);
+    ++nChannels;
+
+    odbcInit();
+    retval = SQLAllocHandle(SQL_HANDLE_DBC, hEnv, &thisHandle->hDbc);
+    if(retval == SQL_SUCCESS || retval == SQL_SUCCESS_WITH_INFO) \{
+      if(asLogical(ReadOnly))
+        SQLSetConnectAttr(thisHandle->hDbc, SQL_ATTR_ACCESS_MODE, 
+          (SQLPOINTER) SQL_MODE_READ_ONLY, 0);{\colorlet{textcolor}{DarkRed} 
+         //insert the next three lines 
+          //it gets the desktop window handle.
+#ifdef WIN32
+         HWND desktopHandle = GetDesktopWindow();
+#endif}
+         retval =
+           SQLDriverConnect(thisHandle->hDbc, {\colorlet{textcolor}{DarkRed}
+#ifdef WIN32
+             // insert the next line and comment the original
+             R_Interactive? desktopHandle : NULL, 
+             //RConsole ? RConsole->handle : NULL,
+#else
+             NULL,
+#endif
+}            /* This loses the const, but although the
+                declaration is not (const SQLCHAR *),
+                it should be. */
+             (SQLCHAR *) translateChar(STRING_ELT(connection, 0)),
+             SQL_NTS,
+             (SQLCHAR *) buf1,
+             (SQLSMALLINT) buf1_len,
+             &tmp1,{\colorlet{textcolor}{DarkRed}
+#ifdef WIN32
+               // insert the next line and comment the original
+               R_Interactive ? SQL_DRIVER_COMPLETE : SQL_DRIVER_NOPROMPT
+#else
+               SQL_DRIVER_NOPROMPT
+#endif}
+             );
+\end{VBAframe}
+A rutin többi részét nem kell változtatni.
+\item Az így módosított file-t a kibontott csomag többi részével
+  együtt vissza kell csomagolni,  
+  pl. a \code{RODBC.tar.gz} név alatt.
+\item Forrásból kell telepíteni a csomagot a következő paranccsal.
+\begin{verbatim}
+install.packages("RODBC.tar.gz", repos=NULL, type="source")
+\end{verbatim}
+
+\end{itemize}
+
+\section{Bizonytalan kapcsolatfelvétel \code{Rstúdió}val, 
+2014-03-11}
+\label{sec:10.2}
+
+\code{EXCEL}-ből kezdeményezve az összekötést egy futó \code{Rstúdió}
+példánnyal előfordulhat, hogy a kapcsolat létrehozása sikertelen. Ez
+nálam nem jelentkezett, de az \code{Rstudio} 0.98.501 változatát
+telepítve én is megtapasztaltam. A hiba okát nem sikerült teljesen
+felderíteni, de annyi kiderült, hogy a \code{R.xls} munkafüzet
+\code{RIC} moduljában a \code{cmdToR} eljárásában kell keresni.
+A következő változat nálam gond nélkül működik. A változtatás a
+\code{.useSendKey} ágon belül \code{SendKeys "\{ESC\}", True} sorban
+történt. Korábban itt \code{"\{ENTER\}"} szerepelt. 
+\begin{VBAframe}
+Private Sub cmdToR(cmd)
+  On Error GoTo Errorhandler
+  With curRproc
+    If .useSendkey Then
+      Dim wstate
+      wstate = WINAPI.WindowState(.hwnd)
+      WINAPI.ShowWindow .hwnd, WINAPI.SW_NORMAL
+      AppActivate curRproc.pid
+      If VBA.Len(cmd) > 1 And .useClipboard Then
+        Dim x As New DataObject
+        SendKeys .sendkeyPrefix, True
+        If .delay > 0 Then
+          DoEvents
+        End If
+        x.Clear: x.SetText cmd: x.PutInClipboard {\colorlet{textcolor}{DarkRed}
+        SendKeys "\{ESC\}", True }
+        SendKeys .ctrlv, True
+        SendKeys "\{ENTER\}"
+        DoEvents
+        WINAPI.ShowWindow .hwnd, wstate
+      Else
+        SendKeys .sendkeyPrefix
+        SendKeys "\{ENTER\}"
+        SendKeys quote(cmd)
+        SendKeys "\{ENTER\}"
+      End If
+    Else
+      WINAPI.SendText vbCrLf & cmd & vbCrLf, .hwnd
+    End If
+  End With
+  Exit Sub
+Errorhandler:
+  Dim errnum, errtxt
+  errnum = err.Number: errtxt = err.Description
+  err.Clear
+  Select Case errnum
+    Case 91 ' obj does not exist
+      If allRproc Is Nothing Then RprocInit: Resume
+      If allRproc.Count = 0 Then Rstart: Resume
+    Case 5 '??? mi a kodja annak amikor ay appactivate okozza a hibat
+      With curRproc
+        If (WINAPI.IsWindow(.hwnd) > 0) And _
+           (WINAPI.IsWindowVisible(.hwnd) <= 0) Then
+          WINAPI.ShowWindow .hwnd, WINAPI.SW_SHOWMINIMIZED
+          Resume
+        End If
+      End With
+  End Select
+  MsgBox "Nem lehet írni az R konzolba!" & vbCrLf & _
+          errtxt & "[errnum=" & errnum & "]", vbOKOnly
+  End
+End Sub
+\end{VBAframe}
+
+
+\section{VBA módosítás, 2014-03-11}
+
+Az \code{R.xls} munkafüzet \code{RIC} modulja kapott egy szubrutint
+\code{showRprocs} névvel.  Ez megjeleníti a futó \code{R}
+példányokat. Az \code{Rxls development} fül alá beraktam
+egy gombot, amivel ez a funkció kényelmesen elérhető.
+Ugyanebben a modulban az \code{RConnectedToThis} és 
+ \code{RnotBusy} függvénynek adtam egy
+opcionális \code{Rproc} típusú argumentumot, ha nem adjuk meg, akkor a
+\code{curRproc} 
+példányt használják a rutinok, különben a megadottat. A \code{selectR} dialóg
+gombjait pedig felcseréltem, felülre raktam a \code{Cancel} gombot.
+
+\section{\code{VBA} módosítás, 2014-05-13}
+
+A \code{Calc.xlt} sablont atneveztem \code{Calc.xltm}-re így a számoló
+munkafüzetek ezentúl nem kompatibilis módban jönnek létre. Az
+\code{Rdev.xlam} bővítmény \code{insertSkeleton} moduljában a
+\code{newSkeleton} rutinjából a mentés részt kivettem. Viszont a
+\code{Calc.xltm} beillesztettem egy \code{Workbook\_beforeSave} esemény
+kezelőt. Így, amikor egy újonnan létrehozott  számoló munkafüzetet
+először mentünk el, annak típusa makróbarát munkafüzet lesz.   
+A \code{SaveAs} dialóg nem \code{.xlsx}, hanem
+a \code{.xlsm} kterjesztést kínálja fel alapértelmezésben.  
+
+\section{\code{R 3.1} változat 
+\code{LENGTH or similar \dots}
+%applied to externalptr object}\\
+ hibaüzenet, 2014-09-01}
+
+A hibaüzenetet az okozta, hogy a \code{com} és \code{comproxy}
+csomagok \code{C} kódja az \code{R API} \code{LENGTH} függvényét
+használja
+% került 
+több ponton.
+%alkalmazásra
+ Az \code{R} 3.1-es változatában, újdonságként, ebbe a
+függvénybe belekerült egy ellenőrzés, ami 
+\code{error} üzenetet ad, ha a függvényt nem vektor típusú
+\code{SEXP}-re alkalmazták. A \code{LENGTH} mellett az \code{R
+  API}-ban van egy másik függvény is az \code{Rf\_length}, amit a
+bővítmény csomagokban javasolnak alkalmazni. 
+
+
+A  következő \code{R} szkripttel lehet megnézni a két függvény
+viselkedését. A kódrészlet végén az új, 3.1-es \code{R} alatt látszik
+a futási eredmény. 
+
+\begin{Rnw}
+<<prompt=FALSE,message=FALSE,warning=FALSE,tidy=FALSE>>=
+require(inline)
+require(Rcpp)
+funs<-c("LENGTH","Rf_length")
+names(funs)<-paste("test",funs,sep="_")
+body.pat<-'
+  SEXP sexp = R_NilValue;
+  sexp = R_MakeExternalPtr(NULL,R_NilValue,R_NilValue);
+  return IntegerVector::create( _["%s"]=%s(sexp));
+'
+
+body<-lapply(funs,function(x)sprintf(body.pat,x,x))
+
+test<-cxxfunction(sig=lapply(funs,"[",0), body=body, plugin="Rcpp")
+names(test)<-funs
+
+for(x in names(test)){
+  cat(sprintf("Running 'test$%s':\n result: ",x))
+  cat(eval(substitute(try(test[[x]](),silent=T),list(x=x))))
+}
+@ %$
+\end{Rnw}
+
+Az \code{R} korábbi változataiban az eredmény \code{LENGTH} esetén 0,
+míg \code{Rf\_length} esetén 1 lett volna.
+Ez azért nem okozott gondot, mert
+ahol  \code{externalptr} object előfordulhatott ott valójában azt
+nézte a program, hogy a hosszra valami teljesül-e, vagy
+\code{externalptr}-ről van-e szó. 
+
+A \code{C}, \code{C++} forrásokban kicseréltem a \code{LENGTH}
+függvényhívásokat \code{Rf\_length}-re. Ezzel a problémát sikerült
+orvosolni.
+ 
+\section{\code{VBA} módosítás, 2014-09-01}
+
+A kapcsolatfelvétel az \code{Rstúdió}val nem megnyugtató. Ha még semmi nem
+került az \code{R} consolba, akkor akár \code{\{ENTER\}}, akár \code{\{ESC\}}
+leütést küldünk, az \code{Rstúdió} leáll és új \code{R
+  session}t kell indítani.
+Ezért kivettem a korábban jó megoldásnak tűnő ``\code{sendkey
+  \{ESC\},True}'' sort az \code{R.xls} munkafüzet \code{RIC}
+moduljának \code{cmdToR} eljárásából, lásd a \ref{sec:10.2} szakaszt.
+
+\section{\code{EXCEL} módosítás, 2015-09-01}
+
+\begin{itemize}
+\item Az \code{Rselect} űrlapban az \code{R} verzióját is
+  feltüntetjük. \code{Rstudió} esetén csak akkor, ha a \code{com}
+  csomag be van töltve.
+\item Javítás az \code{Rproc} modulban. Ha az \code{Rstudió} ``projekt
+  módban'' dolgozik, akkor is megtaláljuk az ablak azonosítóját.  
+\item A  \code{R.RIC} modul \code{connect} rutinja
+  módosult. Létrehozza
+  az adott EXCEL példány környezetét az \code{R} oldalon. Ha menüből
+  indítjuk, akkor meghívja az \code{attachXL} függvényt is. Ezzel az \code{R}
+  keresési útvonalához csatolja a \code{THISXL, .wbname, .wsname}
+  változókat.
+\item  A  \code{R.RIC} modul \code{Rclose} rutinja
+  módosult. Törli az \code{EXCEL} példányra mutató környezeteket és az
+  elérési útról is eltávolítja ezeket az adatokat. Ahol lehet a \code{COM}
+  interfészt használja.
+\item A  \code{R.WINAPI} modul \code{sendkeystohwnd} rutinja
+  robosztusabb lett.
+\end{itemize}
+plusz további változtatások.
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Rxls"
+%%% End: 

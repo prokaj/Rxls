@@ -1,0 +1,55 @@
+%% -*- mode: poly-noweb+R; ess-indent-level: 2; -*-
+
+\chapter{Hibaelhárítás}\label{chap:8}
+
+\section{\code{COM} problémák, \code{DebugView}}\label{sec:8.1} 
+
+ 
+Előfordulhat, hogy egy látszólag hibátlan COM interfészt használó
+hívás esetén nem az történik amit várunk, a legtöbb ilyen esetben a
+visszatérési érték \code{NULL}. A \code{com} csomag nem ír ki hiba
+üzeneteket az R konzolra. Üzeneteit a 
+DebugView programmal lehet megnézni. Ezt a programot a Microsoft
+honlapjáról lehet letölteni:
+\begin{center}
+  \url{http://technet.microsoft.com/en-us/sysinternals/bb896647.aspx}.
+\end{center}
+Futtatásához rendszergazda jogosultság kell.
+
+\section{\code{R} kód debugolása}\label{sec:8.2}
+Ha az R kódunk hibát (\code{error}), vagy akár csak figyelmeztetést
+(warning)  generál, akkor célszerű
+megkeresni az okát. A legelső eszköz amit itt használhatunk a
+\code{traceback} függvény, ami a 
+hiba helyének behatárolásához ad segítséget. Ha a hibát generáló
+függvény megvan, akkor 
+használhatjuk a \code{debug} függvényt. Hatására az argumentumában
+megadott függvény végrehajtását lépésenként tudjuk nyomon követni. 
+
+Ha egy megadott függvény adott pontjától 
+szeretnénk ugyanezt tenni, akkor a kódba ideiglenes beszúrhatjuk a
+\code{browser()} függvényhívást. Részletesebben lásd az \code{R
+  help}-jében,  a \code{Writing R Extensions} leírás 4., \code{Debugging}
+fejezetében. Ugyancsak olvashatunk az R debugolásáról az \code{R language
+definition} leírás 9. 
+fejezetében.
+
+Emellett célszerű lehet kipróbálni a \code{debug} csomagot. Ez hasonló
+felületet nyújt, mint az 
+\code{EXCEL} Visual Basic szerkesztője, azaz a debugolt kód külön ablakban
+jelenik meg, és színek 
+jelzik, hogy hol tart a kiértékelés.
+
+Az \code{RStudio} környezet a \code{0.98}-as verziótól kezdve szintén
+tartalmaz hibakeresési támogatást. 
+%Ez a változat jelenleg
+%(2013. december) preview releaseként érhető el az alábbi címről:
+%\begin{center}
+%  \url{http://www.rstudio.com/ide/download/preview}
+%\end{center}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Rxls"
+%%% End: 

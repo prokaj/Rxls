@@ -1,0 +1,50 @@
+--- old/RODBC/src/RODBC.c	2015-06-29 12:15:44.000000000 +0200
++++ new/RODBC/src/RODBC.c	2015-08-21 14:19:34.834382399 +0200
+@@ -29,13 +29,15 @@
+ #ifdef WIN32
+ # include <windows.h>
+ # undef ERROR
++// comment out the next few lines in the original source and include the R_interactive line below.
+ /* enough of the internals of graphapp objects to allow us to find the
+    handle of the RGui main window */
+-typedef struct objinfo {
+-	int	kind, refcount;
+-	HANDLE	handle;
+-} *window;
+-__declspec(dllimport) window RConsole;
++//typedef struct objinfo {
++//	int	kind, refcount;
++//	HANDLE	handle;
++//} *window;
++//__declspec(dllimport) window RConsole;
++__declspec(dllimport) extern int R_Interactive;
+ #else
+ # include <unistd.h>
+ #endif
+@@ -232,10 +234,15 @@
+ 	if(asLogical(ReadOnly))
+ 	    SQLSetConnectAttr(thisHandle->hDbc, SQL_ATTR_ACCESS_MODE,
+ 			      (SQLPOINTER) SQL_MODE_READ_ONLY, 0);
++#ifdef WIN32
++	HWND desktopHandle = GetDesktopWindow();
++#endif
+ 	retval =
+ 	    SQLDriverConnect(thisHandle->hDbc,
+ #ifdef WIN32
+-			     RConsole ? RConsole->handle : NULL,
++			     // insert the next line and comment the original
++			     R_Interactive? desktopHandle : NULL,
++			     //RConsole ? RConsole->handle : NULL,
+ #else
+ 			     NULL,
+ #endif
+@@ -248,7 +255,8 @@
+ 			     (SQLSMALLINT) buf1_len,
+ 			     &tmp1,
+ #ifdef WIN32
+-			     RConsole ? SQL_DRIVER_COMPLETE : SQL_DRIVER_NOPROMPT
++			     // insert the next line and comment the original
++			     (R_Interactive && (desktopHandle!=NULL)? SQL_DRIVER_COMPLETE : SQL_DRIVER_NOPROMPT
+ #else
+ 			     SQL_DRIVER_NOPROMPT
+ #endif

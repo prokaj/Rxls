@@ -1,0 +1,604 @@
+%% -*- mode: poly-noweb+R; ess-indent-level: 2; -*-
+
+
+\chapter{Az \code{R.xls} munkafüzet részletesebben}
+\label{chap:5}
+
+A legfontosabb részek az \code{Interface}, \code{selectfuns} és a
+\code{RIC} modulokban vannak. Az \code{Interface} 
+modul szubrutinjaiból lehet a számolást indító ill. leállító gomb
+makróit összerakni. Ezeknek számtalan verziója van, a korábbi számoló
+munkafüzetekkel való kompatibilitás megőrzése 
+miatt. A \code{selectfuns} modulban vannak azok a függvények, amiket a
+munkalapokon szereplő 
+könyvtár, ill. fileválasztó mezők gombjai használnak. A tényleges
+munkát a \code{RIC} modul végzi. 
+Itt vannak azok a rutinok, melyek az \code{R} példányok
+nyilvántartásáért, elindításáért, leállításáért 
+felelnek.
+
+A további modulok %az előző három által igényelt 
+kisegítő függvényekből állnak. A \code{Registry}
+modulban, nevének megfelelően, a \code{registry} írás, olvasás rutinjai
+vannak. Itt van az rutin, ami az \code{R} telepítési könyvtárat
+kiolvassa a registryből, ill. ellenőrzi az \code{RCOM type library}
+bejegyzés meglétét. A \code{WINAPI}  
+a windows üzenetküldési mechanizmusát használó rutinok gyűjteménye. A
+\code{Pick} modulban 
+a könyvtár, file, ill. \code{ACCESS} tábla választó rutinok
+vannak. Ezeket  a \code{selectfuns} 
+modulban használjuk. A \code{worksheetfunctions} modul az \code{extAddress}
+munkalapfüggvényt definiálja. Ezt 
+a számoló munkafüzetek használhatják, de érdemesebb munkafüzet szintű
+neveket használni helyette. Végül a \code{formadjust} modult a
+\code{selectR} űrlap összeállításához használtam. 
+
+A fenti kód modulok mellett, két \code{class} modul is van: \code{Rproc} és
+\code{wndData}. Az \code{Rproc} osztály % \code{class} 
+példányai egy–egy \code{R} folyamatot reprezentálnak a \code{RIC}
+modulban. A \code{wndData} típust a \code{WINAPI} 
+modul használja.
+
+\section{A \code{Thisworkbook} modul}\label{sec:5.1}
+Ez a modul a következő rutinokból áll.
+\begin{description}
+\item[\code{addRmenu}, \code{RemoveRmenu}] Létrehozza ill. törli a
+  menübár \code{R} 
+  menüjét. Ennek elemei az \code{R ablak megjelenítés/elrejtés}, \code{R <-> EXCEL
+  összekötés}, \code{R megszakítás}. A \code{R} menü a \code{RIBBON}t
+használó újabb 
+  változatokban a címsor \code{Bővítmények} füle alatt található.
+\item[\code{doChecks}, \code{checkRcom}, \code{checkLang}]
+  Ezek ellenőrző rutinok. A \code{doChecks} a másik két
+  rutint hívja meg.  Az \code{Rcom} ellenőrzése során megnézzük, hogy
+  \code{RCOM type library} regisztrálva van-e.  Ha nincs, akkor felugró
+  üzenetben segít abban, hogy a regisztrációt hogyan kell
+  végrehajtani. A felhasználónak lehetősége van a szükséges \code{R} kódot
+  vágólapra másolni és azt utána az \code{R} ablakba
+  beilleszteni. Közvetlenül \code{EXCEL}-ből nem lehet a javítást elvégezni,
+  mert a regisztrációt csak rendszergazdai jogosultsággal lehet
+  elvégezni. 
+  
+  A nyelvi ellenőrzés célja, hogy az ékezetes karakterek
+  a \code{COM} mechanizmuson keresztül változatlanul kerüljenek át az
+  \code{R}-be 
+  és fordítva. Az ellenőrzés nagyon egyszerű. Az \code{R.xls} munkafüzet
+  egyetlen munkalapjának \code{\$A\$1} mezőjében fel vannak sorolva a magyar
+  ABC ékezetes karakterei. Ezt egy \code{VBA} változóba másoljuk. Mivel ennek
+  során már a \code{COM} mechanizmusa működik, ha nyelvi beállítások nem
+  megfelelőek, akkor az \code{őű} betűk helyett \code{ou}-t kapunk. Hiba esetén
+  a felugró ablak tájékoztat arról, mit kell átállítani.
+
+  Előfordulhat, hogy a vezérlőpult felépítése
+  némileg változik. Ekkor a felugró ablak szövegét, ami a modul
+  elején lévő szöveges konstans célszerű átírni. A lényeg, hogy az 
+  unicode szabványt nem támogató programok nyelvét kell magyarra
+  állítani. Ez első sorban angol (vagy egyéb nem magyar) nyelvű
+  Windows rendszereknél lehet gond. 
+\item[\code{Workbook\_BeforeClose}, \code{Workbook\_AddinUninstall}]
+  Bezáráskor az \code{R} menüt eltávolítjuk és az
+  adott \code{EXCEL} példány által elindított \code{R} példányokat megpróbáljuk
+  leállítani a \code{RIC} modul \code{CloseRcon} eljárásával. Egészen pontosan a
+  következő történik. Végigmegyünk a futó \code{R} példányokon.  
+
+  Ha valamelyik \code{R} példány ablaka rejtett, és a \code{com} csomag
+  nincs betöltve, 
+  akkor láthatóvá tesszük az ablakot. Így a felhasználónak lehetősége
+  lesz kilépni az \code{R} alkalmazásból és bezárni az ablakot.  Ha az
+  adott \code{R} példányt a mi \code{EXCEL} példányunk indította el,
+  akkor megnézzük 
+  számol-e még. Ha igen akkor a felhasználó dönthet, hogy
+  megpróbálja-e leállítani az éppen folyó számolást.  
+  
+  Igen válasz
+  esetén, megszakítjuk a számolást és leállítjuk a \code{R} példányt.  Nem
+  válasz esetén csak a kapcsolatot reprezentáló körnezetet töröljük
+  %\code{THISXL} változót
+  %töröljük 
+  és kilépünk az \code{EXCEL}ből. Ez a legproblémásabb
+  eset. Előfordulhat, hogy az éppen futó R kódban más hivatkozás
+  is van az 
+  \code{EXCEL} példányunkra, vagy annak valamely részére. Ilyenkor az
+  \code{EXCEL}-ből látszólag kilépünk, de az a háttérben tovább fut. 
+
+  A  felhasználó választhatja a Mégse gombot is. Ekkor az \code{EXCEL}
+  leállítása megszakad.  
+
+  Abban az esetben, ha egy R példányt nem a mi
+  \code{EXCEL} példányunk indította el,  de van a mi \code{EXCEL}
+  példányunkra mutató környezet, akkor csak ezt töröljük.
+\item[\code{Workbook\_Open}] Elvégzi az \code{RCOM} és a nyelvi
+  beállítás ellenőrzését és 
+  beállítja az \code{R} menüt.
+\item[\code{Rmenuset}] Attól függően, hogy az aktuális \code{R}
+  példány ablaka látható vagy rejtett (esetleg nem létezik) vált az
+  \code{R} menü \code{R ablak elrejtése} ill. \code{R ablak megjelenítése} lehetőségei 
+  között.
+\item[\code{isXP}] Ez a függvény igaz értéket ad vissza, ha az operációs
+  rendszer Windows XP. Jelenleg nem használjuk.
+\end{description}
+%\endinput
+\section{A \code{Pick} modul}\label{sec:5.2}
+
+\begin{description}
+\item[\code{PickACCESSTable(defaultDir, file)}] A megadott
+  \code{ACCESS} adatbázis 
+  tábláinak listájából választhat a felhasználó. Ehhez elindítunk egy
+  \code{ACCESS} példányt, betöltjük az adatbázist, majd \code{selectMDBtable}
+  űrlapot kitöltjük, ebből választhat a felhasználó. 
+\item[\code{PickFile(xfilter As String, defaultDir As String, Optional title)}]
+  File választás.  Lehetőség szerint az OFFICE beépített file
+  választó dialógját használjuk. Az \code{xfilter}  sztring
+  \code{"leírás\_1,minta\_1,leírás\_2,minta\_2,...,leírás\_n,minta\_n"}
+  alakú, ahol 
+  a minta \code{*.<ext>} valamilyen kiterjesztéssel. Ez lehet
+  pl. \code{*.xl*} is.
+\item[\code{GetDirectory(initDir, Msg)}] Ez a könyvtár választó
+  rutin. Az \code{initDir} 
+  a kezdő könytár,  míg az \code{Msg} az felugró ablak címsora. Lehetőség
+  szerint az OFFICE szokásos file választó dialógját használjuk,
+  korábbi változatok esetén pedig a windows \code{shell.application
+  browseforfolder} dialógját (a \code{GetDirectorySH} rutinban). Az utóbbi
+  eset a mai rendszereken gyakorlatilag nem fordul elő; ha mégis,
+  akkor a kezdő könyvtár argumentumot  nem használjuk.
+\end{description}
+
+\section{Az \code{Interface} modul}\label{sec:5.3}
+
+Ebben a modulban vannak az \code{R} kód futtatására szolgáló
+rutinok. Jellemzően ezek közül kerül 
+ki a futtatást indító gomb makróhozzárendelése.
+\begin{description}
+\item[\code{RunRmain()}] Az új számoló munkafüzetek ezt használják a számolás
+  indítása gomb makrójaként. Az \code{R} kód munkalapon van az \code{Rmain} nevű
+  tartomány. A szubrutin az itt található  kódot küldi át az aktív \code{R}
+  példánynak kiértékelésre. A kiértékelés aszinkron módon történik,
+  azaz az \code{EXCEL} nem vár a számolás befejeződésére.  
+\item[\code{RIgnore()}] Az aktív \code{R} példány számolásának
+  megszakítása. Ehhez a \code{RIC} modul \code{stopR} rutinját
+  használjuk. Ha az adott \code{R} példány számolást végez, akkor
+  megjelenik egy figyelmeztető ablak.  Ha a
+  felhasználó megerősíti, hogy meg akarja szakítani a számolást, akkor
+  \code{ESCAPE} karaktert küldünk az \code{R} ablakba. Ennek hatására
+  a számolás megszakad, gyakran némi késleltetéssel.  
+\item[\code{PushCmdToR(cmd As String)}] Az \code{R} oldal \code{.FUN}
+  változóját a \code{cmd}-ben megadott értékre állítja és a \code{THISXL}
+  %nevű \code{R}
+  változót frissíti. %  értékét 
+  %szintén beállítja.
+\item[\code{cmdbtnRovidFutas(Optional cmd As String = "")}] Hatására
+  az \code{R} a \code{cmd} kifejezést szinkron módon 
+  kiértékeli, azaz az \code{EXCEL} mindaddig nem reagál, amíg az \code{R} be nem
+  fejezte a kiértékelést.
+\item[\code{cmdbtnHosszuFutas}] Az előző aszinkron
+  változata. Paraméterek: \code{cmd}, \code{logdev}, \code{initmsg}. 
+\item[\code{RovidFutas(Optional caption As String = "*")}] A
+  \code{caption} feliratú 
+  gombot megkeresi az aktív munkalapon, majd a gomb alatti területben
+  levő szöveget a \code{cmdbtnRovidFutas}  szubrutin segítségével átadja az
+  \code{R}-nek kiértékelésre.  A korábban készült munkafüzetekben ezt
+  használtam.
+\item[\code{HosszuFutas(Optional caption As String = "*")}] Az előző
+  aszinkron változata.
+\item[\code{getButton(caption = "*", macro = "*", sheet = Nothing) As
+    Shape}] Mindegyik argumentum opcionális. A \code{sheet}  
+  munkalapon (ha nincs megadva, akkor az aktív lapon) megkeresi azt
+  gombot (\code{shape}), melynek makróhozzárendelése és felirata illeszkedik
+  az argumentumok között megadott mintára. Az összehasonlítás a \code{like}
+  operátorral történik. Az újabb munkafüzetekben nem használjuk.
+\item[\code{GetCmd(caption = "*", brc As range, tlc As range)}] Mindegyik
+  argumentum opcionális. \code{brc} ill. \code{tlc} a \code{bottomrightcell}
+  ill. \code{topleftcell} rövidítése. Ha ezek nincsenek megadva, akkor a
+  \code{caption} minta alapján keresünk egy gombot az aktív munkalapon és
+  ennek bal felső, ill jobb alsó sarka alatti cellára állítjuk a \code{brc},
+  \code{tlc} változókat. Ezután a \code{tlc:brc} tartományban
+  megkeressük az első
+  nem üres cellát ennek értéke lesz a függvény visszatérési
+  értéke. Ha a \code{tlc} egy egyesített tartomány eleme, akkor az egyesített
+  tartomány (azaz a jobb felső sarkában lévő cellájának) értékét adja
+  vissza a függvény. 
+\end{description}
+
+\section{A \code{RIC} modul}\label{sec:5.4}
+
+A \code{RIC} (\code{R internal connector}) a legfontosabb modul az
+\code{R.xls} munkafüzetben. Ez teszi lehetővé, hogy feladatokat
+adjunk valamelyik futó \code{R} példánynak. A modul \code{private}, azaz 
+rutinjai csak az \code{R.xls} munkafüzet számára láthatóak. A modul
+legfontosabb függvénye az 
+\code{Revalsync}. Ez elküldi a megadott utasítást az aktív \code{R}
+példánynak. Ha nincs rendelkezésre álló \code{R} szerver, akkor hiba
+generálódik, és a hiba kezelő rutin megpróbál egy alkalmas \code{R} 
+példányt találni, majd újra próbálkozik az utasítás elküldésével.
+
+A modul három globális változót használ:
+\begin{description}
+\item[\code{allRproc}] Ez egy \code{Rproc} collection. A változó
+  inicializálásakor a 
+  rendszerben lévő valamennyi  \code{R} példány adatait összegyűjtjük és itt
+  tároljuk.
+\item[\code{curRproc}] Az általunk használt \code{R} példány. 
+\item[\code{Rmayfail}] A
+  hiba kezelő rutin használja. Ha értéke \code{IGAZ}, akkor nem erőltetjük a
+  feladat  végrehajtását, ha hamis, akkor hiba kezelő rutin mindent
+  megtesz, hogy találjon egy  alkalmas \code{R} példányt. Az igaz értéket
+  pl. akkor használjuk, ha az \code{EXCEL}ből való kilépés előtt
+  szeretnénk törölni a \code{THISXL} változót az \code{R} oldalon. Ha valamilyen
+  oknál fogva az \code{R} már nem fut, akkor nem kell elindítani egy új
+  példányt, csak azért, hogy töröljük az éppen létrehozott \code{THISXL}
+  változót.
+\end{description}
+
+A modul rutinjai:
+
+\begin{description}
+\item[\code{getAllRproc}] A Windows
+  \code{winmgmts:\textbackslash\textbackslash.\textbackslash root\textbackslash cimv2} objektumát
+  használva lekérdezzük valamennyi futó \code{R} példányt. Minden \code{R} példányt
+  egy \code{Rproc} objektum reprezentál. Ebben számos tulajdonságot
+  feljegyzünk: 
+\begin{VBAframe}
+Public Name As String            'A program neve: RGui, rsession, Rterm
+Public RIC As InternalConnector  'Az R COMservere, ha van
+Public hwnd As Long              'Az R konzol ablaka
+Public outerHwnd As Long         'Az R-et futtató program ablaka
+Public wndColl As Collection     'Az R példányhoz tartozó összes ablak
+Public title As String           'Az ablak címsora 
+Public pid As Long               'Az R processid-je
+Public reportedPID As Long       'Az R Sys.getpid() hívásának értéke
+Public useSendkey As Boolean     'Sendkeys függvényt kell-e használni
+Public sendkeyPrefix As String   'Előtag a sendkeys függvényhez
+Public delay As Long             'Késleltetés a sendkeys használatakor
+Public useClipboard As Boolean   'Clipboardot kell-e használni
+Public caption As String         'A cím és a PID kombinációja
+\end{VBAframe}
+  A fenti elemek közül a \code{useSendkey}, \code{sendkeyPrefix},
+  \code{delay} és \code{useClipboard} értékeket az \code{R} process neve
+  alapján döntjük el.  Végül 
+  a \code{setCOMServers} eljárással az \code{RIC} értékeket gyűjtjük
+  össze.  
+\item[\code{setCOMServers}] Itt azt használjuk ki, hogy az \code{R}
+  \code{COM} szerverét le és 
+  fel tudjuk kapcsolni a \code{comRegisterServer}
+  ill. \code{comUnregisterServer} 
+   függvényekkel. Az eljárásunk a következő. Kérünk egy \code{rcom} szervert
+  a rendszertől, ha kapunk egyet akkor lekérdezzük a \code{PID}-t és
+  ez alapján az \code{rcom} szervert az \code{allRproc} collection
+  megfelelő elemében 
+  feljegyezzük. Ezután a szervert lekapcsoljuk és kérünk egy
+  következőt, mindaddig, amíg az összes \code{rcom} szervert össze nem
+  gyűjtöttük és le nem kapcsoltuk. Ezután %fordított sorrendben 
+  a szervereket visszakapcsoljuk.
+\item[\code{RConnectedToThis() As VbTriState}]
+  Lekérdezzük az \code{R} \code{THISXL} változóját és összehasonlítjuk az \code{EXCEL}
+  \code{Application} változójával.
+\item[\code{RnotBusy}] Variant értékű függvény. A \code{COM}
+  interfészt használja. Ha az nem áll rendelkezésre,  akkor értéke
+  \code{empty}, különben \code{IGAZ} vagy \code{HAMIS}.
+\item[\code{Rprocdata}] Az \code{R} szerver választó
+  dialóghoz gyűjti össze az adatokat.
+\item[\code{RprocInit}] Először
+  összegyűjti az összes \code{R} proceszt a \code{getallRproc} függvénnyel. Ha csak
+  egy \code{R} példányt találunk, akkor azt állítjuk be aktív \code{R}
+  példánynak (\code{curRproc}). Ha többet is találtunk, akkor a felhasználó
+  választhat. 
+\item[\code{Rstart}] Ezzel a rutinnal indítunk el egy új \code{R}
+  példányt. A regisztryből kérdezzük le az \code{R} telepítési útvonalát,
+  és az \code{RGui} programot \code{--sdi} és \code{--vanilla}
+  opciókkal indítjuk el. A 
+  \code{R\_DEFAULT\_PACKAGES} környezeti változó értékét átállítjuk a
+  következőre  
+\begin{verbatim}
+datasets,utils,grDevices,graphics,stats,methods,Rxls
+\end{verbatim}
+  Ez a
+  szokásos esetben betöltött csomagok listája kiegészítve a \code{Rxls}
+  csomaggal. Így elindulás után az \code{R} \code{COM} szervere rögtön
+  rendelkezésünkre áll.  
+
+  Indítás után 20 kísérletet teszünk arra, hogy
+  az \code{allRproc} collectiont feltöltsük. Minden kísérlet között 1/10
+  másodpercet várunk. Ez a beállítás az általam használt gépeken
+  megbízhatóan működött. Nagyon lassú, régi konfigurációk esetén meg
+  lehet növelni a várakozást, vagy az ismétlések számát.  
+
+  Ha az \code{R}
+  példányt megtaláltuk, akkor a \code{COM} szerverét próbáljuk megkapni. Ez
+  csak akkor áll rendelkezésre, ha \code{com} csomag betöltése megtörtént. Ez
+  némi időbe telik az \code{R}  elindulása után, ezért itt megint csak 20
+  kísérletet végzünk a \code{setCOMServers} eljárással 1/10 másodperces
+  késleltetésekkel. Ha sikerül a \code{COM} szerverhez csatlakozni, akkor az
+  \code{R} oldalon beállítjuk a \code{.startingApp} változót a
+  \code{hinstance} értékre. Ez 
+  egy karakterlánc, amit az \code{EXCEL} példány \code{Hinstance} tulajdonságából
+  nyerünk a \code{hinstance} függvénnyel.  
+\item[\code{loadCOM}] Ezt a rutint akkor
+  használjuk, ha olyan \code{R} példányhoz akarunk csatlakozni, aminek \code{COM}
+  szervere nem áll rendelkezésre. Az eljárásunk hasonló a \code{Rstart}
+  szubrutin második felében követetthez. Először az \code{R} példány
+  ablakába írjuk a  
+\begin{verbatim}
+require(Rxls);comRegisterServer()
+\end{verbatim}
+%\code{} 
+  szöveget. Ezzel
+  betöltjük a szükséges csomagokat (\code{comproxy, com, Rxls}), ha azok nem
+  voltak betöltve, és felkapcsoljuk az \code{COM} szervert, ha az le volt
+  kapcsolva. Ezután a 20 kísérletet teszünk 1/10-ed másodperces idő
+  közökkel a \code{COM} szerverhez való csatlakozásra.   Ebben a lépésben a 
+  \code{setCOMServers} szubrutint használjuk.  
+\item[\code{Rclose}] Az \code{R} oldalon töröljük
+  az \code{EXCEL} példányra való hivatkozást. Itt az aszinkron interfészt
+  használjuk. Megfontolandó, hogy kiváltható-e ez a \code{COM} szerver
+  használatával.  
+\item[\code{Rgetsymbol}, \code{Rsetsymbol}, \code{Reval}, \code{REvalSync}, \code{correct}]
+  Ezek a függvények az aktív \code{R} példány \code{COM} szerverét használják a
+  nevüknek megfelelően. A különbség az \code{Reval} és az
+  \code{RevalSync}  között 
+  az, hogy első a kiértékelés eredményét visszaadó függvény, míg a
+  második a kiértékelés eredményét eldobó szubrutin. 
+
+  Ezeknek a
+  rutinoknak a \code{correct} hibakezelő rutin a lelke. Ha \code{COM} szerveren
+  végrehajtott  művelet, valamilyen okból meghiúsul és hibát generál,
+  akkor a \code{correct} rutin próbálja  helyrehozni a hibát. Ezután a
+  műveletet megismételjük.  
+
+  A következő hibákat kezeli a rutin:
+  \begin{description}
+  \item[{Az aktív \code{R} példány, vagy annak \code{COM} szervere
+      hiányzik}] Ha az 
+    \code{allRproc} \code{collection} nincs inicializálva, akkor a
+    \code{RprocInit} 
+    rutinnal feltöltjük azt, ha több futó \code{R} példány is van, akkor a
+    felhasználó választhat aktív \code{R} példányt, stb.  
+    
+    Ha nincs futó \code{R}
+    példány, akkor egy nulla hosszúságú \code{collection} keletkezik ebben a
+    lépésben, és az ismételt próbálkozásnál ugyanerre az ágra
+    kerülünk, de most már inicializált nulla hosszúságú \code{allRproc}
+    \code{collection}nal. Ekkor elindítunk egy új \code{R} példányt az Rstart
+    eljárással és újra próbálkozunk a művelet végrehajtásával.
+    
+    Ha
+    van ugyan aktív \code{R} szerverünk, de annak ablaka már nem élő, akkor
+    erről tájékoztatjuk a felhasználót, igény esetén
+    inicializáljuk a \code{allRproc collection}t és újra próbálkozunk vagy ha
+    erre nincs igény, akkor leállunk. 
+
+    Végül, ha az aktív \code{R} ablak élő, de mégsem
+    tudunk csatlakozni a \code{COM} szerveréhez,  akkor megpróbáljuk
+    betölteni és felkapcsolni a \code{COM} szerverét a \code{loadCOM}
+    eljárással, 
+    majd újra próbálkozunk a művelet végrehajtásával.  
+
+    \item[{Az aktív \code{R} szerver \code{COM} szervere nem elérhető}]
+      Ekkor a \code{setCOMServers} rutinnal 
+    lekérdezzük az elérhető \code{COM} szervereket és újra próbálkozunk a
+    művelet végrehajtásával. Ez tipikusan akkor fordul elő, ha az
+    \code{R}-ből kiléptünk. Ilyenkor az \code{EXCEL} oldalon olyan szerverre
+    hivatkozunk, ami már nem létezik. Az ismételt próbálkozás szintén
+    hibát fog generálni, de most már az első ágon fogjuk azt
+    kezelni. Mivel  az aktív \code{R} példány már nem létezik, annak ablaka
+    sem élő. Ez azt eredményezi, hogy a felhasználó kap egy
+    kérdést, hogy akar-e új \code{R} szervert választani, stb.  
+    \item[{Egyéb hiba}] A hiba szövegét egy felugró ablakban
+      ismertetjük a felhasználóval és  leállunk.
+  \end{description}
+
+\item[\code{REvalAsync}, \code{cmdToR}] Az \code{REvalAsync} jelenleg
+    csak egy másik 
+  név a \code{cmdToR} függvényre, ami az \code{R} konzolba írja az argumentumként
+  kapott szöveget. Háromféle eljárást használunk az \code{R} változattól
+  függően. 
+ \begin{description}
+  \item[\code{RGui}] Ekkor a \code{WINAPI} modul sendtext eljárását
+    használjuk, ami 
+    közvetlenül a Windows üzenetküldő mechanizmusára épül.  
+  \item[\code{RStudio}] Ekkor az utasítás szövegét a \code{clipboard}ra
+    másoljuk, és a Windows 
+    \code{Sendkeys} lehetőségét használva betűparancsok segítségével
+    beillesztjük a \code{clipboard} tartalmát a konzol ablakba.  
+  \item[\code{Rterm}]  Ekkor csak a \code{Sendkeys} lehetőséget
+    használjuk. 
+  \end{description}
+
+\item[\code{connect}] 
+  Beállítja az \code{R} oldal \code{THISXL} változójának az értékét.
+\item[\code{CloseRCon}] Ezt a rutint az \code{EXCEL} leállítása során
+  hívjuk meg. Ekkor 
+  végignézzük a futó \code{R} példányokat.  
+
+  Ha valamelyik \code{R} példány ablaka
+  rejtett, és a \code{com} csomag nincs betöltve, akkor láthatóvá tesszük az
+  ablakot. Így a felhasználónak lehetősége lesz kilépni az \code{R}
+  alkalmazásból és bezárni az ablakot. 
+
+  Ha az adott \code{R} példányt a mi
+  \code{EXCEL} példányunk indította el, akkor megnézzük számol-e még. Ha igen
+  akkor a felhasználó dönthet, hogy megpróbálja-e leállítani az éppen
+  folyó számolást. 
+
+  Igen válasz esetén, megszakítjuk a számolást és
+  leállítjuk a \code{R} példányt.  
+
+  Nem válasz esetén csak a kapcsolatot
+  reprezentáló \code{THISXL} változót töröljük és kilépünk az \code{EXCEL}ből. 
+
+  Ez a legproblémásabb eset. Előfordulhat, hogy az éppen futó \code{R} kódban
+  más hivatkozás is van az \code{EXCEL} példányunkra, vagy annak valamely
+  részére. Ilyenkor az \code{EXCEL}-ből látszólag kilépünk, de az a
+  háttérben tovább fut.  
+
+  A felhasználó választhatja a Mégse gombot
+  is. Ekkor az \code{EXCEL} leállítása megszakad.  
+
+  Abban az esetben, ha egy \code{R}
+  példányt nem a mi \code{EXCEL} példányunk indította el, de erre az \code{EXCEL}
+  példányra mutat a \code{THISXL} változó, akkor csak a \code{THISXL} változót
+  töröljük.  
+
+\item[\code{interruptR}] Ha van aktív \code{R} példány, akkor az \code{ESCAPE}
+  karaktert írjuk az ablakába.
+\item[\code{StopR}] Az \code{R} menü \code{R} megszakítás rutinja
+  használja. Ha az \code{R} dolgozik, akkor rákérdezünk, hogy megszakítsuk-e
+  a műveletet, és igen válasz esetén a \code{interruptR} függvénnyel ezt 
+  megkíséreljük.  
+\item[\code{RBringForeground}] Az aktív \code{R} példányt előtérbe
+  hozza. Ha nincs aktív \code{R} példány, akkor létrehoz egyet.  
+
+\item[\code{RPutBackground}] Ha előtérben van az aktív R példány, akkor
+  elrejti az ablakát.
+\item[\code{ChangeRhwndState}] Ha látható az aktív \code{R} példány akkor
+  elrejti, ha nem látható akkor előtérbe hozza a
+  \code{Rbringforeground} eljárással. 
+\item[\code{BringAllRForeground}] Az \code{allRproc} kollekcióban
+  szereplő \code{R} példányokat mind előtérbe hozza.
+\item[\code{curRVisible}] Igaz értéket ad vissza, ha az aktív \code{R}
+  példány ablaka nincs elrejtve. 
+\item[\code{hinstance}] Egyedi azonosítót ad vissza. Azért van külön
+  függvényben, mert attól függően, 
+  hogy régi vagy új \code{EXCEL}ünk van más kódra van szükség.
+\item[\code{screenUpdate}] Visszaállítja az \code{EXCEL}
+  \code{ScreenUpdating} tulajdonságát igazra. 
+\item[\code{quote}] Ha a \code{Sendkeys} hívást használjuk, akkor a
+  szöveg speciális karaktereit kapcsos zárójelek közé kell tenni. Ezt
+  az átkódolást végzi a rutin. 
+\item[\code{dummyset}] Az \code{Rgetsymbol}, \code{Reval} függvények
+  használják. Csak azért van rá szükség, mert 
+  értékadáskor más kód kell objektum és nem objektum érték esetén.
+\end{description}
+
+\section{A \code{WINAPI} modul}\label{sec:5.5}
+
+Itt vannak a Windows \code{API} deklarációk és az azokra épülő rutinok. A
+korábbi változatokban 
+ez a rész hangsúlyosabb volt, mert a futó \code{R} példányok feltérképezése
+az  \code{enumwindows} \code{API}
+híváson keresztül történt. Ez a rész a modul végén kikommentezve megtalálható.
+\begin{description}
+\item[\code{sendkeysToHwnd}, \code{sendText}] Az első a \code{Sendkeys}
+  függvényt, a második a \code{Sendmessage} hívást  használva küld szöveget
+  a megadott ablakba.
+\item[\code{GetWndPid}] Ez egy wrapper a
+  \code{GetWindowThreadProcessId} API hívás körül. Adott ablak
+  \code{pid}jét adja 
+  vissza.
+\item[\code{getAllWndFromPid}, \code{enumAllbyPid}] Az
+  \code{enumWindows} API hívást 
+  használva, lekérdezzük az adott processhez tartozó valamennyi
+  ablakot.  
+\item[\code{GetWndText}] Adott ablak címsorának szövegét adja vissza.
+
+\item[\code{EnumWndLike}, \code{childWndLike}] Adott ablak child
+  ablakai között megkeresi 
+  az adott mintára illeszkedő címűt. Az összehasonlítást a \code{like}
+  operátorral végezzük. Az \code{childwindow}-kat  az \code{enumChildWindows}
+  hívással járjuk végig az első találatig.  
+\end{description}
+Az itt szereplő rutinokat a  \code{RIC} modulból ill. az \code{Rproc}
+objektumok inicializálásakor  használjuk. Néhány API függvényt,
+közvetlenül meghívunk a  \code{RIC} 
+  modulból, pl. \code{sleep}, \code{isWindow}, \code{isWindowVisible},
+  \code{showWindow}.
+
+\section{A \code{selectfuns} modul}\label{sec:5.6}
+
+Az \code{Rdev.xlam} bővítmény segítségével \code{File}, \code{ACCESS},
+vagy \code{ACCESS + SQL} választó elemeket illeszthetünk be a
+munkafüzetekbe. Ezeknél a felhasználói mező jobb felső sarkában
+megjelenő kis gombokhoz rendelt makrók az ebben a modulban levő
+rutinokat használják. 
+Ezeket a makrókat az \code{Rdev.xlam} bővítmény írja a számoló
+munkafüzetbe. Pl. ha \code{File} választó mezőt 
+szúrunk be, akkor a munkalap makrói között az alábbihoz hasonlóak jelennek meg.
+\begin{VBAframe}
+Private Sub File2Click()
+  selectFile Me.Shapes("Button 2").TopLeftCell, "R,*.R"
+End Sub
+Private Sub mappa1Click()
+  selectmappa Me.Shapes("Button 1").TopLeftCell
+End Sub
+\end{VBAframe}
+A \code{select...} szubrutinok a \code{R.xls} munkafüzetben vannak
+definiálva. Jelenleg a következőket használjuk:
+\begin{description}
+\item[\code{selectMappa(cell As range)}] Könyvtár választó dialógot jelenít
+  meg. Ha a felhasználó választ egy könyvtárat, azt a \code{cell} cellába
+  írjuk. A kezdő könyvtárat a \code{cell} cellától jobbra lévő cellából
+  vesszük.  
+\item[\code{selectFile(cell As range, filter As String)}] File
+  választó dialógot jelenít meg. A kezdő könyvtár értékét a \code{cell}-től
+  jobbra, fent lévő cellából veszi. Ha a felhasználó a \code{Mégse}
+  gombot nyomja meg, akkor nem változtat a \code{cell} cella tartalmán. Ha a
+  felhasználó választott egy file-t, akkor annak neve, az könyvtár
+  elérési útja nélkül a \code{cell} cellába kerül, míg a \code{file}-t
+  tartalmazó könyvtár elérési útja a \code{cell} cella fölötti cellába íródik.
+\item[\code{selectMDB(cell As range)}] A \code{selectFile} rutint hívja meg
+  \code{"Access,*.mdb"} filter értékkel.
+\item[\code{selectTBL(cell As range)}] Access
+  tábla választó dialógot jelenít meg. Ehhez a \code{Pick} modul
+  \code{PickACCESSTable} függvényét használjuk. Az \code{Access}
+  adatbázis elérési 
+  útját a cell cellától jobbra fent lévő két cella értékéből rakja
+  össze.
+\item[\code{selectSQL(cell As range, bl1, bl2)}] Ez a szubrutin az
+  \code{ACCESS + SQL} választó mezőkben  használatos. A \code{cell}
+  cella alatti \code{bl1} 
+  számú sort elrejti ha az látható és fordítva, majd az ez alatti \code{bl2}
+  számú sort elrejti ha az első \code{bl1} sor látható és fordítva.  
+\end{description}
+
+
+\section{Egyebek}\label{sec:5.7}
+
+\subsection{\code{formadjust} modul}
+A \code{selectR userform} beállítására szolgál. Valójában nincs rá
+szükség az \code{R.xls} munkafüzetben, viszont így volt a legegyszerűbb a
+\code{selectR} űrlap elemeit egymáshoz igazítani. 
+
+
+\subsection{\code{Registry} modul}
+A modul nagy részét valahonnan másoltam, már nem emlékszem honnan. Az
+alapvető registry műveleteket teszi lehetővé: olvasás, írás,
+törlés. Mi csak olvasásra használjuk. Erre 
+épül a modul \code{RcomRegistered} függvénye, amit az \code{R.xls}
+munkafüzet betöltésekor a telepítés 
+ellenőrzésére használunk, ill. \code{RFromReg} függvény, ami az
+\code{Rgui} program elérési útját számolja ki.
+
+\subsection{\code{Worksheetfunctions} modul}
+Egyetlen, munkalapokon is használható függvényt definiál. Az
+\code{extAddress}-szel már talákoztunk \aref{sec:1.3} részben. Ennek a
+függvénynek két argumentuma van, egy tartomány és \code{quote} 
+nevű logikai változó. A tartomány teljes nevét (\code{munkafüzet!munkalap+cella cím}) adja vissza.
+Ha a \code{quote=IGAZ}, akkor aposztrófok között, különben anélkül.
+Ahhoz, hogy mindig a megfelelő értéket kapjuk az \code{R.xls} munkafüzet az
+\code{EXCEL} alkalmazás \code{WorkbookBeforeSave} eseménykezelőjét
+kiegészíti. Az történik, hogy végigmegyünk a mentendő munkafüzet lapjain és azokat a cellákat, melyek formulája hasonlít a \code{*extaddress*}
+mintára (a \code{like} operátort használva) \code{dirty}ként
+megjelöljük. Ezután a munkalapot kiértekljük a \code{calculate}
+metódussal. Munkafüzet mentése közben a státuszsorban felvillanó
+szöveg jelzi, hogy a \code{eztAddress} függvények ellenőrzése történik.
+
+A megvalósítás úgy történik, hogy a R.xls munkafüzetben egy \code{APP}
+nevű \code{Class} modult is létrehozunk. Ebben van egy
+\code{WithEvent} kulcsszóval definiált \code{application} objektum, amit 
+inicializáláskor \code{Excel.Application} értékre állítunk. Az
+iniciálizálás az \code{R.xls} munkafüzet 
+megnyitásakor történik meg.
+Ez a megoldás csak azt az esetet kezeli, ha a munkafüzet neve, az
+\code{EXCEL} mentés másként 
+funkciója nyomán változik meg. Ha a munkafüzet neve valamely egyéb
+módon változott meg, akkor a megnyitás utáni mentés helyreállítja az \code{extAddress}-re épülő hivatkozásokat.
+
+Egy másik lehetőség a \code{APP} modulban definiálni a \code{WorkbookOpen}
+eseménykezelőt is, a fentihez 
+hasonló módon.
+
+\endinput
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Rxls"
+%%% End: 

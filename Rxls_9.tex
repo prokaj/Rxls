@@ -1,0 +1,123 @@
+%% -*- mode: poly-noweb+R; ess-indent-level: 2; -*-
+
+\chapter{Teendők \code{R} verzió váltásnál}\label{chap:9}
+
+\section{\code{R} csomagok installálása forrásból, 
+\code{type="source"}}\label{sec:9.1}
+
+Windows alatt a csomagokat jellemzően \code{zip file}-ból telepíti az
+ember. Ennek legfőbb előnye, hogy nem szükséges fordító programot
+telepíteni a gépre. Másfelől, mégis célszerű lehet forrásból telepíteni, abban az esetben, ha a csomag \code{zip} változata valamilyen ok miatt nincs fenn
+a \code{CRAN}-on. Ha ragaszkodunk a menü használatához és mégis
+forrásból akarunk telepíteni, 
+akkor célszerű a \code{pkgType} opciót átállítani \code{"both"}-ra. Ez
+megtehető az alábbi módon. 
+\begin{Rnw}
+<<eval=FALSE>>=
+options(pkgType = "both")
+@
+\end{Rnw}
+Ha a csomag forrása az esetleg szükséges \code{Rtools}-zal együtt
+megtalálható a gépünkön, 
+akkor az \code{R} konzolból a következő képpen indíthatjuk a telepítést:
+\begin{Rnw}
+<<eval=FALSE>>=
+install.packages("<csomag elérési útja>", type = "source", repos = NULL)
+@
+\end{Rnw}
+Ha a csomagban nincs fordítandó kód (\code{C/C++}, vagy
+\code{Fortran}), akkor a fenti módszer az 
+\code{Rtools} telepítése nélkül is működik.
+
+Az \code{Rtools} (\code{Windows toolset}) készlet letölthető az R
+projekt honlapjáról: 
+\begin{center}
+  \url{http://CRAN.R-project.org/bin/windows/Rtools/}.
+\end{center}
+A fordító készletről az előbbi linken ill. az ``R Installation and
+Administration'' című leírásban lehet további részleteket találni. Ez
+utóbbi az R help-jéből elérhető \code{pdf}, vagy \code{html} formátumban.
+ 
+
+\subsection{\code{com}, \code{comproxy} fordítása}
+A \code{com} csomag, jelenleg csak 32-bites módban fordítható. Ezért a
+telepítésekor, vagy frissítésekor a  \code{INSTALL\_opts} argumentumra
+is szükség van. 
+\begin{Rnw}
+<<eval=FALSE>>=
+install.packages("<com tar.gz elérési útja>", type = "source", repos = NULL, INSTALL_opts = "--no-multiarch")
+@
+\end{Rnw}
+A \code{com} csomagnál az utolsó argumentum nélkül is végigmegy a
+telepítés, mert csomag forrásában nem üres a \code{configure.win} file
+van. Nekem úgy tűnik, hogy ez egy nem dokumentált viselkedés, vagyis a
+későbbi verziókban változhat. 
+
+Ha az utolsó \code{INSTALL\_opts = "--no-multiarch"} argumentumot is
+megadjuk, akkor az \code{R} csak a 
+fő architektúrára, vagyis 32-bites \code{R} esetén csak 32-bites módra
+próbálja fordítani a csomagot. 
+Mivel az \code{Rxls} csomag a \code{com} csomagra épül, annak telepítése
+során is szükség van erre %INSTALL_opts="--no-multiarch" 
+az argumentumra. Ez a csomag nem tartalmaz fordított kódot, így egy
+nem üres \code{configure.win} file elhelyezése nem segít. 
+
+\subsection{\code{com} és \code{comproxy} 64 bites változata}
+
+A \code{com} csomag \code{1.0-68} ill. a \code{comproxy}
+\code{1.0-16}-os verziójától kezdve mindkét csomag használható 64
+bites \code{R}-rel is és a telepítés során az
+\code{INSTALL\_opts="--no-multiarch"} opcióra nincs szükség.
+Azaz a forrásból történő telepítéshez a következő \code{R} parancs használható:
+\begin{Rnw}
+<<eval=FALSE>>=
+install.packages("<com tar.gz elérési útja>", type = "source", repos = NULL)
+@
+\end{Rnw}
+
+A módosítás során, a néhány helyen még előforduló, \code{assert(\dots)}
+hívásokat lecseréltem. Az \code{assert(\dots)} hívások tipikusan olyan
+ellenőrzések voltak, amik normál működés mellett nem okozhattak gondot,
+viszont ha mégis, akkor a futó \code{R} példány összeomlását eredményezték.
+
+További változás  \code{com\_1.0-68}-ban, a korábbi változathoz
+képest, hogy a \code{rcom\_srv.tlb} és \code{StatConnLib.tlb} típus
+könyvtárak az \code{R} telepítés 
+\begin{align*}
+  &\code{library/com/lib/i386}
+  \intertext{mappájából a }
+  &\color{outcolor}\code{library/com/binary}  
+\end{align*}
+mappába kerültek át. Ezt a változtatást
+szintén a 64 bites változat tette szükségessé. Korábban a típus
+könyvtár betöltése a \code{com.dll} mappájából történt, ami viszont attól függ, hogy 32 vagy 64 bites
+\code{R}-et használunk-e. A \code{registry}-ben ezzel szemben egy
+helyet definiálhatunk a típus könyvtárak helyének ugyanis a bitek számától
+függetlenül ugyanazt az {interface}-t implementálja mind a 32, mind a
+64 bites \code{DLL}. 
+
+A típus könyvtár helyének változása miatt a
+frissítés után a \code{comRegisterRegistry()} \code{R} függvényt le kell
+futtatni egy rendszergazdai jogosultságokkal inditott \code{R}
+példányban, lásd \aref{fig:1.1} ábrán. A telepítő ezt a lépést
+automatikusan elvégzi, így ennek használatakor erre a lépésre nincs szükség.  
+
+\section{Egyebek}\label{sec:9.2}
+
+Van olyan korábban fejlesztett alkalmazás, ami ACCESS adatbázisból
+adatokat másol adotokat EXCEL munkalapra. Ehhez a \code{DAO3.6}
+library-t használtam. Ez nem érhető el a Windows újabb 
+változataiban. Az interneten keresgélve azt találtam, hogy a jelenlegi
+megfelelője: 
+\begin{verbatim}
+Microsoft Office 14.0 Access database engine Object Library
+\end{verbatim}
+Ha ez a hiba előfordul, akkor a szóbanforgó munkafüzet (pl. az \code{arviz}
+csomag \code{Karkalkulator}  
+munkafüzetében) a hivatkozást (\code{VB editor->References} menüpontját
+használva) le kell cserélni. 
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Rxls"
+%%% End: 

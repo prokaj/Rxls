@@ -1,0 +1,35 @@
+\begin{titlingpage}
+\raggedleft
+\hbox{}
+\vfill
+%\input Sanremo.fd
+%\newcommand*\initfamily{\usefont{U}{Sanremo}{xl}{n}}
+%\initfamily
+%\ECFAugie
+{\ttfamily
+  \fontsize{85}{100}%\initfamily 
+  \selectfont
+  \color{red!80!black} \textbf{R + EXCEL}}\\
+\vfill  
+{\LARGE Prokaj Vilmos\\
+\url{prokaj@cs.elte.hu}}
+
+\medskip
+\TeX{}elés időpontja: \today\\
+\begin{Rnw}
+  {\ttfamily
+    \begin{tabular}{rr@{}}\multicolumn{2}{l}{\textbf{Verziószámok}}\\
+      \Sexpr{with(list(pkgs=c("Rxls","com","comproxy")),
+      with(list(pkgver=sapply(lapply(pkgs,packageVersion),as.character)),
+      paste(pkgs,":&" ,pkgver,"\\\\",collapse="\n",sep="")))}
+    \end{tabular} 
+  }%
+\end{Rnw}
+\end{titlingpage}
+
+\tableofcontents
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Rxls"
+%%% End: 

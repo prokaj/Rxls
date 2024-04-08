@@ -1,0 +1,3520 @@
+R + EXCEL
+
+Prokaj Vilmos
+prokaj@cs.elte.hu
+2013.
+
+Tartalomjegyzék
+
+Tartalomjegyzék
+
+1
+
+1 Türelmetleneknek
+1.1. Installálás . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.2. EXCEL használata R-b˝ l és fordítva . . . . . . . . . . . . . . . . . . . . . . . . . .
+o
+1.3. Egyszeru minta projekt . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+˝
+
+3
+3
+4
+6
+
+2 Részletesebben
+2.1. Adatok . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.2. Kód . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+11
+11
+11
+
+3 Az EXCEL oldal felhasználói szemmel
+3.1. Az Rdev.xlam b˝ vítmény . . . . . . .
+o
+3.2. Melyik R példányt használjuk? . . . .
+3.3. Színek . . . . . . . . . . . . . . . . . . .
+3.4. Számoló munkafüzetek és az R.xls ﬁle
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+13
+13
+17
+18
+18
+
+4 Az Rxls csomag felhasználói szemmel
+4.1. Adat-átviteli függvények . . . . . . . . . . . . . . .
+4.2. Futási állapot kiírása . . . . . . . . . . . . . . . . .
+4.3. Segéd függvények . . . . . . . . . . . . . . . . . . .
+4.4. A background és logDev függvény részletesebben
+4.5. A progress függvény használata . . . . . . . . . .
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+19
+19
+19
+20
+22
+23
+
+5 Az R.xls munkafüzet részletesebben
+5.1. A Thisworkbook modul . . . . .
+5.2. A Pick modul . . . . . . . . . . .
+5.3. Az Interface modul . . . . . . .
+5.4. A RIC modul . . . . . . . . . . . .
+5.5. A WINAPI modul . . . . . . . . . .
+5.6. A selectfuns modul . . . . . . .
+5.7. Egyebek . . . . . . . . . . . . . .
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+26
+26
+27
+28
+28
+32
+32
+33
+
+6 Az Rdev.xlam bovítmény részletesebben
+˝
+6.1. A finalize modul . . . . . . . . . .
+6.2. Az insertform modul . . . . . . . .
+6.3. Az insertR modul . . . . . . . . . .
+6.4. Az insertSkeleton modul . . . . .
+6.5. Az insertVB modul . . . . . . . . . .
+6.6. Egyebek . . . . . . . . . . . . . . . .
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+35
+35
+36
+37
+38
+39
+40
+
+.
+.
+.
+.
+.
+.
+.
+
+1
+
+Tartalomjegyzék
+7
+
+Az R oldal részletesebben
+7.1. Az Rxls csomag rutinjai . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7.2. VBA kód konvertálása R kóddá . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7.3. Dokumentáció, vignette-ák . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+42
+42
+49
+52
+
+8 Hibaelhárítás
+8.1. COM problémák, DebugView . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8.2. R kód debugolása . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+54
+54
+54
+
+9
+
+Teendok R verzió váltásnál
+˝
+9.1. R csomagok installálása forrásból, type="source" . . . . . . . . . . . . . . . . .
+9.2. Egyebek . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+55
+55
+56
+
+10 Újdonságok az Rxls csomagban az 1.0-119 verzióhoz képest
+10.1. com csomag . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+57
+57
+
+11 Mellékletek listája
+
+59
+
+2
+
+1
+
+Türelmetleneknek
+
+1.1. Installálás
+A mellékelt ﬁleok között megtalálhatóak a comproxy, com ill. Rxls csomagok win-binary
+formátumban. A telepítést ebben a sorrendben kell elvégezni, pl. a menü használatával.
+A comproxy és com csomagok telepítését rendszegazdaként célszeru elvégezni, és rögtön a
+˝
+telepítés után érdemes regisztrálni az R com szerverét.
+A regisztráció csak akkor sikerül, ha rendszergazda jogosultsággal hajtjuk végre. Pontosabban a com csomag regisztrációjának elvégzéséhez, az R programot az ikon felett a jobb
+egérgombra klikkelve, a Futtatás rendszergazdaként lehet˝ séget kiválasztva kell elindítao
+ni, lásd a 1.1 ábrán.
+
+1.1. ábra. R indítása rendszergazdaként.
+A comCheckRegistry függvény ellen˝ rzi a registry bejegyzést, lásd a 10.1 szakaszt.
+o
+> comRegisterRegistry()
+NULL
+> comCheckRegistry()
+[1] TRUE
+Az Rxls csomag telepítéséhez nem szükséges rendszergazdai jogosultság Miután ennek
+telepítése is megtörtént, be kell tölteni az Rxls csomagot
+> require(Rxls)
+> installRxls()
+
+3
+
+1.2. EXCEL használata R-b˝ l és fordítva
+o
+A betöltés során valószínuleg kapunk egy ﬁgyelmeztetést, hogy az installRxls csoma˝
+got érdemes lefuttatni. Ez egyrészt létrehozza az {APPDATA}/Rxls könyvtárat és ide másolja
+R.xls, Rdev.xlam és Calc.xlt munkafüzeteket valamint létrehozza a verzió információt tartalmazó versions ﬁle-t.
+Alternatív lehet˝ ség a mellékelt R-COM_setup_1.0-0.exe használata.
+o
+
+1.2. EXCEL használata R-bol és fordítva
+˝
+Tegyük fel, hogy az Rxls csomag telepítése sikeresen megtörtént, az installRxls hiba nélkül
+lefutott. Els˝ ként az Rdev.xlam munkafüzetet érdemes megnyitni. Ha rendszeresen használo
+juk b˝ vítményként is telepíthetjük, ekkor nem kell mindig megkeresni és betölteni.
+o
+A Rdev.xlam munkafüzet az alábbi címen lálható
+<USER>/<APPDATA>/Rxls/Rdev.xlam
+Alapértelmezésben az {APPDATA} könyvtár rejtett. Ezt a vezérl˝ pult használatával felfedo
+hetjük (rejtett mappák megjelenítése). Másik lehet˝ ség, hogy a windows intéz˝ címsorába
+o
+o
+beírjuk az elérési utat. R-b˝ l a pontos elérési utat az appdata környezeti változóból is kiolvaso
+hatjuk:
+> Sys.getenv("appdata")
+[1] "C:\\Users\\prokaj\\AppData\\Roaming"
+Ez egyben az els˝ tesztje annak, hogy az elképzelt mechanizmus muködik-e más gépeo
+˝
+ken is. Az Rdev.xlam megnyitásakor az EXCEL megpróbálja megnyitni a hivatkozott R.xls
+munkafüzetet is. Egyáltalán nem nyivánvaló, hogy ez sikerül is, ugyanis az EXCEL a teljes
+elérési utat megjegyzi, ami nyilván nem létezik, ha a munkafüzetet egy másik gépre visszük
+át. Ezért a Workbook_open rutin ellen˝ rzi, hogy létezik-e megnyitott R.xls munkafüzet. Ha
+o
+nincs ilyen nevu munkafüzet megnyitva, akkor megpróbálja megnyitni az {appdata}/Rxls
+˝
+könyvtárból. Ha telepítés rendben megtörtént, akkor ez sikerül is.
+Ha minden rendben ment, akkor az újabb, ribbon-t használó EXCEL változatok esetén a
+Bővítmények fül alatt, régebbi EXCEL változatok esetében pedig a menüsorban megjelenik két
+almenü, az egyik felirata R, a másiké Rxls development.
+A telepítés legegyszerubb tesztelése, ha ráklikellünk az
+˝
+R->R ablak megjelenítés
+menüpontra. Hatására az EXCEL megnézi, hogy van-e futó R alkalmazás, ha van akkor az
+láthatóvá válik, ha nincs akkor elindít egy új R példányt. A következ˝ lépés az R és EXCEL
+o
+összekötése az
+R -> R<->EXCEL összekötés
+menüponttal. Ez az EXCEL új Ribbon kezel˝ felületén a Bövítmények fül alatt van. Ennek hatáo
+sára az R oldalon létrejön egy változó THISXL névvel. Ez reprezentálja az EXCEL alkalmazást.
+> ls(all = T)
+[1] ".startingApp" "THISXL"
+> THISXL
+<pointer: 0x002b3944>
+attr(,"class")
+[1] "COMObject"
+
+4
+
+1.2. EXCEL használata R-b˝ l és fordítva
+o
+Ennek segítségével ugyanúgy használhatjuk a hivatkozott EXCEL példányt R-b˝ l, mint
+o
+Visual Basic-b˝ l. Például, létrehozhatunk egy új munkafüzetet és abban az $A$1 cellát kio
+tölthetjük értékkel, vagy formulával. A formátum els˝ ránézésre talán szokatlan. Ahol a
+o
+Visual Basic kódban pont van, ott vagy egy tulajdonságot kérdezünk le, vagy egy metódust alkalmazunk. A com csomag korábbi változataiban a két esetnek eltér˝ a szintakszisa:
+o
+tulajdonságot
+obj[[<tulajdonságnév>, <argumentumok>]],
+míg metódust
+obj$<metódusnév>(<argumentumok>)
+alakban lehet elérni. Az új változatban, 1.0-52-t˝ l felfelé, lehet˝ ség van a <obj>$<név>()
+o
+o
+szintakszis használatára tulajdonság lekérdezés esetén is, lásd a 10.1 szakaszt.
+> wb <- THISXL[["workbooks"]]$add()
+> cell <- wb[["sheets", 1]][["range", "$A$1"]]
+> cell[["value"]]
+[1] NA
+> cell[["value"]] <- 1
+> cell[["value"]]
+[1] 1
+> cell <- cell$offset(1, 0)
+> cell[["formula"]] <- "=$A$1+2"
+> cell[["formula"]]
+[1] "=$A$1+2"
+> cell[["value"]]
+[1] 3
+> cell <- NULL
+Az Rxls csomag célja, hogy a gyakran el˝ forduló adatmozgatásokat egyszerubben végre
+o
+˝
+lehessen hajtani. Pl. adott EXCEL tartomány értékét az XLget függvénnyel is elérhetjük. Az
+XLreaddf és XLwritedf függvények data.frame-t olvasnak be ill. írnak EXCEL tartományból,
+ill. tartományba.
+>
++
+>
+>
+>
+
+df <- data.frame(Dátum = seq.Date(as.Date("2012-01-01"),
+by = "1 month", length = 5))
+df$díj <- rnorm(nrow(df), 100)
+df$kárkifizetés <- rnorm(nrow(df), 70)
+df
+Dátum
+díj kárkifizetés
+1 2012-01-01 99.48
+69.79
+2 2012-02-01 100.79
+69.63
+3 2012-03-01 98.49
+68.19
+4 2012-04-01 101.18
+70.02
+5 2012-05-01 99.53
+71.94
+> XLwritedf(XLrange = THISXL[["range", "$C$1"]], df = df,
++
+with.names = TRUE, autoFit = TRUE, setname = "havi_bontás")
+NULL
+Az utolsó sor hatására az EXCEL aktív munkalapjára másolódik a df data.frame a változónevekkel együtt (ez a táblázat fels˝ sora lesz), az oszlop szélességeket az éppen másolt
+o
+táblázathoz illesztjük, végül létrehozunk egy nevet az aktív EXCEL munkafüzetben, ami arra
+a tartományra hivatkozik, ahová az adatokat másoltuk.
+5
+
+1.3. Egyszeru minta projekt
+˝
+
+> ## wb a korábban létrehozott új munkafüzet
+> address <- wb[["names"]]$item("havi_bontás")[["refersto"]]
+> address
+[1] "=Munka1!$C$1:$E$6"
+> df1 <- XLreaddf.cols(address)
+> df1
+Dátum
+díj kárkifizetés
+1 40909 99.48
+69.79
+2 40940 100.79
+69.63
+3 40969 98.49
+68.19
+4 41000 101.18
+70.02
+5 41030 99.53
+71.94
+> ## vagy
+> range <- wb[["names"]]$item("havi_bontás")[["referstorange"]]
+> range$address(external = TRUE)
+[1] "[Munkafüzet2]Munka1!$C$1:$E$6"
+> df2 <- XLreaddf.cols(XLrange = range)
+> identical(df1, df2)
+[1] TRUE
+Látható, hogy a dátum adatok részben elvesztek. Ennek az az oka, hogy az XLreaddf.cols
+ill. XLreaddf.rows függvények a tartomány value2 tulajdonságát használják. Amikor ezek
+a rutinok születtek a com (lánykori nevén rcom) nem tudta kezelni a dátum típusú adatokat.
+Kerül˝ megoldásként született az XLDate függvény, ami a numerikus adatot visszaalakítja
+o
+Date típusúvá.
+> XLDate(df1$Dátum)
+[1] "2012-01-01" "2012-02-01" "2012-03-01" "2012-04-01"
+[5] "2012-05-01"
+
+1.3. Egyszeru minta projekt
+˝
+Tegyük fel, hogy van egy R scriptünk calc.R névvel.
+> cat(readLines("calc.R"), sep = "\n")
+calc.cn<-function(lx,nu=1/(1+i),i=if (!missing (nu)) (1/nu)-1){
+x <- seq_along(lx)-1
+## 0-val indul az indexelés
+lx1<- lx[-length(lx)]
+qx <- -0.95*diff(lx)/(lx1+(lx1==0))
+## módosított halandóság
+lx <- lx[1]*cumprod(c(1,1-qx))
+## módosított l
+df <- data.frame(x=x,lx=lx,qx=c(qx,1),Dx=lx*nu^x)
+df$dx <- with(df,lx*qx)
+df$Cx <- with(df,dx*nu^(x+.5))
+df$Nx <- rev(cumsum(rev(df$Dx)))
+df$Mx <- rev(cumsum(rev(df$Cx)))
+df$Rx <- rev(cumsum(rev(df$Mx)))
+attr(df,"nu")<-nu
+6
+
+1.3. Egyszeru minta projekt
+˝
+attr(df,"i")<-i
+df
+
+}
+## teszt adat
+lx<-seq(1e5,0,length.out=101)
+cn<-calc.cn(lx,i=.05)
+Ez a script kommutációs számokat számol módosított halandósági táblából, a halálozási
+rátát módosítjuk az eredeti 95 %-ára. A calc.cn függvénynek három argumentuma van,
+ebb˝ l legalább kett˝ t kell megadni, az lx halandósági függvényt és a nu diszkont ráta ill.
+o
+o
+i technikai kamat közül az egyiket, vagy mindkett˝ t. Ez a számolás csak a diszkont rátát
+o
+használja, de az ereményben megjegyezzük a technikai kamatot i-t is.
+> source("calc.R", local = TRUE)
+> str(cn)
+'data.frame': 101 obs. of 9 variables:
+$ x : num 0 1 2 3 4 5 6 7 8 9 ...
+$ lx: num 100000 99050 98100 97149 96197 ...
+$ qx: num 0.0095 0.0096 0.00969 0.00979 0.0099 ...
+$ Dx: num 100000 94333 88979 83921 79142 ...
+$ dx: num 950 950 951 951 952 ...
+$ Cx: num 927 883 842 802 764 ...
+$ Nx: num 1698778 1598778 1504445 1415466 1331545 ...
+$ Mx: num 19578 18651 17767 16925 16123 ...
+$ Rx: num 402395 382817 364167 346400 329474 ...
+- attr(*, "nu")= num 0.952
+- attr(*, "i")= num 0.05
+Tegyük fel, hogy a bemen˝ adatokat lx, nu és i-t szeretnénk EXCEL-ben beállítani és az
+o
+eredményül kapott táblázatot a számoló munkafüzet új lapjára szeretnénk írni. A lx halandósági függvény az EXCEL három oszlopos táblázata, kor, férfi és női oszlopokkal. Azt
+szeretnénk, hogy a számoló munkafüzetben be lehessen állítani, a technikai kamat értékét,
+azt, hogy férﬁ, vagy n˝ i haladósággal akarunk számolni, valamint azt is, hogy mi legyen az
+o
+új munkalap neve.
+A megvalósításhoz nyissuk meg az Rdev.xlam munkafüzetet. Ha nincs beállítva, akkor
+engedélyezzük a Visual Basic projektekhez való hozzáférést. Hozzunk létre egy új számoló
+munkafüzetet az Rxls development menü Új számoló munkafüzet parancsával. A felugró
+mentés ablakban adjuk meg az új munkafüzet nevét, alapértelmezésben Calc1.xls. A ﬁleformátum lehet xlsm is. Az új munkafüzetben két lap van Adatok ill. R kód névvel.
+Els˝ lépésben az Adatok munkalapot töltsük fel. A jobb egérgomb alatti menüben az
+o
+Insert Form pont alatt található néhány gyakrabban el˝ forduló elem.
+o
+Jelöljük ki a $B$5:$B$7 tartományt és a jobb egérgomb alatt felnyíló menüt használva
+illesszünk be egy Data Line-t. A $B oszlopban cseréljük le az Adat neveket a következ˝ ko
+kel: Technikai kamat, Nem és Eredmény helye. Töltsük ki az # R nevek # oszlopot i, nem,
+wsname-mel. Ezek lesznek a változó nevek az R oldalon.
+Ezután adjuk meg az alapértelmezett értékeket: a technikai kamat esetén ez lehet pl. 0.02
+a nem esetén férfi, míg az Eremény helye mez˝ esetén lehet egy képlet, ami a technikai
+o
+kamat és a nem értékéb˝ l kiszámolja az új munkafüzet nevét, pl.
+o
+="Kommutációs számok("&$D$6&",i="&$D$5&")"
+
+7
+
+1.3. Egyszeru minta projekt
+˝
+Végül mivel a Nem mez˝ esetén csak két lehetséges értékb˝ l lehet választani, töltsük ki a
+o
+o
+$C$6 mez˝ t férfi;női értékkel. Ez a választható értékek felsorolása pontosvessz˝ vel elváo
+o
+lasztva. Ha most kijelöljük a $C$6 mez˝ t és a jobb egérgomb alatt felnyíló menü segítségével
+o
+beszúrunk egy Drop Down Data-t, akkor az R kód munkalapra $A oszlopának aljára másolódik a lehetséges értékek listája, és a $C$6 cellában megjelenik egy lenyíló vezérl˝ elem. A
+o
+vezérl˝ elem alatt a $C$6 cella zárolt lesz, és a képletezés hatására mindig a választott értéket
+o
+tartalmazza.
+Az így kialakított munkalap képe:
+
+1.2. ábra. Adatok munkalap
+Ha ezen a ponton a Számolás indítása gombra klikkelünk, akkor az Adatok munkalapon deﬁniált változók megjelennek az R oldalon is. Ezt ellen˝ rizhetjük az ls.str() parancs
+o
+beírásával az R konzolba. A R ablakot az EXCEL
+Bővítmények -> R -> R ablak megjelenítése
+menüponttal jeleníthetjük meg, ha az háttérben van.
+> ls.str()
+# R nevek # : chr "Érték"
+i : num 0.05
+nem : chr "férfi"
+THISXL : Class 'COMObject' <externalptr>
+wsname : chr "Kommutációs számok(férfi,i=0,05)"
+Ezzel persze még a számolást nem tudjuk elvégezni, mert nem adtuk át a halandósági
+függvényt lx-et, amire szintén szükség van a számoláshoz. Ha ezt is az EXCEL munkafüzetben
+szeretnénk tárolni, akkor illesszük be egy új munkalapra és lépjünk át az R kód munkaplapra. Keressük meg az adatok megadására szolgáló részt, lásd az 1.3 ábrán. A változtatásokat
+ezen a munkalapon a kékes színu mez˝ kbe érdemes írni, a munkalap többi része úgy van
+˝
+o
+képletezve, hogy az itt megadott adatokból összerakja a végrehajtandó R kódot. Az els˝ sor
+o
+ki van töltve ez mondja meg az R-nek, hogy olvassa be az adatok munkalapon megadott adatokat. A második sor fogja megmondani az lx tartomány nevét. Mivel EXCEL tartományok
+teljes címére gyakran van szükség az R.xls munkafüzetben deﬁniálva van az extAddress
+munkalapfüggvény, ami az els˝ argumentumának címét adja vissza szöveges formátumban,
+o
+ha a második argumentum IGAZ, akkor a aposztrófok között. Emellett szükség van annak
+a munkafüzetnek a nevére is, amibe az eredményt be akarjuk illeszteni. Ez a mi esetünkben a Calc1.xls munkafüzet, ezért a harmadik sorban wbname<-"Calc1.xls" kerül. Ez is
+képletezve van, így a munkafüzetet akár más néven is elmenthetjük.
+8
+
+1.3. Egyszeru minta projekt
+˝
+
+1.3. ábra. R kód munkalap
+Utolsó lépésként meg kell adnunk a Calc1.xls munkafüzetben azt is, hogy az R-nek átadott adatokkal milyen számolást is végezzen. Ha hordozhatóvá akarjuk tenni a munkafüzetet, akkor erre a legegyszerubb megoldás, ha a számolást végz˝ R kódot is a munkafüzetben
+˝
+o
+tároljuk. Ezt R kódlap beszúrásával tehetjük meg.
+A calc.R közvetlenül nem alkalmas, a szkriptet módosítani kell a végén, hogy a számolást
+az EXCEL-b˝ l kapott adatok alapján végezze. A módosított és az eredeti is megtalálható a
+o
+mellékelt ﬁle-ok között.
+> calc.R <- readLines("calc.R")
+> calc1.R <- readLines("calc1.R")
+> cat("új sorok:", setdiff(calc1.R, calc.R), "\ra régi helyett:",
++
+setdiff(calc.R, calc1.R), sep = "\n
+")
+új sorok:
+lx<-XLreaddf.cols(lxname)
+cn<-calc.cn(lx[[nem]],i=i)
+ws<-THISXL$workbooks(wbname)$worksheets()$add()
+ws[["name"]]<-wsname
+XLwritedf (cn,XLrange=ws$cells(1,1))
+ws<-NULL
+a régi helyett:
+## teszt adat
+lx<-seq(1e5,0,length.out=101)
+cn<-calc.cn(lx,i=.05)
+Az így módosított kódot szúrjuk be R kódlap-ként a munkafüzetbe. Az R kódlap beszúrás funkciót két helyen is megtalálhatjuk, egyrészt az Rxls development menüpont alatt,
+másrészt a munkalap fülekr˝ l felnyíló menüben is. A muvelet eredményeként egy új munkao
+˝
+lap jön létre R kód(calc1.R) névvel, lásd az 1.4 ábrát.
+Ezután be kell jegyezni az R kód munkalapon, hogy a calc1.R kódlapot az R-nek végre
+kell hajtania. Ehhez az R kód munkalapon töltsük ki a kódlapok mez˝ els˝ sorát az 1.5 ábrán
+o o
+látható módon.
+Ezzel a Calc1.xls munkafüzet elkészült. Utolsó lépésként kattintsunk a
+Bővítmények -> Rxls development -> Véglegesítés
+gombra. Ekkor az R kód nevu munkalapok eltunnek, az Adatok munkalapon az els˝ oszlop
+˝
+˝
+o
+elrejt˝ dik, és a látható munkalapok védetté válnak. Ezután csak a kékes színu felhasználói
+o
+˝
+adatok részére fenntartott mez˝ kbe lehet írni.
+o
+
+9
+
+1.3. Egyszeru minta projekt
+˝
+
+1.4. ábra. A R kód(calc1.R) kódlap
+
+1.5. ábra. A R kód munkalap kitöltve
+
+10
+
+2
+
+Részletesebben
+
+Az elképzelt munkamenet a következ˝ . Van egy R szkriptünk, ami elé szeretnénk tenni egy
+o
+munkafüzetet, ami a paramétereket tartalmazza.
+
+2.1. Adatok
+Els˝ lépésként azonosítani kell a bemen˝ adatokat és a el kell készíteni a számoló munkao
+o
+füzet Adatok munkalapját. Ha nagyobb mennyiségu ﬁx paramétert is át kell adni, akkor az
+˝
+lehet a szkriptben vagy létre lehet hozni egy olyan munkalapot az EXCEL munkafüzetben ami
+ezeket a paramétereket tartalmazza. Ha ennek az extra adatokat tartalmazó munkalapnak a
+neve R kód-dal kezd˝ dik, vagy a (hidden)-nel végz˝ dik, akkor a véglegesítés során az adott
+o
+o
+munkalap rejtetté válik.
+Az adatok átvitelére az XLdata függvényt célszeru használni. Ennek részletes leírását lásd
+˝
+a 7.1 szakaszban. Itt megelégszünk annyival, hogy XLdata (n1,n2,range="<range cím>")
+függvény hatására a <range cím> által meghatározott tartomány n1 oszlopában lév˝ értékeo
+ket változó névként, az n2 oszlopban mellette lév˝ értékeket a változó értékeként értelmezi
+o
+az R. Ha a név mez˝ üres vagy nem szöveges típusú, akkor az adott sorhoz nem tartozik
+o
+változó deﬁníció. Ha egy név többször is szerepel, akkor az utolsó sor változó deﬁníciója
+érvényes. Az n1,n2 értékek megadása nem kötelez˝ , ha viszont hiányzik, akkor a <range
+o
+cím> sztringnek egy legalább két oszlopos tartományt kell kijelölnie és ennek els˝ két oszloo
+pát fogja használni a program. A <range cím> teljes oszlopokra is mutathat, pl $A:$C. Ebben
+az esetben csak a munkalap usedrange tartományát használjuk.
+Alapértelmezésben, csak a látható sorokat használjuk és egyesített cellák esetén a cellában
+látható értéket használjuk.
+Abban az esetben, ha a változó név nem megengedett karaktereket is tartalmaz, pl. szóköz, ékezetes karakterek, számmal kezd˝ d˝ név stb. akkor az R oldalon a változó nevét ‘
+o o
+(back quote) karakterek közé kell tenni. Pl. az ‘# R nevek #‘ nevu változó értéke (ez az
+˝
+Adatok munkalap 5. sora) "Érték" lesz, ahogy ez a 8. oldalon látható.
+
+2.2. Kód
+Az R szkriptet célszeru két részre bontani, függvény deﬁníciós részre és az aktuális számolást
+˝
+végz˝ részre. Ennek csupán teszteléskor van jelent˝ sége. Ha nem az történik, amit várunk,
+o
+o
+akkor kénytelenek vagyunk a hibát megkeresni a kódban. Az R kód munkalapon kijelölhetjük, hogy melyik függvényt muködését akarjuk ellen˝ rizni. Ennek az az eredménye, hogy az
+˝
+o
+adatok és a függvények beolvasása után a debug (<fv. név>) is végrehajtásra kerül és így
+a debugolásra kijelölt függvényt lépésenként lehet kiértékelni.
+Célszeru a függvényeket és a számolást végz˝ kódot, mondjuk R studio-ban, létrehozni
+˝
+o
+és tesztelni. Ezután a kész kódot elmenteni R szkriptként (.R kiterjesztéssel) majd azt importálni a számoló munkafüzetbe R kódlapként. Így is el˝ fordulhatnak váratlan dolgok, de
+o
+ezek nagy részét kiszurhetjük, ha a kód megírása során a bemen˝ adatokat, vagy is a futási
+˝
+o
+11
+
+2.2. Kód
+környezetet már az EXCEL adja. Ezalatt azt értem, hogy az els˝ lépésként létrehozott Adatok
+o
+munkalapot kitöltjük a teszt paraméterekkel, összekötjük az R példányunkat az EXCEL-lel
+(Rxls menü R <-> EXCEL összekötés) és ráklikkelünk a Számolás indítása feliratú gombra. Mivel még nincs semmilyen végrehajtandó kód a számoló munkafüzetben, ennek hatására a teszt adatok, az EXCELben deﬁniált változó nevekkel, átkerülnek az R-be. Ebben az R
+környezetben érdemes dolgozni.
+
+12
+
+3
+
+Az EXCEL oldal felhasználói szemmel
+
+Az Rxls R csomagban három EXCEL munkafüzet van.
+R.xls Ez egy Ofﬁce XP kompatibilis munkafüzet. Ez az amit az alkalmazások ténylegesen
+használnak. Ebben van megoldva a R példány megkeresése és az összeköttetés létrehozása, valamint néhány olyan rutin is ami a számoló munkafüzetekben szükséges lehet:
+ﬁle és mappa választás, valamint ACCESS tábla választás.
+Rdev.xlam Ez a munkafüzet egy b˝ vítmény, ami a számoló munkafüzetek létrehozásához ad
+o
+segítséget.
+Calc.xlt A számoló munkafüzetek templateje.
+
+3.1. Az Rdev.xlam bovítmény
+˝
+Rdev.xlam
+Ebbe a munkafüzetbe gyujtöttem azokat a rutinokat, melyek csak a fejlesztéshez szüksége˝
+sek. Ezek munkalap védelem be és kikapcsolása, R kód elrejtése és felfedése, valamint a
+munkafüzet véglegesítése. A véglegesítés a munkalapok védelmének bekapcsolását, a kódot
+tartalmazó munkalapok elrejtését jelenti. Ennek során a védett munkalapokon a felhasználó
+által kitöltend˝ mez˝ k zárolása feloldódik. Az, hogy melyik cella tartozik ebbe a csoportba a
+o
+o
+kitöltés színe határozza meg.
+A tényleges számolást végz˝ R rutinokat talán a legegyszerubb magában a számoló muno
+˝
+kafüzetben tárolni. Másik lehet˝ ség lehetne, hogy a feladatra szabott R csomagot készítünk
+o
+és azt telepítjük a felhasználó gépére.
+Az R kódot tehát EXCEL munkalapon szeretnénk tárolni. Szerkeszteni, tesztelni viszont
+nem itt célszeru. A követend˝ eljárás az lehet, hogy pl. Rstudio-ban fejlesztünk és a kész kó˝
+o
+dot bemásoljuk a munkafüzetbe. Az ilyen R kódot tartalmazó munkalapokat a továbbiakban
+R kódlapnak fogom nevezni.
+Ez a b˝ vítmény számos új menüpontot deﬁniál. Az EXCEL újabb, RIBBON felületet haszo
+náló, változataiban létrehoz egy Rxls development tabot, a korábbi változatokban pedig
+ugyanilyen névvel egy menüpontot, az EXCEL f˝ menüsorában. Emellett a cell menü kio
+egészül néhány ponttal és a munkalap fülek menüje is kap egy új menüpontot.
+
+Az Rxls development fül elemei
+A Rxls development fülön lév˝ parancsok elérhet˝ ek a Bővítmények fül alatti R és Rxls
+o
+o
+development menükben is. Az EXCEL korábbi, nem a RIBBON felületet használó változataiban pedig a menüsorban jelenik meg ez a két almenü.
+
+13
+
+3.1. Az Rdev.xlam b˝ vítmény
+o
+
+3.1. ábra. Az Rxls development menü.
+
+Számoló munkafüzet csoport
+Itt csak két gomb található, Új ill. Véglegesítés névvel.
+Az Új gomb, létrehoz egy új számoló munkafüzetet. Ez a Calc.xlt template egy másolata
+lesz. A létrehozás során rögtön el is mentjük. Ennek oka, hogy néhány munkalapfüggvény
+(INFO, CELLA) másként viselkedik mentett munkafüzetben, mint mentetlenben. A számoló
+munkafüzet xls kiterjesztésu, azaz korábbi OFFICE változatokban is megnyitható.
+˝
+A Véglegesítés menüparancs hatására a számoló munkafüzet R kódlapjai rejtetté válnak, hasonlóan az Adatok munkalap # R nevek # oszlopához. Valamennyi cella zárolt lesz
+kivéve azokat, amelyek színe megegyezik a customvalue színnel. Ez a szín R kód munkalap
+colortable tartományából derül ki. A tartomány elemei színes cellák, a cella értéke a szín
+neve. Végül a kapott munkafüzetet elmentjük.
+R kód csoport
+Az els˝ oszlopban az R kódlapok kezelésére szolgáló parancsok vannak. Beszúrás, frissítés és
+o
+mentés. Frissítés és mentés esetén el˝ fordulhat a korábbi változatok felülírása. Ilyen esetben
+o
+egy felugró ablakban meg kell er˝ síteni a szándékot.
+o
+A második oszlop elemeinek segítségével az R kód nevu munkalapokat elrejthetjük, ill.
+˝
+ha további szerkesztésre van szükség felfedhetjük.
+Védelem csoport
+Lapvédelem be- ill. kikapcsolása. Ez a két rutin (a Véglegesítés-sel ellentétben) nem módosítja a cellák zárolását.
+R ablak csoport
+Ez a csoport az R.xls munkafüzetben deﬁniált rutinokat teszi elérhet˝ vé.
+o
+Megjelenítés/Elrejtés Ha nincs aktív R példány, akkor a futó R példányok közül választhat egyet a felhasználó. Ha nincs futó R, akkor elindítunk egyet, ha pontosan egy R
+példány fut, akkor azt fogjuk használni. A gomb megnyomása után a kiválasztott R
+példány aktív lesz és az ablaka látható.
+Ha már van aktív R példányunk, akkor a gomb megnyomása után annak ablaka rejtetté
+válik. Továbbra is használható lesz, de az asztalon nem lesz nyoma.
+R–EXCEL összekötés Az aktív R példányban létrehozza a THISXL változót, ami az EXCEL példányra mutató COMObject (Ez tulajdonképpen az EXCEL Visual Basic Application változójának értéke).
+
+14
+
+3.1. Az Rdev.xlam b˝ vítmény
+o
+Ha nincs aktív R példány, akkor létrehoz egyet, hasonlóan a Megjelenítéshez, de az így
+létrehozott R példány ablaka alapértelmezésben háttérben marad.
+Megszakítás Az R oldalon folyó számolást próbálja megszakítani, az aktív R példány konzoljába küldött ESCAPE karakterrel.
+
+Cella menü
+
+3.2. ábra. A cella menü új elemei
+
+Insert Form Ez egy menüt kínál fel, amiben a számoló munkafüzetek szokásos elemei találhatóak:
+File form Egy három sorból és négy oszlopból álló tartományt tölt ki az aktív munkalapon, melynek bal fels˝ sarka az aktív cella. A tartomány els˝ sora címsor, a
+o
+o
+második sorban a könyvtár, a harmadikban a ﬁle neve adható meg. A második és
+harmadik sor felhasználói mez˝ jében található gombok hatására az EXCEL ﬁle váo
+lasztó dialógja jelenik meg, így nem kell az elérési utat és a ﬁle nevet kézzel beírni.
+A ﬁle típusát egy felugró inputboxban adhatjuk meg. Valójában itt a ﬁle ﬁltert kell
+megadni leírás,*.kiterjesztés alakban. EXCEL, .RData, és .R ﬁle típusok a
+legördül˝ menüb˝ l is ki lehet választani. Ha üresen hagyjuk az inputboxot, akkor
+o
+o
+tetsz˝ leges ﬁle típust választhat majd a felhasználó.
+o
+Access form Hasonló a File form-hoz, azonban egyel több sort tölt ki a munkalapon.
+Az utolsó sorban az ACCESS adatbázis táblái közül lehet választani.
+Access + SQL form Volt olyan korábbi munka, ahol felmerült, hogy nem csak ACCESS
+adatbázisból, hanem más SQL lekérdezést használó rendszerb˝ l is lehessen adatot
+o
+lekérdezni. Ez az urlap erre szolgál. A bal fels˝ sarkában van egy gomb, ami két
+˝
+o
+lehet˝ ség között kapcsolgat. Így csak az egyik opció látható. Az ACCESS formhoz
+o
+képest van egy plusz sor ami az ACCESS lekérdezés where klauzulájának megadására szolgál. Ha átkapcsolunk SQL módra, akkor a kapcsolat létrehozásához
+szükséges DSN karakterláncot és az SQL parancsot kell megadni. Mivel csak a látható sorokban lév˝ adatok kerülnek át az R oldalra, az R program el tudja dönteni,
+o
+milyen adatbázist kell használnia. Pl. ha az SQL parancs R neve lekerdezes1.SQL,
+akkor a következ˝ kód részlet
+o
+if (exists("lekerdezes1.SQL")) {
+## kód az SQL ághoz
+} else {
+## kód az ACCESS ághoz
+}
+választ a kétféle adatforrás közül. Mindez csak akkor muködik megbízhatóan, ha
+˝
+olyan nevet adunk, ami nem létezik a globális környezetben. Nem célszeru pl. az
+˝
+15
+
+3.1. Az Rdev.xlam b˝ vítmény
+o
+x vagy i használata. Egy másik gond az lehet, hogy ha mindkét adatforrást szeretnénk egy-egy futás erejéig kipróbálni. Ilyenkor az XLdata függvény rmHidden
+argumentumát is igazra kell állítani, lásd a 7.1 szakaszt. Ezt az R kód munkalap
+$K$21 mez˝ jében célszeru megtenni. A képletet célszeru átírni a következ˝ móo
+˝
+˝
+o
+don:
+="XLdata(1, 4, rmHidden=TRUE, range="&L21&")"
+Ha egy függvényen belül kell ellen˝ rizni, hogy létezik-e a paraméterként átadott
+o
+érték, akkor a használhatjuk a getFromDB függvényt mintaként:
+> getFromDB
+function (dir, file, table, where = "", dsn, sql)
+{
+if (!inherits(try(dsn, silent = TRUE), "try-error")) {
+ODBC.get(dsn = dsn, sql = sql)
+}
+else {
+ACCESS.get(dir = dir, file = file, table = table,
+where = where)
+}
+}
+<environment: namespace:Rxls>
+Ekkor, ha az Adatok munkalapon az DSN, SQL sorok el vannak rejtve és a XLdata,
+rmHidden paramétere TRUE, akkor a függvény az ACCESS ágon ellenkez˝ esetben
+o
+pedig az SQL ágon fog végig menni. A módszer a R try függvényét használja,
+ami megpróbálja kiértékelni az els˝ argumentumát (ez jelen esetben a dsn arguo
+mentum). Ha a kiértékelés hiba nélkül megtörténik, akkor a kiértékelés eredményét kapjuk, ha hiba történt, akkor egy hiba (try-error osztályú) objektumot.
+Az inherit függvény ellen˝ rzi, hogy egy adott érték osztályai között szerepel-e
+o
+a megadott név. R-ben minden változónak van osztálya, vagy explicit (a class
+attribútum értéke) vagy implicit módon (ezek az alaptípusok, pl. numeric, stb.)
+Az ACCESS.get és ODBC.get függvények deﬁniálva van az Rxls csomagban. Az
+ODBC.get rutint nem tudtam tesztelni az érdekes esetben, amikor Oracle rendszerhez akarunk csatlakozni.
+Data Line A kijelölt tartomány minden sorát kitölti egy egy adat sorral. Használatával
+már találkoztunk az 1.3 részben.
+Drop down data Ha egy adat sorban csak néhány lehet˝ ség közül választhat a felhaszo
+náló, akkor célszeru azt egy legördül˝ menüben felkínálni számára. Erre szolgál
+˝
+o
+ez a menüpont.
+Hozzunk létre egy adat sort a Data Line beillesztése parancs segítségével, majd a
+felhasználói beállításnak fenntartott mez˝ be írjuk be a lehet˝ ségeket pontosvessz˝ o
+o
+o
+vel elválasztva. Ezután jelöljük ki a cellát és klikkeljünk a jobb egérgombra, majd
+válasszuk ki a Drop down data menüpontot. Ekkor az R kód munkalapon létrejön a választék lista az $A:$A oszlop végén és legördül˝ urlap alatti cella képlete
+o ˝
+kitölt˝ dik.
+o
+Több cellát is kijelölhetünk. Ilyenkor mindegyik kijelölt cellába egy legördül˝ meo
+nü kerül a cella tartalma alapján.
+Ha a kijelölt cella üres, akkor a választéklista hosszát kell megadni egy felugró
+input mez˝ ben. A lista elemeit kés˝ bb az R kód munkafüzetben adhatjuk meg.
+o
+o
+16
+
+3.2. Melyik R példányt használjuk?
+Appendix 1.3 részben már láthattunk példát a Drop down data alkalmazására.
+Run button Erre akkor lehet szükség, ha a f˝ számolás mellett valamilyen rész feladao
+tot szeretnénk külön is végrehajthatóvá tenni.
+A kijelölt tartomány fölé beilleszt egy gombot Számolás indítása szöveggel. A
+gomb alatti cellák szövegét küldi át az R-nek végrehajtásra. Ez pl. lehet
+="XLsource(""<R kódlap neve>"",wbname="""&filename&""")"
+A filename név értéke az R kódlap munkalapon van megadva és az aktuális munkafüzet neve a megfelel˝ formában. A szükséges adatok átadását célszeru az R
+o
+˝
+kódlapon elvégezni, pl. az XLdata függvény használatával.
+Used colors, Change colors Kigyujti, ill. átállítja a munkafüzetben használt színeket. Rész˝
+letesen lásd a 3.3 szakaszban.
+
+Munkalap fül
+Itt is elérhet˝ az R kódlap beszúrás parancs.
+o
+
+3.2. Melyik R példányt használjuk?
+R példány három formában fordulhat el˝ : terminál ablakban indított R, RGui, ill. az Rstudio
+o
+rsession szála. Mindegyiknek lehet 32–bites ill. 64–bites változata. Mivel a com csomag csak
+a 32–bites változaton muködik, EXCEL-b˝ l csak ezt tudjuk használni. Az RGui két változatban
+˝
+o
+fordulhat el˝ MDI (sok kis ablak egy nagy ablakon belül) ill. SDI (sok egymástól független
+o
+ablak). Az Rxls mindegyik változatot tudja kezelni, de ha nincs futó példány, akkor mindig
+a RGui-t indítja el, SDI módban. A felhasználói beállítások (esetleges Rproﬁle ﬁle tartalma)
+nem érvényesülnek, mert a programot –vanilla opcióval indítjuk.
+A legegyszerubb eset, az amikor nincs futó R példány, vagy pontosan egy van. Ha nincs
+˝
+futó R példány, akkor elindítunk egy újat és egyb˝ l betöltjük az Rxls, comproxy és com csomao
+gokat.
+Ha pontosan egy futó R példány van, akkor azt próbáljuk használni. Ezt lehetne ﬁnomítani, mert az általunk indított R példányokban feljegyezzük az EXCEL alkalmazás azonosítóját
+(hinstance) a .startingapp változóban. Így ha el is veszítettük a kapcsolatot valamilyen
+oknál fogva le tudjuk ellen˝ rizni, hogy a futó R példányt mi indítottuk el vagy sem.
+o
+Ha több R példány fut éppen, akkor a felhasználónak kell választania egy felugró ablakban. Ekkor is lehet˝ ség van új példányt indítani. A választó dialógban megjelen˝ információk
+o
+o
+
+3.3. ábra. R szerver választó dialóg
+
+windowtitle, PID Az R ablak címsora, ill. az adott R példány process id-je.
+COM loaded Azt mutatja, hogy a com csomag be van-e töltve.
+
+17
+
+3.3. Színek
+busy Ha a com csomag be van töltve, akkor le tudjuk kérdezni a sys.nframe() értéket. Ennek
+értéke 0, ha az R nem végez számolást, és legalább 1 ha éppen függvény kiértékelés
+zajlik. Ha a com csomag nincs betöltve a mez˝ értéke ???.
+o
+connectedTo Ha a com csomag be van töltve, akkor le tudjuk ellen˝ rizni, hogy létezik-e a
+o
+THISXL változó az R oldalon és az a mi EXCEL példányunkra mutat-e? Ez alapján meg
+tudjuk mondani, hogy az adott R példány a mi EXCEL példányunkkal van összekötve,
+másikkal, vagy egyikkel sem.
+Ha van rá igény a fenti lista esetleg kiegészíthet˝ azzal is, hogy a mi EXCEL példányunk
+o
+indította-e el az adott R példányt.
+
+3.3. Színek
+A számoló munkafüzetek színesek. Számomra segítség, ha látom, hol vannak a munkafüzeten adatok, melyek azok a mez˝ k, amiket ki kell vagy ki lehet tölteni, melyek a feliratok, száo
+molt mez˝ k, stb.. A színeket az Ofﬁce XP által kínált skálából választottam annak idején, és
+o
+ezek a színek maradtak a mostani változatban is. Ugyanakkor az újabb Ofﬁce változatokban
+már nem csak egy limitált színsorból lehet választani, hanem a teljes szín skála használható.
+Ha az Rdev.xlam munkafüzet be van töltve, akkor a cella menü kiegészül két menüponttal, Used colors és Change colors. Mindkét parancs a kijelölt tartománnyal dolgozik. A
+Used colors a kijelölt tartomány els˝ oszlopát kitölti a munkafüzetben használt színekkel. A
+o
+Change colors esetében a kijelölésnek két oszlopot kell tartalmaznia. Az els˝ oszlop színeit
+o
+a második oszlopban mellette található színre cseréli az egész munkafüzetben.
+A számoló munkafüzetek R kód lapján van egy colortable nevu tartomány. Ennek els˝
+˝
+o
+oszlopát nem érdemes változtatni. Ha a munkafüzetet átszíneztük, akkor új elem beszúrásakor ebb˝ l derül ki, hogy milyen színeket használ a munkafüzet az alapértelmezett színek
+o
+helyett. A második oszlopot viszont kedvünkre átszínezhetjük és a Change colors menü paranccsal az egész munkafüzetet átszínezhetjük. Itt arra érdemes ﬁgyelni, hogy a négy szín
+különböz˝ maradjon, de legalább a felhasználói adatoknak fenntartott mez˝ színe eltérjen
+o
+o
+a többit˝ l. Ugyanis a véglegesítés során ez alapján derül ki, hogy mely mez˝ k maradjanak
+o
+o
+szerkeszthet˝ ek.
+o
+Ha egyes részeket manuálisan hozunk létre vagy színezünk át, akkor az utolsó fázisban
+célszeru egységesíteni a színeket. Ezt a legegyszerubben úgy tehetjük meg, hogy létreho˝
+˝
+zunk ideiglenesen egy új munkalapot, arra kigyujtjük a használt színeket a Used colors pa˝
+ranccsal, a mellette lev˝ oszlopban egységesítünk és a Change colors paranccsal a színeket
+o
+átállítjuk. Ezután az ideiglenes munkalap törölhet˝ .
+o
+Ha valaki az alapértelmezett színeket meg akarja változtatni, akkor azt a Calc.xlt template átszínezésével érheti el.
+
+3.4. Számoló munkafüzetek és az R.xls ﬁle
+Ha egy számoló munkafüzetet töltünk be egy olyan EXCEL példányba, amire a Rdev.xlam
+b˝ vítmény nincs telepítve, akkor a következ˝ történik. Megnyitás után a Workbook_Open
+o
+o
+szubrutin ellen˝ rzi, hogy az R.xls-re mutató hivatkozás érvényes-e, ha nem megpróbálja
+o
+javítani és szükség esetén a felhasználó instrukciókat kap a teend˝ ir˝ l. A menüsor egy új
+o o
+ponttal egészül ki, ez az R menü, melyb˝ l az R ablak megjelenítés/elrejtés, R<->EXCEL
+o
+összekötés és R megszakítás parancsok érhet˝ ek el. Ezek muködése azonos a 3.1 szakasz
+o
+˝
+R ablak részében leírttal. A RIBBON felületet használó újabb EXCEL változatokban a R menü a
+Bővítmények fül alatt található.
+
+18
+
+4
+
+Az Rxls csomag felhasználói szemmel
+
+Az Rxls csomag exportált függvényei közül valószínuleg a legfontosabbak azok, melyek se˝
+gítségével adatokat lehet EXCEL-be írni ill. onnan beolvasni. Egy másik csoport a futási
+állapot kiírásával kapcsolatos. Végül van néhány segéd függvény is.
+
+4.1. Adat-átviteli függvények
+Ezeket a rutinokat már nagyrészt láttuk az 1.3 részben.
+XLdata, XLsource Az XLdata függvény segítségével megfelel˝ en formázott EXCEL munkao
+lapról lehet adatokat átvenni. Az XLsource függvény EXCEL-ben tárolt R kódlapot olvas be és értékel ki.
+XLreaddf.rows, XLreaddf.cols, XLwritedf Az XLreaddf.cols rutin egy EXCEL táblázatot
+olvas be R-be. Alapértelmezésben a legfels˝ sor az R oldalon létrehozott data.frame
+o
+neveit adja. Az XLreaddf.rows hasonló, de az EXCEL táblázatot el˝ ször transzponáljuk,
+o
+azaz az els˝ oszlopban vannak a data.frame nevei, stb. Az XLwritedf függvény egy
+o
+R data.frame-t ír az EXCEL megadott tartományába. A rutin külön ﬁgyel a dátum és
+factor típusú adatokra. A NA értékek üres cellaként jelennek meg. Lehet˝ ség van az
+o
+oszlop szélesség automatikus beállítására (autoFit argumentum) és a kitöltött tartománynak (munkafüzet szintu) nevet adhatunk (setname argumentum).
+˝
+XLget A megadott EXCEL tartomány tartalmát adja vissza. Közvetlenül valószínuleg ritkán
+˝
+lesz rá szükség.
+getFromDB, ACCESS.get, ODBC.get ODBC kapcsolaton keresztül olvas be adatokat. A getFromDB
+a másik két függvény között választ a paramétereit˝ l függg˝ en.
+o
+o
+
+4.2. Futási állapot kiírása
+Itt az elképzelés az, hogy az R graﬁkus eszközéhez hasonlóan van egy logDevice. Amikor
+az Rxls csomag betölt˝ dik akkor létrejön az 1-es számú ilyen eszköz, ami egy null eszköz.
+o
+Nevéhez méltóan ez semmit nem jelenít meg. A lehetséges logDevice típusok null, R, EXCEL,
+TCL.
+logDev, logDev.set, logDev.off, logDev.list A logDev függvény új logDevice-t hoz létre
+a megadott típussal. A logDev.set függvény az aktuális logDevice-t állítja át, logDev.off
+kikapcsolja azt, míg a logDev.list kilistázza a létez˝ logDevice-okat.
+o
+background A megadott kifejezést végrehajtja (kiértékeli) oly módon, hogy a warning és stop
+message függvények a megadott típusú logDevice-ra is írnak.
+progress Egyszeru, szöveges progreszbárt hoz létre, ami az aktuális logDevice-ra ír.
+˝
+19
+
+4.3. Segéd függvények
+logInit A logDev függvény használja. Csak kompatibilitási okok miatt maradt az exportált
+függvények között.
+logMessage A logDevice-ra ír üzenetet. Valószínuleg sohasem kell közvetlenül meghívni.
+˝
+
+4.3. Segéd függvények
+XLDate, XLPOSIXct Ezt függvényt már láttuk a 1.2 szakasz végén. Ha XLreaddf függvényeket használjuk, akkor az eredményben a dátum típusú adatok számként jelennek meg.
+Ez a függvény a számokat az R Date típusú adatává alakítja. Tisztában kell azonban
+lenni azzal, hogy más dátum típusok is léteznek R-ben: POSIXct és POSIXlt. Ha ilyen
+típusú adatra van szükségünk, akkor használjuk az as.POSIXct és as.POSIXlt függvényeket.
+További lehet˝ ség, hogy az XLreaddf függvényeket value="value" argumentummal
+o
+hívjuk meg. Ezt nem tartom megbízható megoldásnak. Tapasztalatom szerint a nyári
+id˝ számítás miatt egy napos eltolódás el˝ fordulhat a dátum típusú adatoknál. Az ok,
+o
+o
+valahol az id˝ zóna és a nyári id˝ számítás kezelésében lehet.
+o
+o
+> x <- seq.Date(as.Date("2013-01-01"), as.Date("2014-01-1"),
++
+by = "1 month")
+> df <- data.frame(date = x)
+> XLwritedf(df = df, setname = "datumok")
+NULL
+> df["R->EXCEL->R.date"] <- XLreaddf.cols("datumok", value = "value")
+> df
+date
+R->EXCEL->R.date
+1 2013-01-01 2012-12-31 23:00:00
+2 2013-02-01 2013-02-01 00:00:00
+3 2013-03-01 2013-03-01 00:00:00
+4 2013-04-01 2013-04-01 01:00:00
+5 2013-05-01 2013-05-01 00:00:00
+6 2013-06-01 2013-06-01 00:00:00
+7 2013-07-01 2013-07-01 00:00:00
+8 2013-08-01 2013-08-01 00:00:00
+9 2013-09-01 2013-09-01 00:00:00
+10 2013-10-01 2013-10-01 00:00:00
+11 2013-11-01 2013-10-31 23:00:00
+12 2013-12-01 2013-12-01 00:00:00
+13 2014-01-01 2014-01-01 00:00:00
+Külön bosszantó, hogy az eredmény még attól is függ, hogyan olvassuk ki az adatokat.
+Mást kaphatunk, ha csupa dátum típusú adatot tartalmazó tartományt olvasunk be, és
+mást akkor ha csak néhány cella dátum típusú.
+> x1 <- XLget("datumok")[2:14, 1]
+> x2 <- XLget(XLrange = THISXL$range("datumok")$range("A2:A14"))
+> data.frame(‘név cellával‘ = Rxls:::unlist.keepclass(x1),
++
+‘név cella nélkül‘ = Rxls:::unlist.keepclass(x2), check.names = FALSE)
+név cellával
+név cella nélkül
+1 2012-12-31 23:00:00 2012-12-31 23:00:00
+2 2013-02-01 00:00:00 2013-01-31 23:00:00
+20
+
+4.3. Segéd függvények
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+
+2013-03-01
+2013-04-01
+2013-05-01
+2013-06-01
+2013-07-01
+2013-08-01
+2013-09-01
+2013-10-01
+2013-10-31
+2013-12-01
+2014-01-01
+
+00:00:00
+01:00:00
+00:00:00
+00:00:00
+00:00:00
+00:00:00
+00:00:00
+00:00:00
+23:00:00
+00:00:00
+00:00:00
+
+2013-02-28
+2013-04-01
+2013-05-01
+2013-06-01
+2013-07-01
+2013-08-01
+2013-09-01
+2013-10-01
+2013-10-31
+2013-11-30
+2013-12-31
+
+23:00:00
+00:00:00
+00:00:00
+00:00:00
+00:00:00
+00:00:00
+00:00:00
+00:00:00
+23:00:00
+23:00:00
+23:00:00
+
+Emellett az 1970 el˝ tti dátumok kezelése is problémás a value tulajdonság használao
+ta esetén. Összefoglalva a "value2" tulajdonság használatát javaslom, a dátum értékek utólagos transzformációjával az XLDate vagy az XLPOSIXct függvényekkel. Utóbbi
+POSIXct formátumba alakítja az adatot, amivel a napon belüli id˝ pont sem veszik el.
+o
+XLScreenUpdateTurnOff Az XLwritedf rutin használja, de egyéb esetekben is szükség lehet
+rá, ha nagy mennyiségu adatot írunk EXCEL munkalapra. Kikapcsolja az EXCEL képer˝
+ny˝ frissítését és a kalkuláció módját kézire állítja. Ez utóbbi azt jelenti, hogy az adao
+tok írása nem fogja az érintett cellák újraszámolását triggerelni. Visszatérési értéke egy
+függvény, ami visszaállítja az eredeti állapotot. Tipikus használata:
+turnOn <- XLScreenUpdateTurnOff(Appl = THISXL)
+on.exit(turnOn(), add = TRUE)
+XLusedrange A (COMObject formában) megadott tartománynak és az adott munkalap usedrangenek metszetét adja vissza. Akkor van jelent˝ sége, ha pl. szeretnénk a $A:$A oszlop
+o
+elemeit beolvasni R-be.
+> THISXL$range("$A:$A")$value()
+hívás eredménye egy olyan mátrix, aminek annyi sora van, ahány az EXCEL munkalapnak. Ez 32-bites OFFICE esetén is túl sok, 64-bites OFFICE esetén pedig több mint 1
+millió sort jelent. Ezt valószínuleg úgy élnénk meg, hogy lefagyott a program, holott
+˝
+csak nagy mennyiségu adatot másol meglehet˝ sen lassan.
+˝
+o
+win.stop A stop függvényhez hasonlóan leállítja a futást, de a hiba üzenet nem csak az R
+konzolban, hanem egy felugró ablakban is megjelenik.
+pkgzip A megadott és telepített R csomagokat becsomagolja win-binary formátumba.
+installRxls Az Rxls csomagban lév˝ EXCEL ﬁleokat másolja az {APPDATA}/Rxls könyvtáro
+ba. Emellett ide kerül még egy versions nevu ﬁle is, ami a verzió információt tartal˝
+mazza.
+getHWND Az R konzol ablakának azonosítóját adja vissza. Az új R.xls munkafüzet nem használja.
+install.xls Az R.xls-t használó munkafüzetek telepít˝ je. Az adott csomag EXCEL könyvo
+tárában lév˝ EXCEL ﬁle-okat a kiválasztott könyvtárba másolja és beállítja az R.xls-re
+o
+történ˝ hivatkozást.
+o
+R_RegEntries Az R-rel kapcsolatos regisztry bejegyzéseket jeleníti meg.
+21
+
+4.4. A background és logDev függvény részletesebben
+
+4.4. A background és logDev függvény részletesebben
+A munkafüzet tipikusan tartalmaz egy gombot, mellyel a felhasználó a számolást elindítja. A gomb makró-hozzárendelése lehet cmdbtnHosszufutas vagy cmdbtnRovidFutas. Ha a
+gombot a Cella menü -> Insert Form -> Run button paranccsal hoztuk létre, akkor áttételesen de a cmdbtnHosszufutas szubrutint használjuk. Ezek részletes ismertetését lásd a 5.3
+szakaszban. Mindkét rutin megkeresi a végrehajtandó kódot. Ez jellemz˝ en a gomb alatti celo
+lából derül ki. A kód egy szöveg. Ezt célszeru munkalap függvényeket használva összerakni
+˝
+valamelyik R kód(<név>) munkalapon. Ezt a szöveget, mint a .FUN szimbólum deﬁnícióját
+átadjuk az R szervernek. Pl. ha az EXCEL-ben kiszámolt kód:
+print('Ez egy üzenet EXCELből');
+THISXL[['activecell']][['offset',1]]<-'Ez meg a válasz'
+Akkor a gomb megnyomása után az R oldalon a .FUN szimbólum értéke a következ˝ :
+o
+> .FUN
+expression({
+print("Ez egy üzenet EXCELből")
+THISXL[["activecell"]][["offset", 1]] <- "Ez meg a válasz"
+})
+Ebben a lépésben az R oldal COM interfészét használjuk.
+
+4.1. ábra. A munkalap képe a számolás gomb megnyomása után. A gomb alatti cellában
+található a végrehajtandó R kód
+A következ˝ lépésben a kódot végre kell hajtani. Attól függ˝ en járunk el, hogy a várható
+o
+o
+futási id˝ rövid (cmdbtnRovidfutas), vagy hosszú (cmdbtnHosszuFutas). Az els˝ esetben a
+o
+o
+végrehajtáshoz is használhatjuk a COM interfészt, azonban a második esetben aszinkron hívásra van szükségünk. Ennek az az oka, hogy ellenkez˝ esetben az EXCEL nem fog reagálni
+o
+a kód futása alatt, ráadásul az EXCEL rendszeres id˝ közönként megjelenít egy ﬁgyelmeztet˝
+o
+o
+ablakot, miszerint az EXCEL ole muvelet befejezésére vár. Ebben az állapotban kilépni sem
+˝
+lehet az EXCEL-b˝ l.
+o
+Az aszinkron függvényhívás jelenleg nagyon egyszeruen van megoldva. A kapcsolat ini˝
+cializálásakor, lekérdezzük az R ablak számát (window handle) és ennek az ablaknak elküldjük a background(eval(.FUN)) szöveget a Windows üzenet küldési mechanizmusával. Ezt
+az R úgy érzékeli, mintha a felhasználó beírta volna a konzolba (akkor is, ha egyébként az R
+ablak el van rejtve) és a kapott kifejezést kiértékeli.
+Ez nyilvánvalóan egy olyan megoldás, amit hosszútávon célszeru lenne kiváltani a meg˝
+felel˝ COM mechanizmussal. Eddig megbízhatóan muködött. Megjegyzend˝ , hogy a Rstudio
+o
+˝
+o
+használata esetén ez a megoldás nem alkalmazható, mert ez az alkalmazás a kapott üzenetet
+nem írja be az R konzolba, ezért Rstudio ill. terminál ablakban futtatott R esetén a sendkeys
+függvényt használjuk.
+22
+
+4.5. A progress függvény használata
+A background függvény deﬁníciója nagyon egyszeru:
+˝
+> background
+function (expr, logdevice = c("null", "R", "EXCEL", "TCL"))
+{
+logdevice <- match.arg(logdevice)
+logDev(logdevice)
+on.exit(logDev.off())
+withCallingHandlers(expr, error = Rxls:::errMessage,
+warning = Rxls:::condMessage, message = Rxls:::condMessage)
+}
+<environment: namespace:Rxls>
+Azaz az expr R kifejezést kiértékeljük, de speciális környezetben. Ha a kifejezés kiértékelése közben, hiba, ﬁgyelmeztetés vagy üzenet keletkezik az nem csak az R ablakban, hanem
+az aktuális logDevice-on is megjelenik. Jelenleg a muködés hasonló a rajz felületek (gra˝
+phical devices) kezeléséhez. A logDev függvény segítségével hozhatunk létre új eszközt, a
+logDev.off törli az aktív eszközt, a logDev.set pedig átállítja az aktuális eszközt. Jelenleg
+négy féle eszköz áll rendelkezésre: null, EXCEL, TCL és R.
+A null device nevéhez méltóan nem add semmit az R beépített mechanizmusához. Az
+EXCEL logDevice az EXCEL státuszbárjában jeleníti meg az üzeneteket. A TCL eszköz megjelenít egy ablakot és ezt használja, míg a R eszköz az R konzolját használja.
+A logDevice eszköznek a létehozásakor az volt a cél, hogy egyszeruen lehessen a futási
+˝
+állapotot megjeleníteni, lehet˝ leg anélkül, hogy a kódot teletuzdelnénk
+o
+˝
+THISXL[["statusbar"]]<-"...";...;THISXL[["statusbar"]]<-FALSE
+párokkal teletuzdelni.
+˝
+Megjegyzés A logDevice elgondolás fokozatosan született meg. A korábban született alkalmazások, vagy közvetlenül használják az EXCEL státuszsorát, vagy a fent leírt megoldás
+el˝ zetes változatát. A kés˝ bb született alkalmazásokban megjelent a logInit függvény haszo
+o
+nálata. Ez még nem a fent leírt log eszköz. A logInit függvény egy olyan objektumot hozott
+létre, amivel vagy az EXCEL státusz sorában vagy egy TCL ablakban lehetett szöveges üzenetet
+ill. progressbar-t megjeleníteni. Jelenleg már az R-ben is elérhet˝ a txtProgressBar ill. a
+o
+winProgressBar függvény.
+
+4.5. A progress függvény használata
+Az a tapasztalatom, hogy egy számolás elindítása után, ha a felhasználó nem kap visszajelzést, hogy valami történik, akkor rövid id˝ n belül elkezdi nyomkodni a billentyuzetet, kliko
+˝
+kelget, a jártasabbak pedig a feladatkezel˝ n keresztül kilövik a programot, hiszen az nem csio
+nál semmit. Ha a számolás EXCEL-b˝ l indítottuk a legkézenfekv˝ bb az EXCEL státuszbáro
+o
+jában megjeleníteni a számolás aktuális állását. Ezt legegyszerubben úgy érhetjük el, hogy
+˝
+az el˝ z˝ pontban ismertetett logDev("EXCEL") függvényhívást használjuk. Tesztelés során
+o o
+hasznos lehet a logDev("R"), vagy logDev("TCL") is.
+A progress függvény egy új progressbar-t hoz létre az aktuális logDevice-on. Tegyük
+fel, hogy a számolás különböz˝ fázisai az adatok beolvasása ACCESSb˝ l, számolás, majd az
+o
+o
+eredmények mentése. Ekkor a végrehajtandó (meta) kód a következ˝ képpen alakul.
+o
+
+23
+
+4.5. A progress függvény használata
+
+data <- read.access()
+res <- do.calc(data)
+save.results(res)
+Ha szeretnénk a felhasználót tájékoztatni az egyes fázisokról, akkor ez kiegészül a következ˝ képpen
+o
+pb <- progress("%s...", "")
+pb$step("ACCESS adatbázis olvasása")
+data <- read.access()
+pb$step("Számolás")
+res <- do.calc(data)
+pb$step("Eredmények mentése")
+save.results(res)
+pb$rm()
+rm(pb)
+Tegyük fel, hogy a számolás hosszú, mondjuk a beolvasott adatok mindegyikén el kell
+végezni egy muveletet, ami maga is id˝ igényes. Ekkor a do.calc függvény szerkezete a
+˝
+o
+következ˝ lehet
+o
+do.calc <- function(x) {
+pb <- progress(sprintf(" [%%d/%d]", length(x)), 0, lazyness = 0.3)
+on.exit({
+pb$refresh()
+pb$rm()
+})
+sapply(x, function(y) {
+pb$inc()
+## egy számolási lépés y-on
+})
+}
+A függvény els˝ sorában létrehozunk egy progressbar-t. A progress függvény els˝ aro
+o
+gumentuma egy minta, ami jelen esetben a x vektor hosszától függ. Ha pl. length (x) =
+100, akkor a minta (pattern) értéke " [%d/100]" lesz. A mintában szerepl˝ %d helyére egy
+o
+egész érték kerül, aminek kezd˝ értéke 0, ez a második argumentum.
+o
+A lazyness paraméter a megjelenítés suruségét állítja be. Ha nem adjuk meg, akkor min˝ ˝
+den változás után frissítjük a logDevice-on látható szöveget. Pozitív lazyness érték mellett
+csak akkor frissítjük a logDevice-ot, ha az el˝ z˝ frissítés óta eltelt id˝ (másodpercben mérve)
+o o
+o
+legalább akkora, mint a lazyness értéke. A 0.3 másodperces lazyness érték mellett a kijelzést
+folyamatosnak érezzük, de nem írunk feleslegesen sokszor a logDevice-ra.
+A függvényb˝ l való kilépéskor frissítjük a logDevice szövegét, majd töröljük az eszközo
+r˝ l a pb progressbar-t. Magát a változót pb nem kell törölnünk, mivel a függvényb˝ l való
+o
+o
+kilépéskor megszunik az a környezet, amiben deﬁniáltuk.
+˝
+Amikor a pb$inc() hívást végrehajtjuk, akkor a progressbar-ban tárolt értéket eggyel
+növeljük és megpróbáljuk frissíteni a logDevice szövegét. Ez csak akkor fog megtörténni, ha
+az el˝ z˝ frissítés óta eltelt id˝ nagyobb mint a lazyness érték. Emiatt a kijelz˝ nem folyamao o
+o
+o
+tosan számol. Ezért került az on.exit rutin elejére egy extra frissítés. Így nem fordulhat el˝ ,
+o
+hogy a számláló „elakad” 98-nál.
+24
+
+4.5. A progress függvény használata
+A fenti mintakód esetén a számolás szakaszban a logDevice szövege az alábbihoz hasonló:
+Számolás... [23/100]
+A Számolás... szövegrész a globálisan használt progressbar értéke, míg a [23/100] a
+do.calc függvény járuléka.
+Gyakran nem a inc, hanem a step metódust alkalmazzuk egy progressbarnál. Ekkor a
+logDevice-on megjelenített szöveg a
+sprintf(pattern,...)
+függvényhívás eredménye, ahol a pattern az inicializáláskor vagy a reset metódus hívásakor megadott minta, ... pedig a step hívás argumentumait jelöli.
+
+25
+
+5
+
+Az R.xls munkafüzet részletesebben
+
+A legfontosabb részek a Interface, selectfuns és a RIC modulokban vannak. Az Interface
+modul szubrutinjaiból lehet a számolást indító ill. leállító gomb makróit összerakni. Ezeknek
+számtalan verziója van, a korábbi számoló munkafüzetekkel való kompatibilitás meg˝ rzése
+o
+miatt. A selectfuns modulban vannak azok a függvények, amiket a munkalapokon szerepl˝
+o
+könyvtár, ill. ﬁleválasztó mez˝ k gombjai használnak. A tényleges munkát a RIC modul végzi.
+o
+Itt vannak azok a rutinok, melyek az R példányok nyilvántartásáért, elindításáért, leállításáért
+felelnek.
+A további modulok az el˝ z˝ három által igényelt kisegít˝ függvényekb˝ l áll. A Registry
+o o
+o
+o
+modulban vannak a registry írás, olvasás rutinjai. Itt van az rutin, ami az R telepítési könyvtárat kiolvassa a registryb˝ l, ill. ellen˝ rzi az RCOM type library bejegyzés meglétét. A WINAPI
+o
+o
+a windows üzenetküldési mechanizmusát használó rutinok gyujteménye. A Pick modulban
+˝
+a könyvtár, ﬁle, ill. ACCESS tábla választó rutinok vannak. Ezeket használjuk a selectfuns
+modulban. A worksheetfunctions modul az extAddress munkalapfüggvényt deﬁniálja. Ezt
+a számoló munkafüzetek használják. Végül a formadjust modult a selectR urlap összeállí˝
+tásához használtam.
+A fenti kód modulok mellett, két class modul is van: Rproc és wndData. Az Rproc class
+példányai egy–egy R folyamatot reprezentálnak a RIC modulban. A wndData típust a WINAPI
+modul használja.
+
+5.1. A Thisworkbook modul
+Ez a modul a következ˝ rutinokból áll.
+o
+addRmenu, RemoveRmenu Létrehozza ill. törli a menübár R menüjét. Ennek elemei az R ablak
+megjelenítés/elrejtés, R <-> EXCEL összekötés, R megszakítás. A R menü a RIBBONt használó újabb változatokban a címsor Bővítmények füle alatt található.
+doChecks, checkRcom, checkLang Ezek ellen˝ rz˝ rutinok. A doChecks a másik két rutint hívo o
+ja meg.
+Az Rcom ellen˝ rzése során megnézzük, hogy RCOM type library regisztrálva van-e.
+o
+Ha nincs, akkor felugró üzenetben segít abban, hogy a regisztrációt hogyan kell végrehajtani. A felhasználónak lehet˝ sége van a szükséges R kódot vágólapra másolni és azt
+o
+utána az R ablakba beilleszteni. Közvetlenül EXCEL-b˝ l nem lehet a javítást elvégezni,
+o
+mert a regisztrációt rendszergazdai jogosultsággal lehet elvégezni.
+A nyelvi ellen˝ rzés célja, hogy az ékezetes karakterek a COM mechanizmuson kereszo
+tül változatlanul kerüljenek át az R-be és fordítva. Az ellen˝ rzés nagyon egyszeru. Az
+o
+˝
+R.xls munkafüzet egyetlen munkalapjának $A$1 mez˝ jében fel vannak sorolva a mao
+gyar ABC ékezetes karakterei. Ezt egy VBA változóba másoljuk. Mivel ennek során már
+a COM mechanizmusa muködik, ha nyelvi beállítások nem megfelel˝ ek, akkor az őű be˝
+o
+tuk helyett ou-t kapunk. Hiba esetén a felugró ablak tájékoztat arról, mit kell átállítani.
+˝
+26
+
+5.2. A Pick modul
+El˝ fordulhat, hogy a vezérl˝ pult felépítése némileg változik. Ekkor a felugró ablak szöo
+o
+vegét, ami a modul elején lév˝ szöveges konstans célszeru átírni. A lényeg, hogy az
+o
+˝
+unicode szabványt nem támogató programok nyelvét kell magyarra állítani. Ez els˝ o
+sorban angol (vagy egyéb nem magyar) nyelvu Windows rendszereknél lehet gond.
+˝
+Workbook_BeforeClose, Workbook_AddinUninstall Bezáráskor az R menüt eltávolítjuk és
+az adott EXCEL példány által elindított R példányokat megpróbáljuk leállítani a RIC modul CloseRcon eljárásával. Egészen pontosan a következ˝ történik. Végigmegyünk a
+o
+futó R példányokon.
+Ha valamelyik R példány ablaka rejtett, és a com csomag nincs betöltve, akkor láthatóvá
+tesszük az ablakot. Így a felhasználónak lehet˝ sége lesz kilépni az R alkalmazásból és
+o
+bezárni az ablakot.
+Ha az adott R példányt a mi EXCEL példányunk indította el, akkor megnézzük számol-e
+még. Ha igen akkor a felhasználó dönthet, hogy megpróbálja-e leállítani az éppen folyó
+számolást.
+Igen válasz esetén, megszakítjuk a számolást és leállítjuk a R példányt.
+Nem válasz esetén csak a kapcsolatot reprezentáló THISXL változót töröljük és kilépünk
+az EXCELb˝ l. Ez a legproblémásabb eset. El˝ fordulhat, hogy az éppen futó R kódban
+o
+o
+más hivatkozás is van az EXCEL példányunkra, vagy annak valamely részére. Ilyenkor
+az EXCEL-b˝ l látszólag kilépünk, de az a háttérben tovább fut.
+o
+A felhasználó választhatja a Mégse gombot is. Ekkor az EXCEL leállítása megszakad.
+Abban az esetben, ha egy R példányt nem a mi EXCEL példányunk indította el, de erre
+az EXCEL példányra mutat a THISXL változó, akkor csak a THISXL változót töröljük.
+Workbook_Open Elvégzi az RCOM és a nyelvi beállítás ellen˝ rzését és beállítja az R menüt.
+o
+Rmenuset Attól függ˝ en, hogy az aktuális R példány ablaka látható vagy rejtett (esetleg nem
+o
+létezik) vált az R menü R ablak elrejtése ill. R ablak megjelenítése lehet˝ ségek
+o
+között.
+isXP Ez a függvény igaz értéket ad vissza, ha az operációs rendszer Windows XP. Jelenleg
+nem használjuk.
+
+5.2. A Pick modul
+PickACCESSTable(defaultDir, file) A megadott ACCESS adatbázis tábláinak listájából
+választhat a felhasználó. Ehhez elindítunk egy ACCESS példányt, betöltjük az adatbázist, majd selectMDBtable urlapot kitöltjük, ebb˝ l választhat a felhasználó.
+˝
+o
+PickFile(xfilter As String, defaultDir As String, Optional title) File választás.
+Lehet˝ ség szerint az OFFICE beépített ﬁle választó dialógját használjuk. Az xfilter
+o
+sztring "leírás_1,minta_1,leírás_2,minta_2,...,leírás_n,minta_n" alakú, ahol a
+minta *.<ext> valamilyen kiterjesztéssel. Ez lehet pl. *.xl* is.
+GetDirectory(initDir, Msg) Ez a könyvtár választó rutin. Az initDir a kezd˝ könytár,
+o
+míg az Msg az felugró ablak címsora. Lehet˝ ség szerint az OFFICE szokásos ﬁle válaszo
+tó dialógját használjuk, korábbi változatok esetén pedig a windows shell.application
+browseforfolder dialógját (a GetDirectorySH rutinban). Az utóbbi eset a mai rendszereken gyakorlatilag nem fordul el˝ ; ha mégis, akkor a kezd˝ könyvtár argumentumot
+o
+o
+nem használjuk.
+
+27
+
+5.3. Az Interface modul
+
+5.3. Az Interface modul
+Ebben a modulban vannak az R kód futtatására szolgáló rutinok. Jellemz˝ en ezek közül kerül
+o
+ki a futtatást indító gomb makróhozzárendelése.
+RunRmain() Az új számoló munkafüzetek ezt használják a számolás indítása gomb makrójaként. Az R kód munkalapon van az Rmain nevu tartomány. A szubrutin az itt található
+˝
+kódot küldi át az aktív R példánynak kiértékelésre. A kiértékelés aszinkron módon történik, azaz az EXCEL nem vár a számolás befejez˝ désére.
+o
+RIgnore() Az aktív R példány számolásának megszakítása. Ehhez a RIC modul stopR rutinját használjuk. Ha az adott R példány számolást végez, a egy felugró ablak jelenik meg.
+Ha a felhasználó meger˝ síti, hogy meg akarja szakítani a számolást, akkor ESCAPE kao
+raktert küldünk az R ablakba. Ennek hatására a számolás megszakad, gyakran némi
+késleltetéssel.
+PushCmdToR(cmd As String) Hatására a .FUN R változó értéke a cmd-ben megadott kifejezés
+lesz. A THISXL nevu R változó értékét szintén beállítja.
+˝
+cmdbtnRovidFutas(Optional cmd As String = "") Hatására az R a cmd kifejezés szinkron
+módon kiértékeli, azaz az EXCEL mindaddig nem reagál, amíg az R be nem fejezte a
+kiértékelést.
+cmdbtnHosszuFutas Az el˝ z˝ aszinkron változata. Paraméterek: cmd, logdev, initmsg.
+o o
+RovidFutas(Optional caption As String = "*") A caption feliratú gombot megkeresi
+az aktív munkalapon, majd a gomb alatti területben lev˝ szöveget a cmdbtnRovidFutas
+o
+szubrutin segítségével átadja az R-nek kiértékelésre.
+A korábban készült munkafüzetekben ezt használtam.
+HosszuFutas(Optional caption As String = "*") Az el˝ z˝ aszinkron változata.
+o o
+getButton(caption = "*", macro = "*", sheet = Nothing) As Shape Mindegyik argumentum opcionális. A sheet munkalapon (ha nincs megadva, akkor az aktív lapon)
+megkeresi azt gombot (shape), melynek makróhozzárendelése és felirata illeszkedik az
+argumentumok között megadott mintára. Az összehasonlítás a like operátorral történik. Az újabb munkafüzetekben nem használjuk.
+GetCmd(caption = "*", brc As range, tlc As range) Mindegyik argumentum opcionális. brc ill. tlc a bottomrightcell ill. topleftcell rövidítése. Ha ezek nincsenek
+megadva, akkor a caption minta alapján keresünk egy gombot az aktív munkalapon
+és ennek bal fels˝ , ill jobb alsó sarka alatti cellára állítjuk a brc, tlc változókat. Ezután
+o
+a tlc:brc tartományban megkeressük az els˝ nem üres cellát ennek értéke lesz a függo
+vény visszatérési értéke. Ha a tlc egy egyesített tartomány eleme, akkor az egyesített
+tartomány (azaz a jobb fels˝ sarkában lév˝ cellájának) értékét adja vissza a függvény.
+o
+o
+
+5.4. A RIC modul
+A RIC (R internal connector) a legfontosabb modul az R.xls munkafüzetben. Ez teszi lehet˝ vé, hogy feladatokat adjunk valamelyik futó R példánynak. A modul private, azaz csak
+o
+rutinjai csak az R.xls munkafüzet számára láthatóak. A modul legfontosabb függvénye az
+Revalsync. Ez elküldi a megadott utasítást az aktív R példánynak. Ha nincs rendelkezésre álló R szerver, akkor hiba generálódik, és a hiba kezel˝ rutin megpróbál egy alkalmas R
+o
+példányt találni, majd újra próbálkozik az utasítás elküldésével.
+A modul három globális változót használ:
+28
+
+5.4. A RIC modul
+allRproc Ez egy Rproc collection. A változó inicializálásakor a rendszerben lév˝ valamennyi
+o
+R példány adatait összegyujtjük és itt tároljuk.
+˝
+curRproc Az általunk használt R példány.
+Rmayfail A hiba kezel˝ rutin használja. Ha értéke IGAZ, akkor nem er˝ ltetjük a feladat
+o
+o
+végrehajtását, ha hamis, akkor hiba kezel˝ rutin mindent megtesz, hogy találjon egy
+o
+alkalmas R példányt. Az igaz értéket pl. akkor használjuk, ha az EXCELb˝ l való kilépés
+o
+el˝ tt szeretnénk törölni a THISXL változót az R oldalon. Ha valamilyen oknál fogva az
+o
+R már nem fut, akkor nem kell elindítani egy új példányt, csak azért, hogy töröljük az
+éppen létrehozott THISXL változót.
+A modul rutinjai:
+getAllRproc A Windows winmgmts:\\.\root\cimv2 objektumát használva lekérdezzük valamennyi futó R példányt. Minden R példányt egy Rproc objektum reprezentál. Ebben
+számos tulajdonságot feljegyzünk:
+Public
+Public
+Public
+Public
+Public
+Public
+Public
+Public
+Public
+Public
+Public
+Public
+Public
+
+Name As String
+RIC As InternalConnector
+hwnd As Long
+outerHwnd As Long
+wndColl As Collection
+title As String
+pid As Long
+reportedPID As Long
+useSendkey As Boolean
+sendkeyPrefix As String
+delay As Long
+useClipboard As Boolean
+caption As String
+
+A program neve: RGui, rsession, Rterm
+Az R COMservere, ha van
+Az R konzol ablaka
+Az R-et futtató program ablaka
+Az R példányhoz tartozó összes ablak
+Az ablak címsora
+Az R processid-je
+Az R Sys.getpid() hívásának értéke
+Sendkeys függvényt kell-e használni
+Előtag a sendkeys függvényhez
+Késleltetés a sendkeys használatakor
+Clipboardot kell-e használni
+A cím és a PID kombinációja
+
+A fenti elemek közül a useSendkey, sendkeyPrefix, delay és useClipboard értékeket
+az R process neve alapján döntjük el.
+Végül a setCOMServers eljárással az RIC értékeket gyujtjük össze.
+˝
+setCOMServers Itt azt használjuk ki, hogy az R COM szerverét le és fel tudjuk kapcsolni a
+comRegisterServer ill. comUnregisterServer függvényekkel. Az eljárásunk a következ˝ . Kérünk egy rcom szervert a rendszert˝ l, ha kapunk egyet akkor lekérdezzük a
+o
+o
+PID-t és alapján az rcom szervert az allRproc collection megfelel˝ elemében feljeo
+gyezzük. Ezután a szervert lekapcsoljuk és kérünk egy következ˝ t, mindaddig, amíg
+o
+az összes rcom szervert össze nem gyujtöttük és le nem kapcsoltuk. Ezután fordított
+˝
+sorrendben a szervereket visszakapcsoljuk.
+RConnectedToThis() As VbTriState Lekérdezzük az R THISXL változóját és összehasonlítjuk az EXCEL Application változójával.
+RnotBusy Variant értéku függvény. A COM interfészt használja. Ha az nem áll rendelkezésre,
+˝
+akkor értéke empty, különben IGAZ vagy HAMIS.
+Rprocdata Az R szerver választó dialóghoz gyujti össze az adatokat.
+˝
+RprocInit El˝ ször összegyujti az összes R proceszt a getallRproc függvénnyel. Ha csak egy
+o
+˝
+R példányt találunk, akkor azt állítjuk be aktív R példánynak (curRproc). Ha többet is
+találtunk, akkor a felhasználó választhat.
+29
+
+5.4. A RIC modul
+Rstart Ezzel a rutinnal indítunk el egy új R példányt. A regisztryb˝ l kérdezzük le az R teo
+lepítési útvonalát, és az RGui programot –sdi és –vanilla opciókkal indítjuk el. A
+R_DEFAULT_PACKAGES környezeti változó értékét átállítjuk a következ˝ re
+o
+datasets,utils,grDevices,graphics,stats,methods,Rxls
+Ez a szokásos esetben betöltött csomagok listája kiegészítve a Rxls csomaggal. Így elindulás után az R COM szervere rögtön rendelkezésünkre áll.
+Indítás után 20 kísérletet teszünk arra, hogy a allRproc collectiont feltöltsük. Minden
+kísérlet között 1/10 másodpercet várunk. Ez a beállítás az általam használt gépeken
+megbízhatóan muködött. Nagyon lassú, régi konﬁgurációk esetén meg lehet növelni a
+˝
+várakozást, vagy az ismétlések számát.
+Ha az R példányt megtaláltuk, akkor a COM szerverét próbáljuk megkapni. Ez csak akkor áll rendelkezésre, ha com csomag betöltése megtörtént. Ez némi id˝ be telik az R
+o
+elindulása után, ezért itt megint csak 20 kísérletet végzünk a setCOMServers eljárással
+1/10 másodperces késleltetésekkel. Ha sikerül a COM szerverhez csatlakozni, akkor az
+R oldalon beállítjuk a .startingApp változót a hinstance értékre. Ez egy karakterlánc,
+amit az EXCEL példány Hinstance tulajdonságából nyerünk a hinstance függvénnyel.
+loadCOM Ezt a rutint akkor használjuk, ha olyan R példányhoz akarunk csatlakozni, aminek
+COM szervere nem áll rendelkezésre. Az eljárásunk hasonló a Rstart szubrutin második
+felében követetthez. El˝ ször az R példány ablakába írjuk a
+o
+require(Rxls);comRegisterServer()
+szöveget. Ezzel betöltjük a szükséges csomagokat (comproxy, com, Rxls), ha azok nem
+voltak betöltve, és felkapcsoljuk az COM szervert, ha az le volt kapcsolva. Ezután a 20 kísérletet teszünk 1/10-ed másodperces id˝ közökkel a COM szerverhez való csatlakozásra.
+o
+Ebben a lépésben a setCOMServers szubrutint használjuk.
+Rclose Az R oldalon töröljük az EXCEL példányra való hivatkozást. Itt az aszinkron interfészt
+használjuk. Megfontolandó, hogy kiváltható-e ez a COM szerver használatával.
+Rgetsymbol, Rsetsymbol, Reval, REvalSync, correct Ezek a függvények az aktív R példány
+COM szerverét használják a nevüknek megfelel˝ en. A különbség az Reval és az RevalSync
+o
+között az, hogy els˝ a kiértékelés eredményét visszaadó függvény, míg a második a kio
+értékelés eredményét eldobó szubrutin.
+Ezeknek a rutinoknak a correct hibakezel˝ rutin a lelke. Ha COM szerveren végrehajtott
+o
+muvelet, valamilyen okból meghiúsul és hibát generál, akkor a correct rutin próbálja
+˝
+helyrehozni a hibát majd a muveletet megismételjük.
+˝
+A következ˝ hibákat kezeli a rutin:
+o
+Az aktív R példány, vagy annak COM szervere hiányzik Ha az allRproc collection nincs
+inicializálva, akkor a RprocInit rutinnal feltöltjük azt, ha több futó R példány is
+van, akkor a felhasználó választhat aktív R példányt, stb.
+Ha nincs futó R példány, akkor egy nulla hosszúságú collection keletkezik ebben
+a lépésben, és az ismételt próbálkozásnál ugyanerre az ágra kerülünk, de most
+már inicializált nulla hosszúságú allRproc collectionnal. Ekkor elindítunk egy új
+R példányt az Rstart eljárással és újra próbálkozunk a muvelet végrehajtásával.
+˝
+Ha van ugyan aktív R szerverünk, de annak ablaka már nem él˝ , akkor err˝ l tájéo
+o
+koztatjuk a felhasználót, igény esetén inicializáljuk a allRproc collectiont és újra
+próbálkozunk vagy ha erre nincs igény, akkor leállunk.
+30
+
+5.4. A RIC modul
+Végül, ha az aktív R ablak él˝ , de mégsem tudunk csatlakozni a COM szerveréhez,
+o
+akkor megpróbáljuk betölteni és felkapcsolni a COM szerverét a loadCOM eljárással,
+majd újra próbálkozunk a muvelet végrehajtásával.
+˝
+Az aktív R szerver COM szervere nem elérheto Ekkor a setCOMServers rutinnal lekér˝
+dezzük az elérhet˝ COM szervereket és újra próbálkozunk a muvelet végrehajtáo
+˝
+sával. Ez tipikusan akkor fordul el˝ , ha az R-b˝ l kiléptünk. Ilyenkor az EXCEL
+o
+o
+oldalon olyan szerverre hivatkozunk, ami már nem létezik. Az ismételt próbálkozás szintén hibát fog generálni, de most már az els˝ ágon fogjuk azt kezelni. Mivel
+o
+az aktív R példány már nem létezik, annak ablaka sem él˝ . Ez azt eredményezi,
+o
+hogy a felhasználó kap egy kérdést, hogy akar-e új R szervert választani, stb.
+Egyéb hiba A hiba szövegét egy felugró ablakban ismertetjük a felhasználóval és leállunk.
+REvalAsync, cmdToR Az REvalAsync jelenleg csak egy másik név a cmdToR függvényre, ami
+az R konzolba írja az argumentumként kapott szöveget. Háromféle eljárást használunk
+az R változattól függ˝ en.
+o
+RGui Ekkor a WINAPI modul sendtext eljárását használjuk, ami közvetlenül a Windows
+üzenetküld˝ mechanizmusára épül.
+o
+RStudio Ekkor az utasítás szövegét a clipboardra másoljuk, és a Windows Sendkeys lehet˝ ségét használva betuparancsok segítségével beillesztjük a clipboard tartalmát
+o
+˝
+a konzol ablakba.
+Rterm Ekkor csak a Sendkeys lehet˝ séget használjuk.
+o
+connect Beállítja az R oldal THISXL változójának az értékét.
+CloseRCon Ezt a rutint az EXCEL leállítása során hívjuk meg. Ekkor végignézzük a futó R
+példányát.
+Ha valamelyik R példány ablaka rejtett, és a com csomag nincs betöltve, akkor láthatóvá
+tesszük az ablakot. Így a felhasználónak lehet˝ sége lesz kilépni az R alkalmazásból és
+o
+bezárni az ablakot.
+Ha az adott R példányt a mi EXCEL példányunk indította el, akkor megnézzük számol-e
+még. Ha igen akkor a felhasználó dönthet, hogy megpróbálja-e leállítani az éppen folyó
+számolást.
+Igen válasz esetén, megszakítjuk a számolást és leállítjuk a R példányt.
+Nem válasz esetén csak a kapcsolatot reprezentáló THISXL változót töröljük és kilépünk
+az EXCELb˝ l. Ez a legproblémásabb eset. El˝ fordulhat, hogy az éppen futó R kódban
+o
+o
+más hivatkozás is van az EXCEL példányunkra, vagy annak valamely részére. Ilyenkor
+az EXCEL-b˝ l látszólag kilépünk, de az a háttérben tovább fut.
+o
+A felhasználó választhatja a Mégse gombot is. Ekkor az EXCEL leállítása megszakad.
+Abban az esetben, ha egy R példányt nem a mi EXCEL példányunk indította el, de erre
+az EXCEL példányra mutat a THISXL változó, akkor csak a THISXL változót töröljük.
+interruptR Ha van aktív R példány, akkor az ESCAPE karaktert írjuk az ablakába.
+StopR Az R menü R megszakítás rutinja használja. Ha az R dolgozik, akkor rákérdezünk,
+hogy megszakítsuk-e a muveletet, és igen válasz esetén a interruptR függvénnyel ezt
+˝
+megkíséreljük.
+RBringForeground Az aktív R példányt el˝ térbe hozza. Ha nincs aktív R példány, akkor léto
+rehoz egyet.
+31
+
+5.5. A WINAPI modul
+RPutBackground Ha el˝ térben van az aktív R példány, akkor elrejti az ablakát.
+o
+ChangeRhwndState Ha látható az aktív R példány akkor elrejti, ha nem látható akkor el˝ térbe
+o
+hozza a Rbringforeground eljárással.
+BringAllRForeground A allRproc kollekcióban szerepl˝ R példányokat mind el˝ térbe hozo
+o
+za.
+curRVisible Igaz értéket ad vissza, ha az aktív R példány ablaka nincs elrejtve.
+hinstance Egyedi azonosítót ad vissza. Azért van külön függvényben, mert attól függ˝ en,
+o
+hogy régi vagy új EXCELünk van más kódra van szükség.
+screenUpdate Visszaállítja az EXCEL ScreenUpdating tulajdonságát igazra.
+quote Ha a Sendkeys hívást használjuk, akkor a szöveg speciális karaktereit kapcsos zárójelek közé kell tenni. Ezt az átkódolást végzi a rutin.
+dummyset Az Rgetsymbol, Reval függvények használják. Csak azért van rá szükség, mert
+érték adáskor más kód kell objektum és nem objektum érték esetén.
+
+5.5. A WINAPI modul
+Itt vannak a WINDOWS API deklarációk és az azokra épül˝ rutinok. A korábbi változatokban
+o
+ez a rész hangsúlyosabb volt, mert a futó R példányok feltérképezése az enumwindows API
+híváson keresztül történt. Ez a rész a modul végén kikommentezve megtalálható.
+sendkeysToHwnd, sendText Az els˝ a Sendkeys függvényt, a második a Sendmessage hívást
+o
+használva küld szöveget a megadott ablakba.
+GetWndPid Ez egy wrapper a GetWindowThreadProcessId API hívás körül. Adott ablak pidjét adja vissza.
+getAllWndFromPid, enumAllbyPid Az enumWindows API hívást használva, lekérdezzük az
+adott processhez tartozó valamennyi ablakot.
+GetWndText Adott ablak címsorának szövegét adja vissza.
+EnumWndLike, childWndLike Adott ablak child ablakai között megkeresi az adott mintára
+illeszked˝ címut.Az összehasonlítást a like operátorral végezzük. Az childwindow-kat
+o
+˝
+az enumChildWindows hívással járjuk végig az els˝ találatig.
+o
+Az itt szerepl˝ rutinokat az RIC modulból ill. az Rproc objektumok inicializálásakor haszo
+náljuk. Néhány API függvényt, közvetlenül meghívunk a RIC modulból, pl. sleep, isWindow,
+isWindowVisible, showWindow.
+
+5.6. A selectfuns modul
+Az Rdev.xlam b˝ vítmény segítségével File, ACCESS, vagy ACCESS+SQL választó elemeket ilo
+leszthetünk be a munkafüzetekbe. Ezeknél a felhasználói mez˝ jobb fels˝ sarkában megjeleo
+o
+n˝ kis gombokhoz rendelt makrók az ebben a modulban lev˝ rutinokat használják. Ezeket a
+o
+o
+makrókat az Rdev.xlam b˝ vítmény írja a számoló munkafüzetbe. Pl. ha File választó mez˝ t
+o
+o
+szúrunk be, akkor a munkalap makrói között az alábbihoz hasonlóak jelennek meg.
+
+32
+
+5.7. Egyebek
+Private Sub File2Click()
+selectFile Me.Shapes("Button 2").TopLeftCell, "R,*.R"
+End Sub
+Private Sub mappa1Click()
+selectmappa Me.Shapes("Button 1").TopLeftCell
+End Sub
+A select... szubrutinok a R.xls munkafüzetben vannak deﬁniálva. Jelenleg a következ˝ o
+ket használjuk:
+selectMappa(cell As range) Könyvtár választó dialógot jelenít meg. Ha a felhasználó választ egy könyvtárat, azt a cell cellába írjuk. A kezd˝ könyvtárat a cell cellától jobbra
+o
+lév˝ cellából vesszük.
+o
+selectFile(cell As range, filter As String) File választó dialógot jelenít meg. A kezd˝ könyvtár értékét a cell-t˝ l jobbra, fent lév˝ cellából veszi. Ha a felhasználó a Mégse
+o
+o
+o
+gombot nyomja meg, akkor nem változtat a cell cella tartalmán. Ha a felhasználó választott egy ﬁle-t, akkor annak neve, az könyvtár elérési útja nélkül a cell cellába kerül,
+míg a ﬁle-t tartalmazó könyvtár elérési útja a cell cella fölötti cellába íródik.
+selectMDB(cell As range) A selectFile rutint hívja meg "Access,*.mdb" filter értékkel.
+selectTBL(cell As range) Access tábla választó dialógot jelenít meg. Ehhez a Pick modul PickACCESSTable függvényét használjuk. Az Access adatbázis elérési útját a cell
+cellától jobbra fent lév˝ két cella értékéb˝ l rakja össze.
+o
+o
+selectSQL(cell As range, bl1, bl2) Ez a szubrutin az ACCESS+SQL választó mez˝ kben
+o
+használatos. A cell cella alatti bl1 számú sort elrejti ha az látható és fordítva, majd az
+ez alatti bl2 számú sort elrejti ha az els˝ bl1 sor látható és fordítva.
+o
+
+5.7. Egyebek
+formadjust modul
+A selectR userform beállítására szolgál. Valójában nincs rá szükség az R.xls munkafüzetben, viszont így volt a legegyszerubb a selectR urlap elemeit egymáshoz igazítani.
+˝
+˝
+
+Registry modul
+A modul nagy részét valahonnan másoltam, már nem emlékszem honnan. Az alapvet˝ reo
+gistry muveleteket teszi lehet˝ vé: olvasás, írás, törlés. Mi csak olvasásra használjuk. Erre
+˝
+o
+épül a modul RcomRegistered függvénye, amit az R.xls munkafüzet betöltésekor a telepítés
+ellen˝ rzésére használunk, ill. RFromReg függvény, ami az Rgui program elérési útját számolja
+o
+ki.
+
+Worksheetfunctions modul
+Egyetlen, munkalapokon is használható függvényt deﬁniál. Az extAddress-szel már talákoztunk a 1.3 részben. Ennek a függvénynek két argumentuma van, egy tartomány és quote
+nevu logikai változó. A tartomány teljes nevét (munkafüzet!munkalap+ cella cím) adja vissza.
+˝
+Ha a quote=IGAZ, akkor aposztrófok között, különben anélkül.
+Ahhoz, hogy mindig a megfelel˝ értéket kapjuk az R.xls munkafüzet az EXCEL alkalo
+mazás WorkbookBeforeSave eseménykezel˝ jét kiegészíti. Az történik, hogy végigmegyünk a
+o
+33
+
+5.7. Egyebek
+mentend˝ munkafüzet lapjain és azokat a cellákat, melyek formulája hasonlít a *extaddress*
+o
+mintára (a like operátort használva) dirtyként megjelöljük. Ezután a munkalapot kiértekljük a calculate metódussal. Munkafüzet mentése közben a státuszsorban felvillanó szöveg
+jelzi, hogy a eztAddress függvények ellen˝ rzése történik.
+o
+A megvalósítás úgy történik, hogy a R.xls munkafüzetben egy APP nevu Class modult
+˝
+is létrehozunk Ebben van egy WithEvent kulcsszóval deﬁniált application objektum, amit
+inicializáláskor Excel.Application értékre állítunk. Az iniciálizálás az R.xls munkafüzet
+megnyitásakor történik meg.
+Ez a megoldás csak azt az esetet kezeli, ha a munkafüzet neve, az EXCEL mentés másként
+funkciója nyomán változik meg. Ha a munkafüzet neve valamely egyéb módon változott
+meg, akkor a megnyitás utáni mentés helyreállítja az extAddress-re épül˝ hivatkozásokat.
+o
+Egy másik lehet˝ ség a APP modulban deﬁniálni a WorkbookOpen eseménykezel˝ t is, a fentihez
+o
+o
+hasonló módon.
+
+34
+
+6
+
+Az Rdev.xlam b˝ vítmény részletesebben
+o
+
+Ebbe a munkafüzetbe gyujtöttem azokat a rutinokat, melyek csak a fejlesztéshez szükségesek,
+˝
+lásd a 3.1 szakaszt. Néhány olyan rutin is ide került, ami a dokumentáció elkészítésében
+segített. Ez a fejezet a munkafüzet felépítését ismerteti.
+
+6.1. A finalize modul
+Itt vannak a számoló munkafüzet véglegesítésénél használt rutinok.
+FinalizeWb El˝ ször feloldjuk a lapvédelmet (unprotectSheets), majd elrejtjük az R kódot
+o
+(HideRcodes), a felhasználói cellák zárolását feloldjuk (lockcells), a bekapcsoljuk a
+lapvédelmet (protectSheets), végül elmentjük a munkafüzetet.
+HideRcodes, unHideRcodes Elrejtésnél végigmegyünk a munkalapokon. Ha az isToHide függvény azt mondja egy munkalapról, hogy el kell rejteni, akkor elrejtjük és a DEBUG/UNDEBUG
+választéklista értékét UNDEBUG-ra állítjuk. Ellenkez˝ esetben megnézzük, hogy az adott
+o
+munkalapon nevei között szerepel-e az R_names. Ha igen, akkor ennek az oszlopát is
+elrejtjük. Ez utóbbit az Adatok munkalapon használjuk.
+Visszaállításnál, csak az elrejtett munkalapokat és oszlopokat tesszük láthatóvá, nem
+változtatunk a DEBUG/UNDEBUG mez˝ értékén.
+o
+protectSheets Az aktív munkafüzet látható munkalapjainak védelmét kapcsoljuk be.
+unprotectSheets Az aktív munkafüzet valamennyi munkalapjának a védelmét kikapcsoljuk.
+lockcells Az aktív munkafüzet látható munkalapjain a használt tartomány celláinak locked
+tulajdonságát állítja be a cella színe alapján. Ha a cella színe (pontosabban colorindexe) azonos a getCustomColor értékkel, akkor a felhasználó írhat a cellába, ellenkez˝ eseto
+ben nem.
+A rutin végén van egy rész, ami checkbox vezérl˝ k használatát teszi lehet˝ vé. Ha a
+o
+o
+vezérl˝ linkedcell cellája ugyanazon a munkalapon van, akkor ez a cella sem lesz
+o
+zárolt. Ez a rész valószínuleg fölösleges.
+˝
+isDebugDD(sh As Worksheet, dd As DropDown) As Boolean A dd DropDown-ról ellen˝ rzi,
+o
+hogy a DEBUG/UNDEBUG választóról van-e szó.
+isToHide(name As String) As Boolean A name paraméterr˝ l ellen˝ rzi, hogy R kód* vagy
+o
+o
+*hidden* alakú-e.
+getCustomColor Kikeresi a felhasználói mez˝ k színét, pontosabban a colorindex tulajdono
+ságát az R kód munkalap colortable tartományából.
+
+35
+
+6.2. Az insertform modul
+
+6.2. Az insertform modul
+insert... rutinok
+insertAccessFrom, insertAccessSQLForm, insertFileForm, insertDataLine Ezek a rutinok
+egy kaptafára mennek. A Rdev.xlam munkafüzet samples munkalapon lév˝ mintákat
+o
+átmásoljuk a számoló munkafüzetbe, ha szükséges kis méretu gombokat illesztünk be
+˝
+a megfelel˝ cellákba és ha kell a R.xls munkafüzetre mutató hivatkozást beállítjuk.
+o
+Az insertDataLine rutin kivételével egy elemet illesztünk be egyszerre az activeCell
+cellába (ez a kijelölés bal fels˝ sarka). Az insertDataLine a kijelölés minden sorába
+o
+beilleszt egy Data Line elemet.
+insertDropDown A kijelölt cellákba (pontosabban a kijelölés els˝ oszlopának celláiba) beszúr
+o
+egy-egy Drop Down urlapot. A választék listát pontos vessz˝ vel elválasztott szövegként
+˝
+o
+a cella értékeként adhatjuk meg. Ha ez hiányzik, akkor egy felugró ablakban a lista
+hosszát kell megadni. Ez esetben utólag ki kell tölteni az R kód lap megfelel˝ tartomáo
+nyát. A tartomány fölé az Adat neve van beképletezve, ez a cellától balra álló mez˝
+o
+értéke, mellé pedig a választott érték (Ide mutat az urlap linkedcell tulajdonsága).
+˝
+A rutin gondoskodik arról, hogy a Drop Down urlap alatti cella képlete a választék lista
+˝
+aktuális értékét tartalmazza és színe a t˝ le jobbra álló cella színével egyezzen meg. Így
+o
+véglegesítés után a felhasználó nem tudja elrontatni a képletezést.
+insertCalcBtn (optional extra) Beszúr egy számolást indító gombot a kijelölt tartomány
+fölé. A gomb szövege Számolás indítása és makró hozzárendelését a newRun függvény számítja ki a gomb azonosítójából. Az eredmény alábbihoz hasonló
+Private Sub Btn1run()
+runBtnClick Me.Shapes("Button 1")
+End Sub
+A runBtnClick a R.xls munkafüzet Interface moduljában van deﬁniálva és a shape
+alatti tartomány szövegét küldi el kiértékelésre az R-nek.
+Ha az extra argumentum is meg van adva, pl. extra=",True" paraméterrel hívjuk
+meg az eljárást, akkor az így megadott szöveg a runBtnClick sor végére kerül. Az
+iménti példa tehát
+Private Sub Btn1run()
+runBtnClick Me.Shapes("Button 1"), True
+End Sub
+alakúra változik. Az els˝ változat aszinkron módon hajtja végre a kódot, míg a második
+o
+szinkron módon.
+Az extra paramétert a dokumentáció készítése közben használtam.
+
+Segéd rutinok
+formcopy(cell As Range) Ezt az eljárást a insert...form nevu rutinokból hívjuk, miután
+˝
+az Rdev.xlam munkafüzet samples munkalapján a megfelel˝ részt másolásra kijelöltük.
+o
+A cell tartományba illesztjük a másolandó rész formuláit és formázását. A végén a
+beillesztett részt kijelöljük a select metódussal és a színeket a setcolors rutinnal a
+számoló munkafüzettel összhangba hozzuk.
+
+36
+
+6.3. Az insertR modul
+insertSelectBtn(vbcs as Collection, c As Range, which As String, Optional exarg = "")
+A c cella bal fels˝ sarkába illeszt egy kis méretu gombot a smallBtnAt eljárás segítséo
+˝
+gével. A gombhoz a which paraméter alapján megfelel˝ makrót rendel. A a newSelect
+o
+szubrutinnal kiszámolt makrót feljegyezzük a vbcs collectionban. Az egyes típusok
+esetén a következ˝ szubrutinok lehetségesek
+o
+Private Sub File7Click()
+selectFile Me.Shapes("Button 7").TopLeftCell, "R,*.R"
+End Sub
+Private Sub mappa6Click()
+selectmappa Me.Shapes("Button 6").TopLeftCell
+End Sub
+Private Sub SQL5Click()
+selectSQL Me.Shapes("Button 5").TopLeftCell, 4, 2
+End Sub
+Private Sub TBL4Click()
+selectTBL Me.Shapes("Button 4").TopLeftCell
+End Sub
+Private Sub MDB3Click()
+selectMDB Me.Shapes("Button 3").TopLeftCell
+End Sub
+A select... szubrutinok a R.xls munkafüzet selectfuns moduljában vannak deﬁniálva.
+smallBtnAt (c as range) A c tartomány bal fels˝ sarkába elhelyez egy kis méretu gombot.
+o
+˝
+A gomb szövegét törli. A méreteket a modul elején deﬁniált konstansok adják
+Const smallwd = 13 ' szélesség
+Const smallht = 5 ' magasság
+Const smallpd = 2 ' távolság a tartomány szélétől, padding
+Túl kicsi cella esetén ﬁgyelmeztetést ad.
+newRun Összerakja a run gombok makrójának szövegét.
+newSelect Összerakja a select gombok makrójának szövegét.
+setcolor(r As Range, Optional color) Ez a rutin színezi át a beillesztett elemeket a számoló munkalap aktuális színeire. Ehhez egyrészt az R kód munkalap colortable nevu
+˝
+tartományát használja, másrészt a Rdev.xlam b˝ vítmény ugyanilyen nevu tartományát.
+o
+˝
+Ha a color paraméter meg van adva, akkor a számoló munkafüzet color nevu színe
+˝
+lesz az új elem háttérszíne.
+newListFillRange Kiszámolja, hova kerüljön az új Drop down választó urlap Listfillrange˝
+e. Innen veszi az urlap a lehetséges értékeket. Az eljárás a következ˝ . Az R kód munka˝
+o
+lap $A oszlopának aljáról indulunk és addig megyünk, amíg nem üres mez˝ t találunk.
+o
+Ez alá rakjuk a szükséges méretu tartományt.
+˝
+
+6.3. Az insertR modul
+Itt vannak az R kódlapok kezelésére szolgáló rutinok.
+
+37
+
+6.4. Az insertSkeleton modul
+insertRfile Ennek a rutinnak a feladata az beszúrandó R ﬁle, ﬁleok elérési útjának meghatározása. Ehhez megjelenít egy ﬁle választó dialógot, majd minden egyes kiválasztott
+ﬁle-ra végrehajtja a insertRcode szubrutint.
+insertRcode(Rfile, wb As Workbook) A megadott Rfile tartalmát megpróbálja beszúrni a wb munkafüzetbe. Ha már létezik a megadott R kódlap, akkor rákérdez, hogy
+frissítse-e a (a sheetUpdate eljárással) kódlap tartalmát. Ha nem létezik ilyen nevu
+˝
+kódlap, akkor létrehoz egy újat és abba beilleszti a ﬁle tartalmát az insertRtoSheet
+eljárással.
+insertRtoSheet(wb As Workbook, ws As Worksheet, Rfile) El˝ ször a sheetUpdate szubo
+rutin segítségével feltölti a ws munkalapot a Rfile tartalmával, majd a munkalapra beilleszti a Workheet_Change esemény kezel˝ eljárást. Ezt arra használjuk, hogy ha a kódlap
+o
+tartalma változik, akkor annak id˝ pontját feljegyezhessük a munkalapon. A beillesztett
+o
+kód
+Private Sub Worksheet_Change(ByVal Target As Range)
+If Target.Row > 1 Then
+Me.Cells(1, 1).Value = _
+"'" & "## sheet last modified: " & CStr(VBA.Date + VBA.Time)
+End If
+End Sub
+
+sheetUpdate A munkalap harmadik sora után beilleszti a ﬁle tartalmát, majd az els˝ három
+o
+sorba beszúrja a fileinfo részt az insertRfileInfo eljárással.
+insertRfileInfo A fileinfo a munkalap utolsó módosításának id˝ pontja, a forrás teljes
+o
+elérési útja, és a forrás utolsó módosításának id˝ pontja. Lásd a 1.5 ábrán. Ennek beilo
+lesztése után a munkalap betu típusát Lucida console-ra állítjuk 10-es betumérettel. Ez
+˝
+˝
+egy monospace betutípus. Végül beállítjuk az els˝ oszlop szélességét a autofit metódus
+˝
+o
+segítségével.
+updateAllRsources Végigmegy az aktív munkafüzet munkalapjain, és az R kódlapokat frissíti. Ha munkalap tartalma változott, rákérdez arra, hogy tényleg frissítsen-e. Egy munkalapot akkor tekintünk R kódlapnak, ha neve R kód(<filenév>) alakú. A frissítés a
+sheetUpdate szubrutinnal történik.
+saveAllRsources Végigmegy az aktív munkafüzet munkalapjain, és az R kódlapokat menti
+a sheetSave eljárással. Ha ezzel információt veszhetne el, akkor a felhasználó dönthet
+a mentésr˝ l.
+o
+sheetSave(sh As Worksheet, Rfile) Kiírja az sh munkalap els˝ oszlopának a tartalmát
+o
+(az els˝ három sor nélkül) a megadott Rfile állományba és frissíti a fileInfo mez˝ ket.
+o
+o
+getfinfo,rmprefix Ezek segédfüggvények a fileInfo mez˝ k kezeléséhez.
+o
+
+6.4. Az insertSkeleton modul
+Itt van az a rutin, ami a Calc.xlt template alapján létrehoz egy új számoló munkafüzetet. A
+modul többi része a munkafüzetek színezésével foglalkozik. Itt színekb˝ l álló collectiono
+okkal dolgozunk, ahol az elemek kulcs-a a helyettesítend˝ szín RGB kódja, míg értéke az új
+o
+szín RGB kódja. Ezt nevezhetnénk akár színkulcsnak is.
+
+38
+
+6.5. Az insertVB modul
+newSkeleton(Optional fname = False) létrehozunk egy új munkafüzetet a Calc.xlt template alapján, beállítjuk a R.xls munkafüzetre mutató hivatkozást majd elmentjük a
+munkafüzetet. Ha a fname argumentum nem False, akkor ez lesz a mentett munkafüzet neve, ellenkez˝ esetben a felhasználó választ a EXCEL saveAsFilename dialógjával.
+o
+Pillanatnyilag a xls formátumot er˝ ltetjük mentéskor. Ha ezt meg akarjuk változtatni,
+o
+akkor a modul elején található wbFormat konstans értékét kell átállítani.
+Eredetileg ez a rutin másolta át a Thisworkbook modul checkRefToR szubrutinját az
+újonnan létrehozott számoló munkafüzetbe. Ennek az az el˝ nye, hogy elegend˝ egy
+o
+o
+helyen a Rdev.xlam munkafüzetben javítani a kódot. Azonban, az EXCEL korábbi (XP)
+változata ett˝ l rendszeresen összeomlott. Kicsit böngészve a netet arra jutottam, hogy
+o
+ezt a hibát mások is tapasztalták és nem tudom javítani. Ezért került a checkRefToR a
+Calc.xlt sablonba is. Így azonban a javításokat mindkét helyen át kell vezetni.
+repaintWb Ez a szubrutin a kijelölt tartomány els˝ oszlopát régi színként, második oszlopát
+o
+a hozzá tartozó új színként értelmezi. Az így összeállított színkulcsot alkalmazza a
+kijelölés munkafüzetére a changeColorsWb rutin segítségével.
+changeColorsWb(wb As Workbook, colors As Collection) A wb munkafüzet minden egyes
+munkalapjának használt tartományára alkalmazza a changeColors rutint.
+changeColors(r As Range, colors As Collection) A r tartományt színezi át a colors
+színkulcs segítségével.
+insertUsedColors A kijelölt tartomány celláit az ot tartalmazó munkafüzet színeivel tölti ki.
+˝
+usedColors(wb As Workbook) As Collection A wb munkafüzetb˝ l gyujti a használt színeo
+˝
+ket.
+
+6.5. Az insertVB modul
+Ez a modul (az rDir függvény kivételével) programozottan próbál hozzáférni a EXCEL VBA
+projekt objektummodelljéhez. Csak akkor muködik, ha a
+˝
+File->Beállítások->Adatvédelmi központ->Makróbeállítások
+lapon a „A VBA projekt objektmodelljéhez való hozzáférés megbízható” címkéju checkboxot
+˝
+kipipáljuk.
+VBAaccess Ez a függvény ellen˝ rzi, a VBA projekt objektummodellhez való hozzáférés leo
+het˝ ségét. Ha nem engedélyezett tájékoztatja a felhasználót a teend˝ kr˝ l.
+o
+o o
+insertVB(ws as worksheet, code As String, procname) A ws munkalaphoz tartozó CodeModuleba illeszti a code sztringet. A procname a code-ban megadott eljárás neve. Csak akkor
+illesztjük be a kódot, ha nincs procname nevu eljárás vagy függvény.
+˝
+Ez a rutin sokáig nem muködött megbízhatóan. A megoldás kulcsa a a munkalap
+˝
+CodeModule megtalálása a getCM függvénnyel. Ha az R kódlapok beszúrása során nem
+jön létre a Worksheet_Change makró, akkor itt kell keresni az okát.
+insertVBcoll(vbcs as collection) Erre a rutinra azért van szükség, mert az EXCEL XP
+változata összeomlott, ha több kódrészletet szúrtam be egymás után. A vbcs egy VBcode
+típusú elemekb˝ l álló collection. Minden elemnek három tulajdonsága van: id, code,
+o
+ws ami egy munkalap objektum. El˝ ször megkeresi, a CodeModule-t, amibe a kódot be
+o
+kell illeszteni. Ezután összefuzi azokat a kódrészleteket, amelyek idje még nincs deﬁni˝
+álva a CodeModulban. Végül beszúrja az így kapott szövetget.
+39
+
+6.6. Egyebek
+nameExists(cl As Object, name) As Boolean A cl collection jellegu objektumnak kell
+˝
+lennie. A visszatérési érték IGAZ, ha az elemek nevei között szerepel a name érték.
+procString(cmodule as CodeModule, procname) As String Visszaadja a cmodule modul
+procname nevu eljárásának szövegét.
+˝
+procExists(cmodule as CodeModule, procname) As Boolean Igaz értéket ad vissza, ha a
+cmodule CodeModuleban létezik procname nevu eljárás, vagy függvény.
+˝
+rDir Az appdata környezeti változóból kiszámolja a R.xls munkafüzet könyvtárát.
+SetReftoRxls (wb as Workbook) A wb munkafüzet hivatkozásai közé felvesszük a R.xls
+munkafüzetet, ha az nincs ott.
+getCM(ws As Worksheet) As CodeModule A ws Worksheethez tartozó CodeModulet keresi
+meg.
+Amikor programozottan hozunk létre egy új munkalapot, akkor közvetlenül a létrehozás után a hozzá tartozó CodeModule elérésére
+wb.VBProject.VBComponents ("<worksheet name>")
+nem alkalmas. Ezért alkalmazza a rutin a körülményesebb
+For Each vc In wb.VBProject.VBComponents
+If cname = vc.Properties("Name") Then Exit For
+Set vc = Nothing
+Next
+megoldást.
+
+6.6. Egyebek
+A Thisworkbook modul
+Modul legnagyobb része az EXCEL különböz˝ menüinek beállítása az addMenu rutinnal. A
+o
+removeMenu (cb, mcaption) rutin a cb commandBar mcaption nevu menüjét törli. Ennek
+˝
+felhasználásával a removemenus az összes munkafüzet által telepített menüt törli.
+A addMenu rutinban a menük telepítése el˝ tt a korábbi változatot töröljük. Ezt a rutint a
+o
+munkalap betöltésekor és a b˝ vítmény telepítésekor futtatjuk le. A rutin elején használjuk
+o
+a checkRefToR függvényt. A visszatérési érték IGAZ, ha a megfelel˝ R.xls munkafüzetet
+o
+sikerült megnyitni, vagy eleve nyitva volt és HAMIS egyébként. Ha van ugyan megnyitva
+R.xls munkafüzet, de elérési útja nem az elvárt, akkor megpróbáljuk a rá mutató hivatkozást
+törölni és a jó hivatkozást beállítani.
+A menük törlését vagy a Workbook_Close vagy Workbook_AddInUninstall rutinból indítjuk el. A munkafüzet bezárásakor csak akkor töröljük a menüket, ha a Rdev.xlam munkafüzet
+nincs b˝ vítményként telepítve.
+o
+
+A capturewnd modul
+A capturewnd szubrutin a megadott ablak (hwnd) képét bmp formátumban menti a megadott
+ﬁleba (fname). Ennek a dokumentációnak a képerny˝ képei készültek a segítségével.
+o
+
+40
+
+6.6. Egyebek
+
+A saveVBE modul
+Egyetlen szubrutint deﬁniál saveAllVBE névvel. A felhasználó által kiválasztott könyvtárba
+menti a megnyitott munkafüzetek Visual Basic kódját. Mindegyik VBAProject-et a nevével megegyez˝ alkönyvtárba próbál menteni. Mentés el˝ tt rákérdez, hogy az adott projektet
+o
+o
+valóban menteni szeretnénk-e. Az egyes VB komponensek mentése az export metódussal
+történik.
+
+A RIBBON modul
+Egyetlen szubrutint tartalmaz, menufunction névvel. Ez a RIBBON felületen deﬁniált gombok makrója, a gomb azonosítója alapján a megfelel˝ eljárást hívja meg.
+o
+Azért, hogy a b˝ vítményt EXCEL XP-be is be lehessen tölteni ez a modul csak akkor foro
+dítódik le, ha VBA7 konstans deﬁniálva van. Ez biztosan teljesül OFFICE 2010 és 2013 esetén.
+Az OFFICE 2003 ill. OFFICE 2007 változatokkal nincs tapasztalatom.
+
+A samples munkalap (6.1 ábra)
+Ezen a munkalapon vannak a Access Form és ACCESS+SQL valamint a Data Line elemek mintái. Innen másoljuk át oket a megfelel˝ menüparancs hatására.
+˝
+o
+
+6.1. ábra. A samples munkalap képe
+
+41
+
+7
+
+Az R oldal részletesebben
+
+7.1. Az Rxls csomag rutinjai
+XLdata
+Az XLdata függvény célja, hogy viszonylag könnyen lehessen a beállításokat, paramétereket
+az R-nek átadni. A függvény argumentumai:
+XLdata
+function (c1 = 1, c2 = 2, c2.offset = c2 - c1, range, onlyvisible = TRUE,
+rmHidden = FALSE, env = parent.frame(), XLrange = {
+on.exit(XLrange <- NULL)
+if (missing(range))
+range <- XL$selection()$address(external = TRUE)
+XL$range(range)
+}, XL = THISXL, value = "value2")
+c1,c2,c2.offset Az els˝ két paraméter a neveket ill. értékeket tartalmazó oszlopok soro
+száma a tartományon belül, a harmadik ezek különbsége. A kód a c2.offset értéket
+használja, így a c2 értéket csak akkor használjuk, ha c2.offset nincs megadva.
+range A tartomány címe, lehet˝ leg teljes név, azaz munkafüzet, munkalap és azon belül a taro
+tomány bal fels˝ és jobb alsó cellája. pl. [Munkafüzet1]Munka1!$A:$F. Az extAddress
+o
+munkalapfüggvénnyel könnyen megadható.
+rmHidden Ha TRUE, akkor a rejtett sorokban lév˝ változókat töröljük az R oldalon. Alapértelo
+mezésben nem törlünk.
+onlyvisible Ha TRUE (ez az alapértelmezés), akkor csak a látható sorokat használja, ellenkez˝ esetben a rejtetteket is.
+o
+env Az környezet (environment), amiben a változók deﬁniálva lesznek. Alapértelmezésben
+az a függvény hívásakor aktív környezet. Ha a background(eval(.FUN)) vagy eval
+(.FUN) részeként használjuk az XLdata függvényt, akkor a globális .GlobalEnv környezetben lesznek deﬁniálva a változók. Tipikusan ezt a paramétert nem kell megadni.
+XLrange Az range cím megadása helyett egy EXCEL ranget reprezentáló COM objektumot is
+megadhatunk. Tipikusan ezt a paramétert nem kell megadni.
+XL A használandó EXCEL példány. Tipikusan ezt a paramétert nem kell megadni.
+value A cella melyik érték tulajdonságát használjuk? value vagy value2. Csak a dátum
+id˝ adatok kezelésében van különbség. value esetében az EXCEL dátum/id˝ adatai
+o
+o
+POSIXt típusú adatként jelennek meg az R oldalon, míg value2 esetében az 1900.01.01
+42
+
+7.1. Az Rxls csomag rutinjai
+dátum óta eltelt napok számaként. A POSIXt típus konverziót a téli nyári id˝ számítás
+o
+összezavarja, ezért inkább a másikat használtam mindig. value2 használata esetén az
+eredmény az XLDate függvény segítségével Date típusúvá alakítható. Tipikusan ezt a
+paramétert nem kell megadni.
+
+XLsource
+Ez a függvény a source mintájára muködik, azaz a kódot olvas be szövegként, majd azt
+˝
+elemzi (parse) és kiértékeli, vagyis végrehajtja. Azonban a source-t˝ l eltér˝ en az XLsource
+o
+o
+nem ﬁle-ból, hanem egy EXCEL munkafüzet R kódlapjáról olvassa be a kód szövegét. Az
+argumentumok:
+XLsource
+function (..., wbname, name = {
+dots <- match.call(expand.dots = FALSE)$...
+if (length(dots) && !all(sapply(dots, function(x) is.symbol(x) ||
+is.character(x))))
+stop("... must contain names or character strings")
+sapply(dots, as.character)
+}, env = parent.frame(), wsname = sprintf("R kód(%s)", name),
+wb = {
+on.exit(wb <- NULL, add = TRUE)
+if (missing(wbname))
+XL[["activeworkbook"]]
+else XL[["workbooks", wbname]]
+}, XL = THISXL)
+... Az R kódlap-ok nevei, nem szükséges idéz˝ jelek közé tenni a neveket. Ha a nevek kao
+rakter vektor formájában állnak rendelkezésre, akkor használjuk a name argumentumot.
+Ezek a nevek nem a munkalap nevek. Azok R kód(kódlap név) alakúak, lásd a wsname
+argumentumot.
+wbname A munkafüzet neve. Ha nem adjuk meg, akkor az aktív munkafüzetet fogja a rutin
+használni.
+name A kódlapok neveit c ("<név1>","<név2>",...) alakban is megadhatjuk. Tipikusan
+ezt az argumentumot nem kell megadni.
+env Hasonlóan az XLdata függvényhez itt is megadható, hogy melyik környezetben dolgozunk. Ugyanaz a mechanizmus érvényesül itt is. Tipikusan ezt az argumentumot nem
+kell megadni.
+wsname Az R kódot tartalmazó munkalapok nevei. Tipikusan ezt az argumentumot nem kell
+megadni.
+wb A munkafüzetet reprezentáló COM objektum. Tipikusan ezt az argumentumot nem kell
+megadni.
+XL A használni kívánt EXCEL példány. Tipikusan ezt az argumentumot nem kell megadni.
+
+43
+
+7.1. Az Rxls csomag rutinjai
+
+XLwritedf
+Egy data.frame-t másol EXCEL munkafüzetbe. Külön ﬁgyelni kell a factor és dátum típusú
+adatokra. Lehet˝ ség van az oszlop szélesség tartalomhoz igazítására és név megadására.
+o
+XLwritedf
+function (XLrange, df, with.names = TRUE, autoFit = TRUE,
+setname)
+XLrange A céltartomány. A df data.frame-t az XLrange tartomány bal fels˝ sarkába illeszto
+jük be.
+df A másolandó data.frame.
+with.names Ha TRUE, akkor a kitöltött tartomány els˝ sorába a data.frame nevei kerülnek.
+o
+autoFit Ha TRUE, akkor az oszlopok szélességét a tartalomhoz igazítjuk.
+setname Ha megadjuk és értéke karakterlánc, akkor ez lesz a kitöltött tartomány (munkafüzet szintu) neve.
+˝
+
+XLreaddf.cols, XLreaddf.rows
+Mindkét függvény az EXCEL megadott tartományát alakítja R data.frame-é. A különbség
+abban van, hogy míg a XLreaddf.cols esetén a tartomány oszlopai felelnek meg az eredmény
+data.frame oszlopinak, az XLreaddf.rows esetén a tartomány soraiból lesznek a data.frame
+oszlopai.
+Az els˝ feldolgozás (beolvasás, összevont cellák ellen˝ rzése) után mindkét rutin a XLlist2df
+o
+o
+függvényt használja és ... argumentumot tovább adja ennek a függvénynek. Így a paraméterek listája hosszabb, mint ami az alábbi fejlécb˝ l következne.
+o
+XLreaddf.cols
+function (range, which.cols = seq_len(ncol(x)), XLrange = {
+on.exit(XLrange <- NULL, add = TRUE)
+if (missing(range))
+XL$selection()
+else XL$range(range)
+}, ..., chk.merge = TRUE, value = "value2", XL = THISXL)
+XLreaddf.rows
+function (range, which = seq_len(nrow(x)), XLrange = {
+on.exit(XLrange <- NULL, add = TRUE)
+if (missing(range))
+XL$selection()
+else XL$range(range)
+}, ..., chk.merge = TRUE, value = "value2", XL = THISXL)
+range A céltartomány szövegesen megadott címe. Ha nem adjuk meg, akkor az aktuális
+kijelölést használjuk.
+which.cols Itt lehet megadni, hogy a tartomány mely oszlopai szerepeljenek a végeredményben. Alapértelmezése a tartomány összes oszlopa.
+XLrange A tartomány COM objektumként. Jellemz˝ n nem kell megadni.
+o
+44
+
+7.1. Az Rxls csomag rutinjai
+... Ezeket a paramétereket tovább adjuk a XLlist2df függvénynek.
+Rxls:::XLlist2df
+function (x, header = 1, trim = FALSE, skip = 0, head.sep = "",
+numeric = FALSE, ...)
+Az így keletkez˝ további beállítási lehet˝ ségek:
+o
+o
+header A tartomány fejlécének nagysága, sorokban.
+trim Ha igaz, akkor az üres sorokat és oszlopokat eldobjuk, ha hamis nem történik
+semmi.
+skip Lehet függvény, ekkor a trimmelés után ezt alkalmazzuk az adatokra. Lehet szám
+is. Pozitív érték esetén skip számú sort eldobunk.
+head.sep Akkor használjuk, ha a tartomány fejléce több soros. Ilyenkor a data.frame
+neveit az oszlop fejlécében szerepl˝ sztringek összefuzésével kapjuk.
+o
+˝
+numeric Ha igaz, akkor a data.frame elemeit megpróbáljuk numerikus értékre konvertálni akkor is, ha mondjuk az EXCEL-ben szövegesen szerepelnek a számok. A
+tizedesjel az R tizedes jele, alapértelmezésben ez a pont.
+... Ezeket a paramétereket továbbadjuk a data.frame függvénynek. Célszeru lehet a
+˝
+következ˝ megadása:
+o
+stringAsFactors = FALSE Szöveges adatból data.frame létrehozása során factor
+változó lesz. Ha mégis inkább szöveges adatot szeretnénk a data.frameünkben,
+akkor kell ezt a beállítást használni.
+El˝ ször trimmelünk ha kell, majd a skipet alkalmazzuk, ezután választjuk le a fejlécet
+o
+a header alapján. A megmaradó adatokra alkalmazzuk a as.numeric függvényt, ha
+szükséges, majd a data.frame függvényt. Végül beállítjuk a data.frame neveit, ha
+vannak.
+chk.merge Ha a tartományban összevont cellák vannak, akkor a képerny˝ n látható érték az
+o
+összevont cellák bal fels˝ sarkában lév˝ cella értéke, a többi cella értéke üres. Ez a R
+o
+o
+oldalon NA értéket eredményez. Ha chk.merge értéke TRUE, akkor az R oldalra másolt
+értékek megegyeznek a cellában látható értékkel. Vagyis egy összevont tartomány minden cellájához a képerny˝ n látható értéket rendeljük.
+o
+value Melyik tulajdonságát használjuk a tartománynak. Tipikusan nem kell megadni. Lehet
+"value", "value2", "formula" vagy akár "formulalocal".
+XL Melyik EXCEL példánnyal dolgozzunk. Tipikusan nem kell megadni. Alapértelmezésben
+a globális THISXL érték.
+
+XLget
+Egy EXCEL tartományt olvas be R-be, pontosabban a tartomány és az adott munkalap usedrangeének metszetét.
+XLget
+function (range, XLrange = {
+if (missing(range))
+XL$selection()
+else XL$range(range)
+}, value = "value", XL = THISXL)
+45
+
+7.1. Az Rxls csomag rutinjai
+range A tartomány címe, sztring. Lehet az aktív munkafüzetben deﬁniált név is. Ha nem
+adjuk meg, akkor a kijelölt tartomány.
+XLrange Az olvasandó tartományt reprezentáló COM objektum. Tipikusan nem kell megadni.
+value Melyik tulajdonságát használjuk a tartománynak. Tipikusan nem kell megadni. Lehet
+"value", "value2", "formula" vagy akár "formulalocal".
+XL Melyik EXCEL példánnyal dolgozzunk. Tipikusan nem kell megadni. Alapértelmezésben
+a globális THISXL érték.
+
+ACCESS.get
+ACCESS adatbázisból olvas be egy táblát.
+ACCESS.get
+function (dir, file, table, where = "")
+dir Az adatbázis könyvtára.
+file Az adatbázis ﬁleneve.
+table A tábla neve.
+where A lekérdezés where része. Ha nem adjuk meg a teljes táblát lekérdezzük.
+
+ODBC.get
+ACCESS adatbázisból olvas be egy táblát.
+ODBC.get
+function (dsn, sql)
+dsn A kapcsolatot leíró sztring.
+sql Az lekérdezés sql parancsa.
+
+getFromDB
+Választ a két el˝ bbi rutin közül. Ha a dsn argumentumként nem deﬁniált változót adunk át,
+o
+akkor az ACCESS.get egyébként a ODBC.get függvényt használjuk.
+getFromDB
+function (dir, file, table, where = "", dsn, sql)
+{
+if (!inherits(try(dsn, silent = TRUE), "try-error")) {
+ODBC.get(dsn = dsn, sql = sql)
+}
+else {
+ACCESS.get(dir = dir, file = file, table = table,
+where = where)
+}
+}
+<environment: namespace:Rxls>
+46
+
+7.1. Az Rxls csomag rutinjai
+
+logDevice kezelés
+logDev
+A logDev függvény új logDevice-t hoz létre a megadott típussal. A logDev.set függvény
+az aktuális logDevice-t állítja át, logDev.off kikapcsolja azt, míg a logDev.list kilistázza a
+létez˝ logDevice-okat.
+o
+logDev
+function (...)
+... Az új logDevice típusa. "null", "R", "EXCEL", "TCL" lehet.
+logDev.set
+Átállítja az aktuális logDevice-t.
+logDev.set
+function (num)
+num Az új aktív eszköz sorszáma.
+progress
+Új progressbart ad az aktív logDevicehoz.
+progress
+function (...)
+A paramétereket továbbadjuk. A tényleges argumentumok:
+pattern Az sprintf függvény által használt formátum sztring.
+... A formátum sztringbe helyettesítend˝ kezd˝ értékek.
+o
+o
+lazyness Numerikus érték, a progressbar frissítési id˝ köze másodpercben.
+o
+A progress visszatérési értéke egy objektum (list) a következ˝ függvényekkel:
+o
+inc() Ha progressbar mintájának egyetlen numerikus argumentuma van, akkor azt egyel
+növeli és frissíti a logDevicet a lazyness paraméterrel összhangban.
+step(...) A progressbar értékét frissíti a sprintf(pattern,...) függvényhívással és frissíti a logDevicet a lazyness paraméterrel összhangban.
+hide() Ideiglenes leveszi a progressbart a logDeviceról. Nem frissít!
+show() Visszateszi a progressbart a logDevicera. Nem frissít!
+reset(pattern,...,lazyness) A progressbar paramétereit átállítja. Nem frissít!
+refresh() Frissíti a logDevice szövegét, függetlenül az el˝ z˝ frissítés óta eltelt id˝ t˝ l.
+o o
+oo
+rm() Véglegesen törli a progressbart a logDeviceról. Nem frissít.
+
+47
+
+7.1. Az Rxls csomag rutinjai
+logMessage
+logMessage
+function (..., sleep = 0)
+... Az sprintf függvénynek átadott paraméterek, az els˝ elem lehet formátum sztring.
+o
+sleep Várakozás a message megjelenítése után másodpercben.
+
+Dátum kezelo függvények
+˝
+Az EXCELb˝ l value2 tulajdonságon keresztül kapott numerikus értéket az R valamelyik dátum
+o
+típusára konvertáló függvények.
+XLDate
+function (date, d1904 = FALSE)
+XLPOSIXct
+function (date, d1904 = FALSE)
+date Numerikus érték. A kezd˝ id˝ pont óta eltelt napok száma. Nem feltétlenül egész szám.
+o o
+d1904 Kezd˝ id˝ pont. Az EXCEL munkafüzetek Date1904 nevu tulajdonságának felel meg.
+o o
+˝
+
+Egyebek
+XLScreenUpdateTurnOff
+Kikapcsolja az ScreenUpdate tulajdonságát és a Calculation tulajdonságot xlCalculationManualra állítja. A visszatérési érték egy függvény, ami a visszaállítja az eredeti állapotot. Lehet˝ ség
+o
+van az aktív cella értékének visszaállítására is.
+XLScreenUpdateTurnOff
+function (Appl, activecell = FALSE)
+Appl Az az EXCEL application, aminek az képerny˝ frissítését le akarjuk tiltani.
+o
+activecell Ha igaz, akkor az aktív cella helyét is megjegyezzük és a helyreállítás során a
+cellát aktiváljuk. Csak akkor állítsuk igazra, ha id˝ közben nem töröljük a cella munkao
+lapját vagy munkafüzetét.
+XLusedrange
+Visszaadja egy tartománynak és a usedrange tartománynak a metszetét. Az eredmény egy
+range objektum.
+XLusedrange
+function (r)
+r Az a range objektum, (tehát nem szöveges cím) amit a usedrange tartománnyal metszeni
+akarunk.
+
+48
+
+7.2. VBA kód konvertálása R kóddá
+pkgzip
+win-binary formátumban ment telepített R csomagokat.
+pkgzip
+function (pkgs = {
+preselect <- grep("(com(|proxy)|Rxls)$", rownames(ipkgs),
+value = TRUE)
+if (ask)
+select.list(rownames(ipkgs), preselect, multiple = TRUE,
+title = "Zippelendő csomagok:", graphics = T)
+else preselect
+}, zip.mappa = choose.dir(Sys.getenv("HOME"), "Zip állományok helye:"),
+ask = interactive(), PACKAGES = FALSE)
+pkgs A R csomagok listája. Ha nem adjuk meg és az ask paraméter igaz, akkor interaktív
+módon választhatunk a telepített csomag listájából. Ha hiányzik és az ask paraméter
+hamis, akkor értéke c("com","comproxy","Rxls").
+zip.mappa A zippelt csomagok helye. Ha nem adjuk meg, akkor egy könyvtár-választó dialóg segítségével jelölhetjük ki.
+ask
+installRxls
+A csomagban lév˝ EXCEL ﬁleokat átmásolja a <appdata>/Rxls könyvtárba és a verzió inforo
+mációkat a versions nevu ﬁleba írja.
+˝
+installRxls
+function ()
+R_RegEntries
+Az R-rel kapcsolatos regisztry bejegyzésket listázza ki. Ezek egy része a Software/R-core
+kulcs alatt található. Egy másik része a com csomag által bejegyzett CLSID és Typelib adat.
+R_RegEntries
+function ()
+
+7.2. VBA kód konvertálása R kóddá
+Szükség lehet arra, hogy R-ben írjunk meg olyan programrészeket, amik EXCEL VBA-ban már
+megvannak, vagy ott könnyen el˝ állíthatóak, mondjuk a makrórögzítés funkció segítségével.
+o
+A konverzió nem túl komplikált.
+A konstansokat kigyujthetjük a Visual Basic szerkeszt˝ Object browser-éb˝ l.
+˝
+o
+o
+Ahol EXCEL objektumot használunk (Selection, ActiveCell, ActiveSheet, stb) ott valójában az Application objektum tulajdonságaira hívatkozunk, tehát a teljes leírás az VBA-ban
+Application.Selection lenne és hasonlóan a többi esetben is.
+Visual Basic-ben a . (pont) operátor egy objektum tulajdonságát vagy metódusát kérdezi le. Erre az R oldalon a "[[", ill. $ operátorok használhatóak. Az els˝ vel tulajdonságot, a
+o
+49
+
+7.2. VBA kód konvertálása R kóddá
+másodikkal metódust vagy tulajdonságot érhetünk el. Azaz az EXCEL workbooks collectionjának elérhetjük kétféle képpen is.
+> THISXL[["workbooks"]]
+<pointer: 0x002b386c>
+attr(,"class")
+[1] "COMObject"
+> THISXL$workbooks()
+<pointer: 0x002b33ec>
+attr(,"class")
+[1] "COMObject"
+Ha az els˝ munkafüzetet akarjuk elérni, akkor a Workbooks objektum item tulajdonságát kelo
+lene használnunk. Ez a default tulajdonság, tehát a következ˝ k valamennyien használhatóak
+o
+THISXL[["workbooks", 1]]
+THISXL[["workbooks"]][["item", 1]]
+THISXL$workbooks(1)
+THISXL$workbooks()$item(1)
+THISXL[["workbooks"]]$item(1)
+THISXL$workbooks()[["item", 1]]
+Ha metódust akarunk meghívni, akkor csak a $ szintaxis használható
+> wb <- THISXL$workbooks()$add()
+Ha írható tulajdonságot akarunk beállítani, akkor csak a [[ szintaxis használható értékadással kombinálva. A következ˝ k mind az ActiveCell tartomány értékét állítják 1-re.
+o
+>
+>
+>
+>
+>
+>
+
+THISXL[["activecell"]] <- 1
+THISXL[["activecell"]][["value"]] <- 1
+ac <- THISXL$activecell()
+ac[["value"]] <- 1
+ac <- NULL
+
+A segédváltozós megoldásban a ac<-1 nem muködne, egyszeruen 1 értéket adnánk az ac
+˝
+˝
+nevu változónak.
+˝
+Miután létrehoztunk egy hivatkozást valamely COM objektumra, használat után mindig töröljük azt. Ha egy függvény belsejében tesszük ezt akkor a hivatkozás törlése automatikusan
+megtörténik a függvényb˝ l való kilépés után (az els˝ garbage collection alkalmával). Gloo
+o
+bális szintu változók használata esetén kézzel kell a változó értékét NULL-ra változtatni, vagy
+˝
+az rm függvénnyel törölni a változót magát.
+> wb$close(FALSE)
+[1] TRUE
+> wb <- NULL
+> gc()
+used (Mb) gc trigger (Mb) max used (Mb)
+Ncells
+383028 10.3
+667722 17.9
+667722 17.9
+Vcells 12644927 96.5
+17695907 135.1 13203015 100.8
+50
+
+7.2. VBA kód konvertálása R kóddá
+El˝ fordulhat, hogy nem elég törölni a hivatkozást az adott objektumra, pl. mert egy új
+o
+ACCESS, EXCEL példányt vagy új munkafüzetet hoztunk létre, amire a továbbiakban nincs
+szükség. Ha ez egy függvény belsejében történt, akkor jól használható az R on.exit lehet˝ o
+sége. Ezzel olyan kódot tudunk megadni, amit a függvény kiértékelése után hajt végre az
+R. A következ˝ kódrészlet a függvény elején létrehoz egy új munkafüzetet majd kilépéskor
+o
+mentés nélkül bezárja.
+f <- function() {
+wb <- THISXL$workbooks()$add()
+on.exit(wb$close(FALSE), add = TRUE)
+## ...
+}
+
+Egy meglepo jelenség
+˝
+Id˝ nként nem pontosan az történik, amit várunk. Tegyük fel, pl. hogy az activeCell foro
+muláját szeretnénk a =MA() formulával ellátni. Kézenfekv˝ megoldásnak tunik a következ˝
+o
+˝
+o
+sor
+> THISXL[["activecell"]][["formula"]] <- "=MA()"
+Azonban ennek hatására a cella értéke ugyan az aktuális dátum lesz, de a formula nélkül.
+> THISXL[["activecell"]][["formula"]]
+[1] "41531"
+> THISXL[["activecell"]][["value"]]
+[1] "2013-09-14 CEST"
+Ha azonban beiktatunk egy közbüls˝ lépést, akkor a várt eredményt kapjuk.
+o
+> ac <- THISXL[["activecell"]]
+> ac[["formula"]] <- "=MA()"
+> ac <- NULL
+> THISXL[["activecell"]][["formula"]]
+[1] "=MA()"
+> THISXL[["activecell"]][["value"]]
+[1] "2013-09-14 CEST"
+A különös viselkedés megértéséhez kiírjuk a végrehajtott lépések részleteit.
+> ‘[[.COMObject‘ <- function(handle, property, ...) {
++
+print(match.call())
++
+cat("handle =", deparse(handle), "\n")
++
+x <- com::‘[[.COMObject‘(handle, property, ...)
++
+cat("return value =", deparse(x), "\n\n")
++
+x
++ }
+> ‘[[<-.COMObject‘ <- function(handle, property, ...) {
++
+print(match.call())
++
+cat("handle =", deparse(handle), "\n")
+51
+
+7.3. Dokumentáció, vignette-ák
++
+x <- com::‘[[<-.COMObject‘(handle, property, ...)
++
+cat("return value =", deparse(x), "\n\n")
++
+x
++ }
+> THISXL[["activecell"]][["formula"]] <- "=MA()"
+‘[[.COMObject‘(handle = ‘*tmp*‘, property = "activecell")
+handle = <pointer: 0x002b3944>
+return value = <pointer: 0x00300464>
+‘[[<-.COMObject‘(handle = ‘*tmp*‘, property = "formula",
+value = "=MA()")
+handle = <pointer: 0x00300464>
+return value = <pointer: 0x00300464>
+‘[[<-.COMObject‘(handle = ‘*tmp*‘, property = "activecell",
+value = <pointer: 0x00300464>)
+handle = <pointer: 0x002b3944>
+return value = <pointer: 0x002b3944>
+Azaz az történt, hogy el˝ ször a THISXL objektum activeCell tulajdonságát kérdeztük le,
+o
+majd az így kapott COM objektum formula tulajdonságát beállítottuk. Ezután a változásokat
+„átvezettük” a THISXL objektumra is. Pontosabban az utolsó lépésben THISXL activecelljét a második lépésben kapott eredményre állítjuk, ami ugyanez az aktív cella. Csakhogy ez
+azt eredményezi, hogy mindkét oldalon a COM objektum default tulajdonságát használjuk,
+vagyis valójában az activecell value tulajdonságát állítjuk saját magára. Visual Basicben
+kifejezve az alábbi kódnak megfelel˝ lépések történnek:
+o
+set tmp = Application.activeCell
+tmp.formula = "=MA()"
+Application.activeCell = tmp
+Ahol az utolsó sor azzal ekvivalens, hogy
+Application.activeCell.value = tmp.value
+Ez az utolsó lépés az, ami a formulát eltunteti és helyettesíti az aktuális értékkel. Amikor a
+˝
+második változatot használtuk, ahol egy segéd változóban tároltuk az activeCell objektumot, erre a lépésre nem került sor.
+Összefoglalva, ha valamilyen tulajdonságot állítunk be a COM interfész segítségével, célszeru a segédváltozókat használni, hogy a fenti példában látott mellékhatást elkerüljük.
+˝
+Az R language definition leírás 3.4.4 Subset assignement címu részében részletesen
+˝
+olvashatunk az értékadó függvényekr˝ l.
+o
+
+7.3. Dokumentáció, vignette-ák
+Valamennyi általam készített R csomag esetén a kommentezett kód böngészhet˝ pdf formáo
+tumban. Pl. az Rxls csomag esetén a következ˝ utasítást kell kiadni R-ben.
+o
+> vignette("Rxls")
+A megjelenítéshez szükséges, hogy a ﬁle társítások között regisztrálva legyen pdf nézeget˝ program, pl. Acrobat Reader.
+o
+52
+
+7.3. Dokumentáció, vignette-ák
+RStudio használata esetén, mind az R konzolban, mind a szövegszerkeszt˝ ablakban eléro
+het˝ a kód ”kiegészítése” funkció a TAB billentyu lenyomásával. További el˝ nye az RStudio
+o
+˝
+o
+használatának, hogy a változó nevek kiegészítése, mellett azok rövid leírása is megjelenik
+tooltip-szeruen.
+˝
+Ha egy adott R függvény nevére nem emlékszünk pontosan, akkor jól használható a
+apropos függvény, ami a megadott mintára illeszked˝ függvényneveket sorolja fel.
+o
+
+53
+
+8
+
+Hibaelhárítás
+
+8.1. COM problémák, DebugView
+El˝ fordulhat, hogy egy látszólag hibátlan COM interfészt használó hívás esetén nem az töro
+ténik amit várunk, legtöbbször a visszatérési érték NULL, pedig nem ezt várjuk. A com csomag nem ír ki hiba üzeneteket az R konzolra. A com csomag függvényeinek üzeneteit a
+DebugView programmal lehet megnézni. Ezt a programot a Microsoft honlapjáról lehet letölteni: http://technet.microsoft.com/en-us/sysinternals/bb896647.aspx. Futtatásához
+rendszergazda jogosultság kell.
+
+8.2. R kód debugolása
+Ha az R kódunk hibát (error) generál, vagy csak ﬁgyelmeztetést (warning), akkor célszeru
+˝
+megkeresni az okát. A legels˝ eszköz amit itt használhatunk a traceback függvény, ami a
+o
+hiba helyének behatárolásához ad segítséget. Ha a hibát generáló függvény meg van, akkor
+használhatjuk a debug függvényt. Hatására az argumentumában megadott függvény végrehajtását lépésenként tudjuk nyomon követni. Ha egy megadott függvény adott pontjától
+szeretnénk ugyanezt tenni, akkor a kódba ideiglenes beszúrhatjuk a browser () függvényhívást. Részletesebben lásd az R help-jében, a Writing R Extensions leírás 4., Debugging
+fejezetében. Ugyancsak olvashatunk az R debugolásáról az R language definition leírás 9.
+fejezetében.
+Emellett célszeru lehet kipróbálni a debug csomagot. Ez hasonló felületet nyújt, mint az
+˝
+EXCEL Visual Basic szerkeszt˝ je, azaz a debugolt kód külön ablakban jelenik meg, és színek
+o
+jelzik, hogy hol tart a kiértékelés.
+
+54
+
+9
+
+Teend˝ k R verzió váltásnál
+o
+
+9.1. R csomagok installálása forrásból, type="source"
+Windows alatt az csomagokat jellemz˝ en zip ﬁle-ból telepíti az ember. Ennek legf˝ bb el˝ nye,
+o
+o
+o
+hogy nem szükséges fordító programot telepíteni a gépre. Másfel˝ l, mégis célszeru lehet foro
+˝
+rásból telepíteni, abban az esetben, ha a csomag zip változata valamilyen ok miatt nincs fenn
+a CRAN-on. Ha ragaszkodunk a menü használatához és mégis forrásból akarunk telepíteni,
+akkor célszeru a pkgType opciót átállítani "both"-ra. Ez megtehet˝ az alábbi módon.
+˝
+o
+> options(pkgType = "both")
+Ha a csomag forrása az esetleg szükséges Rtools-zal együtt megtalálható a gépünkön,
+akkor az R konzolból a következ˝ képpen indíthatjuk a telepítést:
+o
+> install.packages("<csomag elérési útja>", type = "source",
++
+repos = NULL)
+Ha a csomagban nincs fordítandó kód (C/C++, vagy Fortran), akkor a fenti módszer az
+Rtools telepítése nélkül is muködik.
+˝
+Az Rtools (Windows toolset) készlet letölthet˝ az R projekt honlapjáról: http://CRAN.
+o
+R-project.org/bin/windows/Rtools/. A fordító készletr˝ l az el˝ bbi linken ill. az „R Instalo
+o
+lation and Administration” címu leírásban lehet további részleteket találni. Ez utóbbi az R
+˝
+help-jéb˝ l elérhet˝ pdf, vagy html formátumban.
+o
+o
+com, comproxy fordítása
+A com csomag, jelenleg csak 32-bites módban fordítható. Ezért a telepítésekor, vagy frissítésekor a INSTALL_opts argumentumra is szükség van.
+> install.packages("<com tar.gz elérési útja>", type = "source",
++
+repos = NULL, INSTALL_opts = "--no-multiarch")
+A com csomagnál az utolsó argumentum nélkül is végigmegy a telepítés, mert csomag
+forrásában nem üres a configure.win ﬁle van. Nekem úgy tunik, hogy ez egy nem doku˝
+mentált viselkedés, vagyis a kés˝ bbi verziókban változhat. Ha megadjuk, akkor az R csak a
+o
+f˝ architektúrára, vagyis 32-bites módra próbálja fordítani a csomagot.
+o
+Mivel az Rxls csomag a com csomagra épül, annak telepítése során is szükség van az
+INSTALL_opts="--no-multiarch" argumentumra. Ez a csomag nem tartalmaz fordított kódot, így egy nem üres configure.win ﬁle elhelyezése nem segít.
+
+55
+
+9.2. Egyebek
+
+9.2. Egyebek
+Van olyan korábban fejlesztett alkalmazás, ami ACCESS adatbázisból adatokat másol adotokat
+EXCEL munkalapra. Ehhez a DAO3.6 library-t használtam. Ez nem érhet˝ el a Windows újabb
+o
+változataiban. Az interneten keresgélve azt találtam, hogy a jelenlegi megfelel˝ je:
+o
+Microsoft Office 14.0 Access database engine Object Library
+Ha ez a hiba el˝ fordul, akkor a szóbanforgó munkafüzet (pl. az arviz csomag Karkalkulator
+o
+munkafüzetében a hivatkozást (VB editor->References menüpontját használva) le kell cserélni.
+
+56
+
+10 Újdonságok az Rxls csomagban az 1.0-119
+verzióhoz képest
+
+Amikor ezt a leírást készítettem, tapasztalnom kellett, hogy a korábbi változat nem muködik
+˝
+a 64 bites EXCEL 2010 programmal. Ezt pár apró változtatás követte, majd újra átgondoltam
+néhány megoldást, amit újabb változtatások követtek. Ezért úgy döntöttem, hogy a verzió
+számot 2.0-0-ra növelem, és mindent átírok, amir˝ l úgy gondolom jobban, egyszerubben is
+o
+˝
+megoldható.
+
+Rxls könyvtár
+A korábban készített munkafüzeteknél az egyik gond a hordozhatóság volt. Minden ilyen
+(számoló) munkafüzet hivatkozást tartalmazott az R.xls ﬁlera. Ez tartalmazza a szükséges
+Visual Basic kód nagy részét. A gondot az okozza, hogy amikor egy másik gépre másoljuk a
+számoló munkafüzetet, vagy verzió váltás miatt a korábbi, R.xls könyvtár megszunik, akkor
+˝
+hivatkozás elromlik, és azt kézzel kellett javítani.
+Erre két megoldás látszik. Az egyik, hogy az R.xls állományt az R könyvtár struktúráján
+kívül tároljuk, a felhasználó meghatározott könyvtárában, pl. {APPDATA}/Rxls/R.xls. A
+hivatkozó munkafüzet tudja a relatív helyet az {APPDATA} könyvtárhoz képest, amit pedig
+ki tud olvasni egy környezeti változóból. A számoló munkafüzet megnyitáskor ellen˝ rzi,
+o
+hogy a hivatkozott R.xls állomány meg van nyitva, ha nincs megkísérli a standard helyr˝ l
+o
+betölteni. Ennek eredményeként a számoló munkafüzet hordozhatóvá válik; ha átvisszük
+egyik gépr˝ l a másikra, vagy verzió váltás történik, továbbra is használható marad feltéve,
+o
+hogy az Rxls csomag megfelel˝ en van telepítve.
+o
+Ez tehát két ponton jelent változást: egyrészt minden számoló munkafüzetnek tartalmaznia kell a megfelel˝ workbook_open eljárást, másrészt az R oldalon Rxls csomag betöltésekor
+o
+az R.xls állományt át kell másolni a szokásos helyére, ha az nincs ott. Ha forrásból telepítjük
+a csomagot, akkor az átmásolás a telepítés részeként is történhet.
+Hasonló gond jelentkezhet az RCOM 1.0 Type Library-val kapcsolatban is. Itt a megoldás az, hogy telepítés után rendszergazdaként kell elindítani az R programot és ki kell adni a
+következ˝ utasítást:
+o
+> comRegisterRegistry()
+A másik lehet˝ ség a hordozhatóság elérésére az lehet, hogy a véglegesítés során a szükséo
+ges modulokat bemásoljuk a számoló munkafüzetbe.
+
+10.1. com csomag
+Ennek az útmutatónak az írása közben vettem észre, hogy tulajdonságok lekérdezésénél csak
+pozicionális argumentum átadásra van lehet˝ ség, név szerintire nem. Ez a 1.0-49 verziótól
+o
+57
+
+10.1. com csomag
+kezdve annyiban módosul, hogy tulajdonságot kétféleképpen is le lehet kérdezni. A régi
+szintaxis
+<obj>[["<tulajdonság név>", <argumentumok>]],
+továbbra is használható, azonban hiába vannak az argumentumok névvel ellátva, azokat pozíciójuk szerint adjuk át. Korábban ez volt a viselkedés.
+Emellett a metódusokra megszokott szintaxis is használható
+<obj>$<tulajdonság név>(<arg1>=<value1>,...).
+Ez utóbbi a <obj>.<tulajdonság név> <arg1>:=<value1>, ... Visual Basic szintaxisnak felel meg. Ugyanúgy, ahogy Visual Basic-ben itt sem szükséges neveket megadni, viszont a zárójel akkor is kell, ha nincs argumentum.
+comCheckRegistry
+TRUE értéket ad vissza, ha a Registry tartalmazza a RCOM szerverre mutató bejegyzést ellenkez˝
+o
+esetben az érték FALSE. Arra szolgál, hogy a telepítés állapotát ellen˝ rizni lehessen.
+o
+> comCheckRegistry()
+[1] TRUE
+Egészen pontosan a következ˝ k ellen˝ rzése történik meg: regisztrálva van-e az R COM
+o
+o
+szervere, regisztrálva van-e a COM szerver type libraryja, végül az R legfrissebb változata
+alól van-e regisztrálva. Ha valamelyik pont esetében a regisztry bejegyzés nem létezik, vagy
+nem az, aminek lennie kellene a felhasználó ﬁgyelmeztetést kap a teend˝ kkel együtt.
+o
+
+58
+
+11 Mellékletek listája
+
+A leírás az R csomagok a minta projekt elemei elérhet˝ ek a következ˝ címen
+o
+o
+http://hpz400.cs.elte.hu/AEGON
+Az oldal jelszót kér:
+username: AEGON
+password: R+EXCEL
+A 'pkgs' könyvtár tartalma:
+com_1.0-54.tar.gz
+com_1.0-54.zip
+comproxy_1.0-12.tar.gz
+comproxy_1.0-12.zip
+jaradek2013_2.0-33.tar.gz
+jaradek2013_2.0-33.zip
+Rxls_2.0-210.tar.gz
+Rxls_2.0-210.zip
+A 'Rfiles' könyvtár tartalma:
+calc.R
+calc1.R
+Calc1.xls
+ell.R
+kar.R
+R_chunks_in_Rxls_user_guide.R
+Az RStudio projekt honlapja és letöltési oldala:
+http://www.rstudio.com/
+http://www.rstudio.com/ide/download/desktop
+
+59
+
+
